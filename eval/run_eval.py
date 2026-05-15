@@ -30,7 +30,8 @@ VENV_PY = REPO_ROOT / "rag" / "venv" / "bin" / "python"
 def _reexec_under_venv() -> None:
     if not VENV_PY.exists():
         return
-    if Path(sys.executable).resolve() == VENV_PY.resolve():
+    venv_root = (REPO_ROOT / "rag" / "venv").resolve()
+    if Path(sys.prefix).resolve() == venv_root:
         return
     os.execv(str(VENV_PY), [str(VENV_PY), str(Path(__file__).resolve()), *sys.argv[1:]])
 
