@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+# hacker_lm — launch the Textual TUI frontend plus the real backend runtime.
+#   ./hacker_lm
+# The launcher prestarts the backend runtime under rag/venv, then opens the TUI.
+
+set -e
+
+PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+RAG_PYTHON="$PROJECT_DIR/rag/venv/bin/python"
+cd "$PROJECT_DIR"
+
+if [[ "${1:-}" == "--help" || "${1:-}" == "-h" ]]; then
+    cat <<'EOF'
+Usage: ./hacker_lm
+
+Launches the Textual chat frontend.
+
+Notes:
+  - The launcher first starts/checks the real backend runtime under rag/venv.
+  - The TUI then connects to the real backend worker under rag/venv.
+  - If Textual is missing, install requirements-tui.txt or run through uv.
+EOF
+    exit 0
+fi
+
+if ! command -v python3 >/dev/null 2>&1; then
+    echo "[hacker_lm] python3 is required" >&2
+    exit 1
+fi
+
+if [[ ! -x "$RAG_PYTHON" ]]; then
+    echo "[hacker_lm] backend runtime not found at $RAG_PYTHON" >&2
+    exit 1
+fi
+
+"$RAG_PYTHON" -m rag.runtime --ensure-ollama
+
+if python3 -c 'import textual' >/dev/null 2>&1; then
+    exec python3 -m localchat_tui
+fi
+
+if command -v uv >/dev/null 2>&1; then
+    exec uv run --with textual python -m localchat_tui
+fi
+
+echo "[hacker_lm] Textual is not available." >&2
+echo "[hacker_lm] Install it with 'python3 -m pip install -r requirements-tui.txt' or install uv." >&2
+exit 1

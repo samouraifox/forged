@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtualenvs / dependencies
+rag/venv/
+.venv/
+venv/
+
+# Large regenerable data
+rag/chroma_db/
+rag/corpus/*
+!rag/corpus/.gitkeep
+
+# Eval outputs (regenerable, large)
+eval/results/*.json
+
+# Quarantined legacy
+_removed_from_product/
+
+# IDE / OS
+.DS_Store
+.idea/
+.vscode/
+
+# Local Claude / agent state
+.claude/
+.codex
+
+# Secrets — defense in depth (real secrets must live outside this repo)
+.env
+.env.*
+*.pem
+*.key
+credentials.json

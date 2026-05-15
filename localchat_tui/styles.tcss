@@ -1,0 +1,343 @@
+Screen {
+    background: #060912;
+    color: #e7edf5;
+}
+
+#layout {
+    width: 100%;
+    height: 100%;
+    background: #060912;
+}
+
+#layout.session-idle {
+    padding: 0 2 1 2;
+    align: center middle;
+}
+
+#layout.session-active {
+    padding: 1 2;
+    align: center top;
+}
+
+#shell {
+    width: 100%;
+    min-width: 58;
+}
+
+#shell.session-idle {
+    max-width: 84;
+    height: auto;
+}
+
+#shell.session-active {
+    max-width: 112;
+    height: 100%;
+}
+
+AppHeader {
+    height: auto;
+}
+
+#shell.session-idle AppHeader {
+    margin-bottom: 1;
+}
+
+#shell.session-active AppHeader {
+    margin-bottom: 0;
+}
+
+#app-title {
+    width: 100%;
+    text-align: center;
+    color: #f4f7fb;
+    text-style: bold;
+}
+
+#app-subtitle {
+    width: 100%;
+    margin-top: 1;
+    text-align: center;
+    color: #8f98a6;
+}
+
+#backend-line {
+    width: 100%;
+    margin-top: 1;
+    text-align: center;
+    color: #6d7685;
+}
+
+#landing-status {
+    width: 100%;
+    height: auto;
+    margin-top: 1;
+    margin-bottom: 1;
+    text-align: center;
+    color: #9aa4b4;
+}
+
+ModeBar {
+    width: 100%;
+    height: auto;
+    margin-bottom: 1;
+}
+
+#shell.session-idle ModeBar {
+    margin-bottom: 2;
+}
+
+#mode-row {
+    width: 100%;
+    height: auto;
+    align: center middle;
+}
+
+#mode-cluster {
+    width: auto;
+    height: auto;
+}
+
+.mode-pill {
+    width: auto;
+    min-width: 12;
+    height: 3;
+    margin: 0 1 0 0;
+    padding: 0 1;
+    background: #0d121b;
+    color: #778191;
+    border: round #1a2330;
+}
+
+.mode-pill.is-on {
+    background: #111b22;
+    color: #cddfd6;
+    border: round #2f5964;
+    text-style: bold;
+}
+
+.mode-pill.is-off {
+    background: #0a0f17;
+    color: #7a8494;
+    border: round #1a2330;
+}
+
+.mode-pill:focus {
+    border: round #3a6571;
+    color: #eef5fb;
+}
+
+#topk-shell {
+    min-width: 11;
+    padding: 0 1;
+    background: #0d121b;
+}
+
+#topk-label {
+    width: auto;
+    padding: 1 1 0 0;
+    color: #7f8998;
+    text-style: bold;
+}
+
+#topk-input {
+    width: 5;
+    height: 3;
+    background: #111722;
+    color: #edf4fb;
+    border: none;
+}
+
+#topk-input:focus {
+    background: #151d28;
+}
+
+#conversation {
+    height: 1fr;
+    padding: 0 1;
+    background: transparent;
+    border: none;
+    scrollbar-background: #060912;
+    scrollbar-background-hover: #0d121a;
+    scrollbar-color: #1d2835;
+    scrollbar-color-active: #2d4150;
+    scrollbar-color-hover: #243443;
+}
+
+#transcript-column {
+    width: 100%;
+    height: auto;
+}
+
+#composer-divider {
+    width: 100%;
+    height: 1;
+    margin-top: 1;
+    background: #101824;
+}
+
+MessageBlock {
+    width: 100%;
+    height: auto;
+    padding: 0 0 1 0;
+    align-horizontal: left;
+}
+
+MessageBlock.kind-user {
+    align-horizontal: right;
+}
+
+MessageBlock.kind-status,
+MessageBlock.kind-system {
+    align-horizontal: center;
+}
+
+.message-card {
+    width: 100%;
+    height: auto;
+    padding: 0;
+    background: transparent;
+    border: none;
+}
+
+.kind-user .message-card {
+    width: 78%;
+    max-width: 88;
+    padding: 1 2;
+    background: #0d141d;
+    border: round #23394c;
+}
+
+.kind-assistant .message-card {
+    padding: 0 0 1 0;
+}
+
+.kind-thinking .message-card {
+    padding: 0 1;
+}
+
+.kind-tool .message-card {
+    padding: 1 2;
+    background: #0c1218;
+    border: round #1d2a36;
+}
+
+.kind-error .message-card {
+    padding: 1 2;
+    background: #170d12;
+    border: round #683a44;
+}
+
+.kind-status .message-card,
+.kind-system .message-card {
+    width: auto;
+    max-width: 92;
+    padding: 0 1;
+}
+
+.message-label {
+    width: 100%;
+    margin-bottom: 1;
+    color: #6f7b8d;
+    text-style: bold;
+}
+
+.kind-user .message-label {
+    text-align: right;
+    color: #89aecd;
+}
+
+.kind-assistant .message-label {
+    color: #94bbb0;
+}
+
+.kind-thinking .message-label {
+    color: #6d7b8e;
+}
+
+.kind-tool .message-label {
+    color: #8eaab5;
+}
+
+.kind-error .message-label {
+    color: #d6a5ae;
+}
+
+.message-body {
+    width: 100%;
+    color: #edf3f9;
+    text-wrap: wrap;
+}
+
+.kind-user .message-body {
+    color: #dce6f2;
+}
+
+.kind-assistant .message-body {
+    color: #f3f7fb;
+}
+
+.kind-thinking .message-body {
+    color: #8e98a8;
+}
+
+.kind-status .message-body {
+    color: #667181;
+    text-align: center;
+}
+
+.kind-system .message-body {
+    color: #9aa4b4;
+    text-align: center;
+}
+
+.kind-tool .message-body {
+    color: #c9d6df;
+}
+
+.kind-error .message-body {
+    color: #eab9c1;
+}
+
+ChatComposer {
+    height: auto;
+    margin-top: 0;
+}
+
+#composer-shell {
+    height: auto;
+    padding: 0 1 1 1;
+    background: #0a1017;
+    border: round #1a2330;
+}
+
+ChatComposer.is-busy #composer-shell {
+    border: round #2f5964;
+}
+
+#composer-label {
+    width: 100%;
+    padding: 1 1 0 1;
+    color: #7f8998;
+    text-style: bold;
+}
+
+ComposerInput {
+    height: 5;
+    min-height: 4;
+    max-height: 8;
+    background: transparent;
+    color: #edf3f9;
+    border: none;
+    padding: 0 1;
+}
+
+ComposerInput:focus {
+    background: #0c141c;
+}
+
+#footer-hints {
+    width: 100%;
+    margin-top: 1;
+    text-align: center;
+    color: #667181;
+}
