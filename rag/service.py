@@ -342,6 +342,34 @@ class RetrieveService:
         yield QueryEvent(QueryEventType.STATUS, self._refresh_model_capabilities())
         yield QueryEvent(QueryEventType.STATUS, f"[init] backend ready over {self.col.count()} chunks")
 
+    def retrieve_top_hits(
+        self,
+        question: str,
+        config: QueryConfig,
+        history: list[dict[str, object]] | None = None,
+    ) -> list[dict]:
+        """Strictly-additive helper for offline evaluation: returns the reranked
+        top-k hits as plain dicts (id, doc, meta, dense_rank, sparse_rank, rrf,
+        rerank). Does not stream, does not call the LLM, does not mutate any
+        instance state beyond lazy-init of the retrieval stack. Existing
+        stream_query behavior is unchanged."""
+        for _ in self.initialize():
+            pass
+        if not config.rag:
+            return []
+        normalized_history = normalize_history(history, question)
+        retrieval_query = build_retrieval_query(question, normalized_history)
+        hits = hybrid_search(
+            retrieval_query,
+            self.col,
+            self.bm25,
+            self.bm25_data,
+            source_filter=config.source,
+        )
+        if not hits:
+            return []
+        return rerank(retrieval_query, hits, config.topk, self.reranker)
+
     def stream_query(self, question: str, config: QueryConfig, history: list[dict[str, object]] | None = None):
         if not question.strip():
             yield QueryEvent(QueryEventType.ERROR, "Prompt is empty.")
