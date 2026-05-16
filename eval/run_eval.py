@@ -112,7 +112,13 @@ def parse_args() -> argparse.Namespace:
         "--per-question-timeout",
         type=float,
         default=PER_QUESTION_TIMEOUT_S,
-        help="Seconds before a question is recorded as timed out (default 300)",
+        help="Seconds before a question is recorded as timed out (default 600)",
+    )
+    parser.add_argument(
+        "--timeout",
+        type=float,
+        default=None,
+        help="Short alias that overrides --per-question-timeout when set",
     )
     parser.add_argument("--show-progress", action="store_true", default=True)
     return parser.parse_args()
@@ -352,6 +358,8 @@ def print_summary(results: dict) -> None:
 
 def main() -> int:
     args = parse_args()
+    if args.timeout is not None:
+        args.per_question_timeout = args.timeout
     questions = load_questions(args.questions, args.include_examples)
     if args.limit is not None:
         questions = questions[: args.limit]
