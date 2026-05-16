@@ -77,11 +77,24 @@ def score_retrieval(
     return retrieval_score, path_recall, substring_recall
 
 
-def score_facts(must_mention_facts: list[str], answer_text: str) -> float | None:
+def score_facts(must_mention_facts: list, answer_text: str) -> float | None:
+    """Score each slot in must_mention_facts as a hit (1) or miss (0).
+
+    Slot types:
+      - flat string: substring match (case-insensitive) — existing behavior.
+      - list[str]:   any-of synonym group; hits if ANY synonym substring matches.
+    """
     if not must_mention_facts:
         return None
-    matched = sum(1 for fact in must_mention_facts if _ci_in(fact, answer_text))
-    return matched / len(must_mention_facts)
+    hits = 0
+    for fact in must_mention_facts:
+        if isinstance(fact, list):
+            if any(_ci_in(syn, answer_text) for syn in fact):
+                hits += 1
+        else:
+            if _ci_in(fact, answer_text):
+                hits += 1
+    return hits / len(must_mention_facts)
 
 
 def score_hallucination(
