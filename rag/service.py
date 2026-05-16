@@ -13,18 +13,23 @@ from pathlib import Path
 
 import chromadb
 import ollama
+from openai import OpenAI
 from sentence_transformers import CrossEncoder
 
 EMBED_MODEL = "nomic-embed-text"
-# Keep the execution alias stable so launcher and integrations do not change.
-LLM_MODEL = "hacker-guide"
-LLM_DISPLAY_NAME = "DeepSeek-R1 abliterated"
+LLM_MODEL = "hermes-4-14b"
+LLM_DISPLAY_NAME = "Hermes-4-14B (Q6_K, llama-server)"
+LLM_BASE_URL = "http://127.0.0.1:8080/v1"
+LLM_TEMPERATURE = 0.4
+LLM_MAX_TOKENS = 4096
 RERANKER = "cross-encoder/ms-marco-MiniLM-L-6-v2"
 DEFAULT_DB = str(Path(__file__).resolve().parent / "chroma_db")
 COLLECTION = "security"
 VALID_SOURCES = {"hacktricks", "payloads", "owasp", "mitre"}
 MAX_HISTORY_MESSAGES = 8
 MAX_HISTORY_CHARS_PER_MESSAGE = 500
+
+_LLM_CLIENT = OpenAI(base_url=LLM_BASE_URL, api_key="not-needed")
 
 RAG_RUNTIME_SYSTEM = """Answer in ENGLISH ONLY.
 Use the retrieved context as the primary source for factual claims.
@@ -58,10 +63,7 @@ User question:
 
 NO_RETRIEVED_CONTEXT = "(no retrieved context)"
 NO_CONVERSATION_HISTORY = "(no prior conversation)"
-THINK_OFF_FALLBACK_NOTE = "THINK is OFF for this request. Do not emit a <think> block. Answer directly."
-THINK_CONTROL_NATIVE = "native"
-THINK_CONTROL_PROMPT_FALLBACK = "prompt-fallback"
-THINK_CONTROL_UNKNOWN = "unknown"
+NO_THINK_INSTRUCTION = "Do not use <think> blocks for this response. Answer directly."
 
 TOKEN_RE = re.compile(r"\w+")
 
@@ -303,6 +305,7 @@ class RetrieveService:
     provider = "local"
     backend_name = "hacker_lm"
     model_name = LLM_DISPLAY_NAME
+    think_control = "prompt-policy"
 
     def __init__(self, db_path: str = DEFAULT_DB) -> None:
         self.db_path = str(Path(db_path))
@@ -310,15 +313,6 @@ class RetrieveService:
         self.bm25 = None
         self.bm25_data = None
         self.reranker = None
-        self.native_think_supported: bool | None = None
-
-    @property
-    def think_control(self) -> str:
-        if self.native_think_supported is True:
-            return THINK_CONTROL_NATIVE
-        if self.native_think_supported is False:
-            return THINK_CONTROL_PROMPT_FALLBACK
-        return THINK_CONTROL_UNKNOWN
 
     @property
     def is_ready(self) -> bool:
@@ -338,8 +332,7 @@ class RetrieveService:
         yield QueryEvent(QueryEventType.STATUS, f"[init] loading reranker {RERANKER}")
         self.reranker = CrossEncoder(RERANKER)
 
-        yield QueryEvent(QueryEventType.STATUS, f"[init] inspecting model capabilities for {LLM_DISPLAY_NAME}")
-        yield QueryEvent(QueryEventType.STATUS, self._refresh_model_capabilities())
+        yield QueryEvent(QueryEventType.STATUS, f"[init] generation backend: {LLM_DISPLAY_NAME} @ {LLM_BASE_URL}")
         yield QueryEvent(QueryEventType.STATUS, f"[init] backend ready over {self.col.count()} chunks")
 
     def retrieve_top_hits(
@@ -459,90 +452,51 @@ class RetrieveService:
 
     def _generate(self, prompt: str, *, system: str, think: bool):
         effective_system = self._effective_system(system, think)
-        native_think = self._native_think_argument(think)
-        if native_think is None:
-            yield from self._stream_generate(
-                prompt=prompt,
-                system=effective_system,
-                think=None,
-                emit_thinking=think,
-            )
-            return
-        try:
-            yield from self._stream_generate(
-                prompt=prompt,
-                system=effective_system,
-                think=native_think,
-                emit_thinking=think,
-            )
-            return
-        except ollama.ResponseError as error:
-            if "does not support thinking" not in str(error):
-                raise
-
-        self.native_think_supported = False
-        yield QueryEvent(
-            QueryEventType.STATUS,
-            "[llm] native think control unsupported by this model; switching to prompt-policy fallback",
-        )
         yield from self._stream_generate(
             prompt=prompt,
             system=effective_system,
-            think=None,
             emit_thinking=think,
         )
 
-    def _stream_generate(self, prompt: str, *, system: str, think: bool | None, emit_thinking: bool):
+    def _stream_generate(self, prompt: str, *, system: str, emit_thinking: bool):
         parser = ThinkTagStreamParser()
-        for part in ollama.generate(
+        stream = _LLM_CLIENT.chat.completions.create(
             model=LLM_MODEL,
-            system=system,
-            prompt=prompt,
-            think=think,
+            messages=[
+                {"role": "system", "content": system},
+                {"role": "user", "content": prompt},
+            ],
             stream=True,
-        ):
-            for in_think, text in parser.push(part["response"]):
-                if not text:
+            temperature=LLM_TEMPERATURE,
+            max_tokens=LLM_MAX_TOKENS,
+        )
+        for chunk in stream:
+            if not chunk.choices:
+                continue
+            delta = chunk.choices[0].delta
+            text = getattr(delta, "content", None) or ""
+            if not text:
+                continue
+            for in_think, segment in parser.push(text):
+                if not segment:
                     continue
                 if in_think and not emit_thinking:
                     continue
-                yield QueryEvent(QueryEventType.THINKING if in_think else QueryEventType.ANSWER_CHUNK, text)
-        for in_think, text in parser.finish():
-            if not text:
+                yield QueryEvent(
+                    QueryEventType.THINKING if in_think else QueryEventType.ANSWER_CHUNK,
+                    segment,
+                )
+        for in_think, segment in parser.finish():
+            if not segment:
                 continue
             if in_think and not emit_thinking:
                 continue
-            yield QueryEvent(QueryEventType.THINKING if in_think else QueryEventType.ANSWER_CHUNK, text)
+            yield QueryEvent(
+                QueryEventType.THINKING if in_think else QueryEventType.ANSWER_CHUNK,
+                segment,
+            )
 
     def _effective_system(self, system: str, think: bool) -> str:
         if think:
             return system
-        return f"{system}\n{THINK_OFF_FALLBACK_NOTE}"
-
-    def _native_think_argument(self, think: bool) -> bool | None:
-        if self.native_think_supported is False:
-            return None
-        return think
-
-    def _refresh_model_capabilities(self) -> str:
-        try:
-            info = ollama.show(LLM_MODEL)
-        except Exception as error:
-            self.native_think_supported = None
-            return (
-                "[llm] native think control: unknown; the backend could not inspect model metadata "
-                f"({type(error).__name__}: {error})"
-            )
-
-        capabilities = getattr(info, "capabilities", None)
-        if capabilities is None and hasattr(info, "model_dump"):
-            capabilities = info.model_dump(exclude_none=True).get("capabilities")
-        if capabilities is None:
-            self.native_think_supported = None
-            return "[llm] native think control: unknown; model metadata did not report capabilities"
-
-        capability_names = {str(item).strip().lower() for item in capabilities if str(item).strip()}
-        self.native_think_supported = "thinking" in capability_names
-        if self.native_think_supported:
-            return "[llm] native think control: supported"
-        return "[llm] native think control: unsupported; THINK will use prompt-policy fallback"
+        return f"{system}\n\n{NO_THINK_INSTRUCTION}"

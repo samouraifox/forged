@@ -37,6 +37,8 @@ Intel Core Ultra 7 258V (Lunar Lake), Intel Arc 140V iGPU, 30 GB shared LPDDR5x 
 
 The v1 stack still in this tree (DeepSeek-R1-abliterated, `nomic-embed-text`, the MiniLM reranker, the existing TUI) is the baseline the v2 upgrades are measured against — not the final product.
 
+As of Day 2, generation runs via `scripts/llama-server.sh` (llama.cpp Vulkan, Hermes-4-14B Q6_K); Ollama is retained only for embeddings.
+
 ## Why not just use ChatGPT / Claude / a hosted RAG
 
 Authorized red-team and pentest work involves discussing offensive techniques, payloads, CVE exploitation primitives, and target reconnaissance against systems you own or are contracted to test. Hosted assistants either refuse on alignment grounds, leak query content to provider infrastructure, or both. A local stack avoids both problems: no data leaves the laptop, no third-party content policy gates the answer, and the same machine can run the assistant on an airgapped engagement. The tradeoff is that you give up frontier-model quality and accept whatever a 14B local model can do — which is why most of the v2 build is about extracting the maximum useful work from that constraint.
