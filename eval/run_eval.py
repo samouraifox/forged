@@ -120,6 +120,18 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help="Short alias that overrides --per-question-timeout when set",
     )
+    parser.add_argument(
+        "--ids",
+        type=str,
+        default=None,
+        help="Comma-separated question-ID filter (e.g. q-001,q-015). Runs inference only on the listed ids.",
+    )
+    parser.add_argument(
+        "--out",
+        type=Path,
+        default=None,
+        help="Override result-file path (default: results/<timestamp>_<tag>.json)",
+    )
     parser.add_argument("--show-progress", action="store_true", default=True)
     return parser.parse_args()
 
@@ -361,6 +373,13 @@ def main() -> int:
     if args.timeout is not None:
         args.per_question_timeout = args.timeout
     questions = load_questions(args.questions, args.include_examples)
+    if args.ids:
+        wanted = {qid.strip() for qid in args.ids.split(",") if qid.strip()}
+        missing = wanted - {q["id"] for q in questions}
+        if missing:
+            print(f"--ids referenced ids not found in questions file: {sorted(missing)}", file=sys.stderr)
+            return 2
+        questions = [q for q in questions if q["id"] in wanted]
     if args.limit is not None:
         questions = questions[: args.limit]
     if not questions:
@@ -443,7 +462,7 @@ def main() -> int:
 
     now = datetime.now(timezone.utc)
     stamp = now.strftime("%Y-%m-%d_%H%M")
-    result_path = result_dir / f"{stamp}_{args.tag}.json"
+    result_path = args.out if args.out is not None else result_dir / f"{stamp}_{args.tag}.json"
 
     payload = {
         "tag": args.tag,
