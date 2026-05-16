@@ -162,6 +162,26 @@ def score_question(
     )
 
 
+def abstention_precision(per_question: list[dict]) -> tuple[float | None, int]:
+    """Mean fact_score among answers that explicitly invoked prior knowledge
+    by emitting the [general-knowledge] tag. Tells us how reliable
+    prior-weight knowledge is when the model chooses to use it.
+    Returns (precision, n_abstained). precision is None if n_abstained == 0
+    or if no abstained record has a non-null fact_score."""
+    abstained = [
+        row for row in per_question
+        if "[general-knowledge]" in (row.get("answer_text") or "")
+    ]
+    facts = [
+        row["score"]["fact_score"]
+        for row in abstained
+        if row["score"]["fact_score"] is not None
+    ]
+    if not facts:
+        return (None, len(abstained))
+    return (sum(facts) / len(facts), len(abstained))
+
+
 def aggregate(per_question: list[dict]) -> dict:
     """Compute mean_* metrics, ignoring None values component-wise."""
     keys = ("retrieval_score", "fact_score", "hallucination_penalty", "combined")
@@ -169,6 +189,9 @@ def aggregate(per_question: list[dict]) -> dict:
     for key in keys:
         values = [row["score"][key] for row in per_question if row["score"][key] is not None]
         means[f"mean_{key}"] = sum(values) / len(values) if values else None
+    precision, n = abstention_precision(per_question)
+    means["abstention_precision"] = precision
+    means["n_abstained"] = n
     return means
 
 

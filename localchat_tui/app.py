@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+import re
+from dataclasses import dataclass, field
 
 from textual import on, work
 from textual.app import App, ComposeResult
@@ -21,10 +22,55 @@ from .theme import APP_NAME, APP_SUBTITLE, COMPOSER_HINT
 from .widgets import AppHeader, ChatComposer, MessageBlock, ModeBar, TranscriptView
 
 
+_CITATION_TAG_RE = re.compile(
+    r"\[(general-knowledge|hacktricks|mitre|payloads|owasp|source)(::[^\]]*)?\]"
+)
+
+
+class _StreamingTagStripper:
+    """Strip [general-knowledge] and [<source>::<path>] tags from a token stream
+    without breaking on tags that span chunk boundaries. TUI-display only —
+    the captured eval answer_text retains the raw tags."""
+
+    __slots__ = ("_buf",)
+
+    def __init__(self) -> None:
+        self._buf = ""
+
+    def push(self, chunk: str) -> str:
+        self._buf += chunk
+        out: list[str] = []
+        while self._buf:
+            i = self._buf.find("[")
+            if i == -1:
+                out.append(self._buf)
+                self._buf = ""
+                break
+            if i > 0:
+                out.append(self._buf[:i])
+                self._buf = self._buf[i:]
+            j = self._buf.find("]")
+            if j == -1:
+                break  # tag incomplete; wait for more chunks
+            candidate = self._buf[: j + 1]
+            if _CITATION_TAG_RE.fullmatch(candidate):
+                self._buf = self._buf[j + 1 :]
+            else:
+                out.append(candidate)
+                self._buf = self._buf[j + 1 :]
+        return "".join(out)
+
+    def finish(self) -> str:
+        leftover = self._buf
+        self._buf = ""
+        return leftover
+
+
 @dataclass(slots=True)
 class ReplyRenderState:
     thinking_block: MessageBlock | None = None
     answer_block: MessageBlock | None = None
+    answer_stripper: _StreamingTagStripper = field(default_factory=_StreamingTagStripper)
 
 
 class LocalChatApp(App[None]):
@@ -203,6 +249,10 @@ class LocalChatApp(App[None]):
             await self._add_message(ChatMessage(kind=MessageKind.ERROR, text=event.text))
             return render_state
         if event.channel == StreamChannel.DONE:
+            if render_state.answer_block is not None:
+                leftover = render_state.answer_stripper.finish()
+                if leftover:
+                    render_state.answer_block.append_text(leftover)
             return render_state
         if event.channel == StreamChannel.THINKING:
             if render_state.thinking_block is None:
@@ -220,7 +270,9 @@ class LocalChatApp(App[None]):
                 render_state.answer_block = await transcript.add_message(answer_message)
                 self.message_widgets[answer_message.id] = render_state.answer_block
             sticky = transcript.should_stick_to_bottom()
-            render_state.answer_block.append_text(event.text)
+            visible = render_state.answer_stripper.push(event.text)
+            if visible:
+                render_state.answer_block.append_text(visible)
             if sticky:
                 transcript.follow_tail()
             return render_state
