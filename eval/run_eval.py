@@ -26,6 +26,8 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import signal
+import subprocess
 import sys
 import time
 from concurrent.futures import ThreadPoolExecutor, TimeoutError as FutTimeout
@@ -36,7 +38,9 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 VENV_PY = REPO_ROOT / "rag" / "venv" / "bin" / "python"
 
-PER_QUESTION_TIMEOUT_S = 300.0
+# Default per-question wallclock budget. Includes hidden <think> generation
+# under --think on, so set higher than the original 300s payload-only budget.
+PER_QUESTION_TIMEOUT_S = 600.0
 
 
 def _reexec_under_venv() -> None:
@@ -83,7 +87,12 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--topk", type=int, default=5)
     parser.add_argument("--rag", type=_parse_on_off, default=True, help="on|off")
-    parser.add_argument("--think", type=_parse_on_off, default=False, help="on|off — default off for speed")
+    parser.add_argument(
+        "--think",
+        type=_parse_on_off,
+        default=True,
+        help="on|off — default on so <think> content is captured and stuck-in-think loops are visible",
+    )
     parser.add_argument("--limit", type=int, default=None)
     parser.add_argument("--tag", type=str, default="baseline")
     parser.add_argument("--include-examples", action="store_true")
@@ -265,6 +274,31 @@ def run_with_timeout(
         executor.shutdown(wait=False, cancel_futures=True)
 
 
+def _kill_ollama_runner() -> int:
+    """Kill the ollama model-runner subprocess (the child of `ollama serve`
+    that holds the model + KV cache in memory). `ollama serve` will respawn
+    a fresh runner on the next request, with a clean inference slot.
+    Returns the number of killed PIDs."""
+    try:
+        result = subprocess.run(
+            ["pgrep", "-f", "ollama runner"],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+    except FileNotFoundError:
+        return 0
+    pids = [int(p) for p in result.stdout.split() if p.strip().isdigit()]
+    killed = 0
+    for pid in pids:
+        try:
+            os.kill(pid, signal.SIGKILL)
+            killed += 1
+        except ProcessLookupError:
+            pass
+    return killed
+
+
 def _append_partial(partial_path: Path, record: dict) -> None:
     with partial_path.open("a", encoding="utf-8") as handle:
         handle.write(json.dumps(record, ensure_ascii=False) + "\n")
@@ -377,6 +411,22 @@ def main() -> int:
             f"combined={_fmt(combined)} in {record['wall_clock_s']:.1f}s",
             flush=True,
         )
+        if record.get("timeout"):
+            # The orphaned worker thread is still recv()-blocked on a socket
+            # to ollama. With OLLAMA_NUM_PARALLEL=1 the next question would
+            # queue behind the never-completing request and also time out.
+            # Killing the ollama runner subprocess force-closes that slot;
+            # ollama serve will respawn a fresh runner on the next request.
+            killed = _kill_ollama_runner()
+            print(
+                f"[recovery] timeout fired; killed {killed} ollama runner(s) "
+                f"to clear stuck slot",
+                flush=True,
+            )
+            time.sleep(2)
+            rag_runtime.ensure_ollama_running(
+                status_callback=lambda message: print(f"[runtime] {message}", flush=True),
+            )
     total_wall_clock_s = time.perf_counter() - overall_t0
 
     aggregate = scoring.aggregate(per_question)
