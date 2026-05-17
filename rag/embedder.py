@@ -70,7 +70,18 @@ def _qwen3_lazy_init() -> str:
             f"--task feature-extraction --weight-format int8 {MODEL_DIR}"
         )
 
-    _tokenizer = AutoTokenizer.from_pretrained(str(MODEL_DIR), padding_side="left")
+    # `fix_mistral_regex=True` patches the pre_tokenizer regex at load time.
+    # The Qwen3-Embedding tokenizer.json ships with the same broken regex as
+    # mistralai/Mistral-Small-3.1-24B-Instruct-2503 (HF discussion 84) — it
+    # ignores case boundaries, so "CitrixBleed" mistokenizes as ["Cit","ri","xB",
+    # "le","ed"] instead of ["Cit","rix","B","le","ed"]. Affects <1% of tokens
+    # globally per Mistral's own analysis, but cybersec content has many
+    # CamelCase product names + acronyms (CVE/RCE/NTLM/OGNL/SQLi/KRBTGT) where
+    # the case-boundary cases hit. The model was trained against the corrected
+    # tokenization, so feeding it the broken IDs gives drifted inputs.
+    _tokenizer = AutoTokenizer.from_pretrained(
+        str(MODEL_DIR), padding_side="left", fix_mistral_regex=True
+    )
 
     requested = os.environ.get("QWEN3_EMBED_DEVICE", "GPU").upper()
     try:

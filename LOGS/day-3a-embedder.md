@@ -197,6 +197,43 @@ Wall clock: **39.3 seconds** for all 50 questions (no timeouts, no errors). Per-
 
 Phase 3a passes hard stops and strict-improvement gates. **Realistic-target on cve-specific is not met by the embedder alone.** Continuing to 3b and 3c per the brief's structure; the final pass-or-stop decision rides on the post-3c number.
 
+## Post-commit follow-up: `fix_mistral_regex=True`
+
+The tokenizer was emitting a load-time warning pointing at HF discussion #84 on `mistralai/Mistral-Small-3.1-24B-Instruct-2503` — the pre_tokenizer regex in `tokenizer.json` is missing the case-boundary alternation that Mistral and Qwen3 are supposed to use. The flag `fix_mistral_regex=True` on `AutoTokenizer.from_pretrained` patches the regex at load time.
+
+Inspected the actual `tokenizer.json` in `~/models/openvino/qwen3-embedding-0.6b-int8/tokenizer.json`: pre_tokenizer regex matches the "incorrect" Mistral pattern. Confirmed.
+
+Compared tokenization on 10 cybersec strings:
+
+| string | broken | fixed | differs? |
+|---|---|---|---|
+| PrintNightmare CVE-2021-34527 | 15 tokens | 15 tokens | no |
+| ProxyShell | 2 tokens | 2 tokens | no |
+| Spring4Shell CVE-2022-22965 | 15 tokens | 15 tokens | no |
+| CitrixBleed (CVE-2023-4966) | 18 tokens | 18 tokens | **yes** |
+| NTLM hash leak via PidLidReminderFileParameter | 12 | 12 | no |
+| PwnKit pkexec heap overflow | 7 | 7 | no |
+| MOVEit Transfer SQLi-to-RCE | 8 | 8 | no |
+| polkit DBus authentication bypass | 6 | 6 | no |
+| # Linux Privilege Escalation > LD_PRELOAD | 11 | 11 | no |
+| Baron Samedit (CVE-2021-3156) — sudoedit heap overflow | 22 | 22 | no |
+
+Only 1/10. For CitrixBleed: broken tokenizes "Citrix" as `['Cit', 'ri', 'xB', 'le', 'ed']` (the `x` merges with `B` of `Bleed`, crossing the case boundary), fixed gives `['Cit', 'rix', 'B', 'le', 'ed']` (clean case-boundary split). 2 token IDs differ out of 18 (~11% for that one string).
+
+Applied the fix in `rag/embedder.py::_qwen3_lazy_init()`. The OpenVINO model takes input_ids only, so no model re-export was needed — only the HF AutoTokenizer load changed. Re-embedded the entire corpus with `--reset`.
+
+**Result vs broken-regex run (per-question diff, identical scoring rubric):**
+
+| measurement | result |
+|---|---|
+| Questions with changed `retrieval_score` | **0 / 50** |
+| Questions with any chunk-swap in top-5 | 4 / 50 (q-007 MOVEit, q-042 Evilginx2, q-047 + q-050 ambiguous) |
+| All aggregate + per-category numbers | byte-identical to the broken run |
+
+The fix DID change the candidate set on a handful of questions, but the swapped chunks weren't in the gold-recall set, so the deterministic rubric didn't notice. **At our eval granularity, broken and fixed regex are indistinguishable.** Keeping the fix anyway — the model was *trained* against the corrected tokenization, and Phase 3c will re-embed under contextual retrieval, so having the embedder authoritative is the right state.
+
+Canonical Phase 3a retrieval result: `eval/results/2026-05-17_v2-day3a-qwen3emb-fixed-retrieval.json`. The earlier `..._qwen3emb-retrieval.json` is superseded (kept locally for diff audits; both are gitignored).
+
 ## Surprises
 
 1. **The brief's `--task text-classification` would have failed for the reranker** (separate phase, but worth noting now): Qwen3-Reranker-0.6B is a CausalLM that emits yes/no token logits, not a classifier head. I'll surface the exact deviation in `day-3b-reranker.md`.
