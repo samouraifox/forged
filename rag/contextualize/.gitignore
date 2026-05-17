@@ -1,0 +1,4 @@
+# Generated work-item files for the contextualize main run.
+# 2,303 source documents + chunk lists = 4,607 small files (~42 MB).
+# Regenerable via rag/contextualize/_prep_work_items.py — not committed.
+main/
