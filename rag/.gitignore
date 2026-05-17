@@ -1,5 +1,6 @@
 corpus/
 chroma_db/
+chroma_db_*/
 venv/
 __pycache__/
 *.pyc

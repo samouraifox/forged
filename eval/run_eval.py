@@ -59,11 +59,13 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 # Imports below this line require the v1 venv.
 from rag import runtime as rag_runtime  # noqa: E402
+from rag import embedder as rag_embedder  # noqa: E402
 from rag.service import (  # noqa: E402
     QueryConfig,
     QueryEventType,
     RetrieveService,
     LLM_DISPLAY_NAME,
+    COLLECTION as DEFAULT_COLLECTION,
 )
 import score as scoring  # noqa: E402
 
@@ -132,6 +134,20 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help="Override result-file path (default: results/<timestamp>_<tag>.json)",
     )
+    parser.add_argument(
+        "--collection",
+        type=str,
+        default=DEFAULT_COLLECTION,
+        help="Chroma collection name to query (default: 'security'). Used to "
+        "route the eval to retrieval-stack variants (Day 3+) without disturbing v1.",
+    )
+    parser.add_argument(
+        "--retrieval-only",
+        action="store_true",
+        help="Skip LLM inference; score retrieval only. Per-question fact_score and "
+        "hallucination_penalty become n/a; mean_retrieval_score is the diagnostic. "
+        "~10-30x faster than full inference for retrieval-stack A/B work.",
+    )
     parser.add_argument("--show-progress", action="store_true", default=True)
     return parser.parse_args()
 
@@ -187,6 +203,7 @@ def run_one(
     service: RetrieveService,
     question_obj: dict,
     config: QueryConfig,
+    retrieval_only: bool = False,
 ) -> dict:
     question_text = question_obj["question"]
     t0 = time.perf_counter()
@@ -199,28 +216,50 @@ def run_one(
     timing_lines: list[str] = []
     error_text: str | None = None
 
-    try:
-        for event in service.stream_query(question_text, config, history=[]):
-            if event.type == QueryEventType.ANSWER_CHUNK:
-                answer_chunks.append(event.text)
-            elif event.type == QueryEventType.THINKING:
-                thinking_chunks.append(event.text)
-            elif event.type == QueryEventType.STATUS:
-                status_lines.append(event.text)
-                if "[timing]" in event.text:
-                    timing_lines.append(event.text)
-            elif event.type == QueryEventType.ERROR:
-                error_text = event.text
-            elif event.type == QueryEventType.DONE:
-                continue
-    except Exception as exc:
-        error_text = f"{type(exc).__name__}: {exc}"
+    if not retrieval_only:
+        try:
+            for event in service.stream_query(question_text, config, history=[]):
+                if event.type == QueryEventType.ANSWER_CHUNK:
+                    answer_chunks.append(event.text)
+                elif event.type == QueryEventType.THINKING:
+                    thinking_chunks.append(event.text)
+                elif event.type == QueryEventType.STATUS:
+                    status_lines.append(event.text)
+                    if "[timing]" in event.text:
+                        timing_lines.append(event.text)
+                elif event.type == QueryEventType.ERROR:
+                    error_text = event.text
+                elif event.type == QueryEventType.DONE:
+                    continue
+        except Exception as exc:
+            error_text = f"{type(exc).__name__}: {exc}"
 
     wall_clock = time.perf_counter() - t0
     answer_text = "".join(answer_chunks)
     thinking_text = "".join(thinking_chunks)
 
-    qs = scoring.score_question(question_obj, top_hits_raw, answer_text)
+    if retrieval_only:
+        # Score retrieval only; fact_score and hallucination_penalty are
+        # meaningless when no LLM was invoked, so they're explicitly None.
+        # combined collapses to retrieval_score under the existing weight-renorm
+        # logic but we set it explicitly here so downstream readers don't have
+        # to guess.
+        rscore, precall, srecall = scoring.score_retrieval(
+            question_obj.get("gold_chunk_paths", []) or [],
+            question_obj.get("gold_chunk_substrings", []) or [],
+            top_hits_raw,
+        )
+        qs = scoring.QuestionScore(
+            retrieval_score=rscore,
+            path_recall=precall,
+            substring_recall=srecall,
+            fact_score=None,
+            hallucination_penalty=None,
+            hallucinations=[],
+            combined=rscore,
+        )
+    else:
+        qs = scoring.score_question(question_obj, top_hits_raw, answer_text)
 
     return {
         "id": question_obj["id"],
@@ -276,6 +315,7 @@ def run_with_timeout(
     question_obj: dict,
     config: QueryConfig,
     timeout_s: float,
+    retrieval_only: bool = False,
 ) -> dict:
     """Run a single question in a daemon worker thread. If it doesn't return
     within timeout_s, fabricate a timeout record and move on. The worker
@@ -283,7 +323,7 @@ def run_with_timeout(
     question gets its own one-shot executor so leaked threads don't block
     subsequent work."""
     executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="eval-q")
-    future = executor.submit(run_one, service, question_obj, config)
+    future = executor.submit(run_one, service, question_obj, config, retrieval_only)
     try:
         return future.result(timeout=timeout_s)
     except FutTimeout:
@@ -410,9 +450,17 @@ def main() -> int:
         flush=True,
     )
 
-    rag_runtime.ensure_ollama_running(status_callback=lambda message: print(f"[runtime] {message}", flush=True))
+    # Ollama is only required when the legacy nomic-embed-text fallback is
+    # active. The Qwen3 OpenVINO embedder needs no external runtime, and the
+    # LLM is now llama-server (managed outside this script). Skip the ollama
+    # check unless we genuinely depend on it.
+    needs_ollama = not rag_embedder.USE_QWEN3_EMBEDDING
+    if needs_ollama:
+        rag_runtime.ensure_ollama_running(status_callback=lambda message: print(f"[runtime] {message}", flush=True))
+    else:
+        print("[runtime] skipping ollama check (USE_QWEN3_EMBEDDING active; no ollama dependency)", flush=True)
 
-    service = RetrieveService(db_path=str(args.db))
+    service = RetrieveService(db_path=str(args.db), collection=args.collection)
     config = QueryConfig(
         think=args.think,
         rag=args.rag,
@@ -428,7 +476,10 @@ def main() -> int:
                 f"{question_obj['question'][:80]}",
                 flush=True,
             )
-        record = run_with_timeout(service, question_obj, config, args.per_question_timeout)
+        record = run_with_timeout(
+            service, question_obj, config, args.per_question_timeout,
+            retrieval_only=args.retrieval_only,
+        )
         _append_partial(partial_path, record)
         per_question.append(record)
         combined = record["score"]["combined"]
@@ -438,7 +489,7 @@ def main() -> int:
             f"combined={_fmt(combined)} in {record['wall_clock_s']:.1f}s",
             flush=True,
         )
-        if record.get("timeout"):
+        if record.get("timeout") and needs_ollama:
             # The orphaned worker thread is still recv()-blocked on a socket
             # to ollama. With OLLAMA_NUM_PARALLEL=1 the next question would
             # queue behind the never-completing request and also time out.
@@ -475,6 +526,9 @@ def main() -> int:
             "include_examples": args.include_examples,
             "questions_path": str(args.questions),
             "db_path": str(args.db),
+            "collection": args.collection,
+            "retrieval_only": args.retrieval_only,
+            "embedder": rag_embedder.active_backend(),
             "per_question_timeout_s": args.per_question_timeout,
             "resumed_from": str(args.resume) if args.resume else None,
             "partial_path": str(partial_path),

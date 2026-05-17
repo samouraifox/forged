@@ -13,6 +13,7 @@ venv/
 
 # Large regenerable data
 rag/chroma_db/
+rag/chroma_db_*/
 rag/corpus/*
 !rag/corpus/.gitkeep
 

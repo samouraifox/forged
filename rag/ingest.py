@@ -1,14 +1,19 @@
-"""Ingest markdown corpus into Chroma with nomic-embed-text embeddings."""
+"""Ingest markdown corpus into Chroma with the active embedder backend.
+
+Default: Qwen3-Embedding-0.6B via OpenVINO (rag/embedder.py). Set
+USE_QWEN3_EMBEDDING=0 to route through the legacy nomic-embed-text fallback
+(scheduled for removal in Phase 3d cleanup).
+"""
 import argparse
 import pickle
 import re
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 import chromadb
-import ollama
 from tqdm import tqdm
 from chunker import chunk_markdown, iter_markdown_files
 from mitre_loader import iter_mitre_markdown
+from embedder import embed_texts, active_backend
 
 # Kept identical to retrieve.py::tokenize so the tokenized BM25 corpus persisted
 # here is usable as-is in retrieval. Change both places together if ever altered.
@@ -17,48 +22,30 @@ TOKEN_RE = re.compile(r"\w+")
 def tokenize(text: str):
     return [t.lower() for t in TOKEN_RE.findall(text)]
 
-EMBED_MODEL = "nomic-embed-text"
 DEFAULT_DB = "chroma_db"
-COLLECTION = "security"
+DEFAULT_COLLECTION = "security"
 BATCH = 64
-MAX_CHARS_FOR_EMBED = 1500  # ~375 tokens, safe even for CJK/code-dense content
-EMBED_NUM_CTX = 8192  # nomic-embed-text native max (Ollama default is only 2048)
 
-SOURCES = {
-    "hacktricks": "corpus/hacktricks",
-    "payloads": "corpus/PayloadsAllTheThings",
-    "owasp": "corpus/CheatSheetSeries",
-    "mitre": "corpus/cti",
-}
 
 def _embed_one_with_fallback(text: str):
-    """Per-chunk embed with harsher truncation retry. Used when a batched call fails
-    so a single bad chunk doesn't kill the whole batch."""
-    safe = text[:MAX_CHARS_FOR_EMBED]
+    """Per-chunk retry path used when a batched call fails — one bad chunk
+    must not kill 63 good ones."""
     try:
-        r = ollama.embed(model=EMBED_MODEL, input=safe, options={"num_ctx": EMBED_NUM_CTX})
-        return r["embeddings"][0]
-    except Exception:
-        try:
-            r = ollama.embed(model=EMBED_MODEL, input=text[:600], options={"num_ctx": EMBED_NUM_CTX})
-            return r["embeddings"][0]
-        except Exception as e2:
-            print(f"\n[skip] embed failed: {e2}", flush=True)
-            return None
+        return embed_texts([text], is_query=False)[0]
+    except Exception as e2:
+        print(f"\n[skip] embed failed: {e2}", flush=True)
+        return None
 
 
 def embed_batch(texts):
-    """One batched Ollama call per BATCH; on failure, fall back to per-chunk retries.
+    """One batched call per BATCH; on failure, fall back to per-chunk retries.
     Returns (vectors, keep_mask) — keep_mask[i] is False if chunk i was dropped."""
-    safe_texts = [t[:MAX_CHARS_FOR_EMBED] for t in texts]
     try:
-        r = ollama.embed(model=EMBED_MODEL, input=safe_texts, options={"num_ctx": EMBED_NUM_CTX})
-        vecs = r["embeddings"]
+        vecs = embed_texts(texts, is_query=False)
         if len(vecs) == len(texts):
             return vecs, [True] * len(texts)
     except Exception as e:
         print(f"\n[batch-fallback] {e}", flush=True)
-    # Fallback: one chunk at a time so one overflow doesn't nuke 63 good chunks.
     vecs, keep = [], []
     for t in texts:
         v = _embed_one_with_fallback(t)
@@ -69,6 +56,14 @@ def embed_batch(texts):
             vecs.append(v)
             keep.append(True)
     return vecs, keep
+
+
+SOURCES = {
+    "hacktricks": "corpus/hacktricks",
+    "payloads": "corpus/PayloadsAllTheThings",
+    "owasp": "corpus/CheatSheetSeries",
+    "mitre": "corpus/cti",
+}
 
 def _read_md(task):
     root, md_path = task
@@ -108,9 +103,16 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--sources", nargs="*", default=list(SOURCES.keys()))
     ap.add_argument("--db", default=DEFAULT_DB)
+    ap.add_argument(
+        "--collection",
+        default=DEFAULT_COLLECTION,
+        help="Chroma collection name (default 'security'). Use a fresh name when "
+        "the embedder dim changes — mixing 768 and 1024 dims fails at write time.",
+    )
     ap.add_argument("--reset", action="store_true")
     args = ap.parse_args()
 
+    print(f"[ingest] embedder: {active_backend()}", flush=True)
     selected = {k: SOURCES[k] for k in args.sources if k in SOURCES}
     chunks = collect_chunks(selected)
     print(f"Total chunks: {len(chunks)}")
@@ -120,10 +122,10 @@ def main():
     client = chromadb.PersistentClient(path=args.db)
     if args.reset:
         try:
-            client.delete_collection(COLLECTION)
+            client.delete_collection(args.collection)
         except Exception:
             pass
-    col = client.get_or_create_collection(COLLECTION, metadata={"hnsw:space": "cosine"})
+    col = client.get_or_create_collection(args.collection, metadata={"hnsw:space": "cosine"})
 
     existing = set(col.get(include=[])["ids"]) if col.count() else set()
     new_chunks = [c for c in chunks if c.chunk_id not in existing]

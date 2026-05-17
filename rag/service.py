@@ -12,11 +12,11 @@ from functools import lru_cache
 from pathlib import Path
 
 import chromadb
-import ollama
 from openai import OpenAI
 from sentence_transformers import CrossEncoder
 
-EMBED_MODEL = "nomic-embed-text"
+from rag import embedder
+
 LLM_MODEL = "hermes-4-14b"
 LLM_DISPLAY_NAME = "Hermes-4-14B (Q6_K, llama-server)"
 LLM_BASE_URL = "http://127.0.0.1:8080/v1"
@@ -125,8 +125,8 @@ def load_bm25(db_path: str):
 
 
 @lru_cache(maxsize=256)
-def embed(text: str):
-    return ollama.embeddings(model=EMBED_MODEL, prompt=text)["embedding"]
+def embed(text: str) -> list[float]:
+    return embedder.embed_texts([text], is_query=True)[0]
 
 
 def hybrid_search(query: str, col, bm25, bm25_data, k_dense: int = 10, k_sparse: int = 10, source_filter: str | None = None):
@@ -309,8 +309,9 @@ class RetrieveService:
     model_name = LLM_DISPLAY_NAME
     think_control = "prompt-policy"
 
-    def __init__(self, db_path: str = DEFAULT_DB) -> None:
+    def __init__(self, db_path: str = DEFAULT_DB, collection: str = COLLECTION) -> None:
         self.db_path = str(Path(db_path))
+        self.collection_name = collection
         self.col = None
         self.bm25 = None
         self.bm25_data = None
@@ -324,9 +325,12 @@ class RetrieveService:
         if self.is_ready:
             return
 
-        yield QueryEvent(QueryEventType.STATUS, f"[init] opening vector store at {self.db_path}")
+        yield QueryEvent(
+            QueryEventType.STATUS,
+            f"[init] opening vector store at {self.db_path} (collection={self.collection_name})",
+        )
         client = chromadb.PersistentClient(path=self.db_path)
-        self.col = client.get_collection(COLLECTION)
+        self.col = client.get_collection(self.collection_name)
 
         yield QueryEvent(QueryEventType.STATUS, "[init] loading BM25 index")
         self.bm25, self.bm25_data = load_bm25(self.db_path)
@@ -334,6 +338,8 @@ class RetrieveService:
         yield QueryEvent(QueryEventType.STATUS, f"[init] loading reranker {RERANKER}")
         self.reranker = CrossEncoder(RERANKER)
 
+        backend_info = embedder.active_backend()
+        yield QueryEvent(QueryEventType.STATUS, f"[init] embedder: {backend_info}")
         yield QueryEvent(QueryEventType.STATUS, f"[init] generation backend: {LLM_DISPLAY_NAME} @ {LLM_BASE_URL}")
         yield QueryEvent(QueryEventType.STATUS, f"[init] backend ready over {self.col.count()} chunks")
 
