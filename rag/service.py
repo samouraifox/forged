@@ -13,16 +13,16 @@ from pathlib import Path
 
 import chromadb
 from openai import OpenAI
-from sentence_transformers import CrossEncoder
 
 from rag import embedder
+from rag import reranker as reranker_mod
 
 LLM_MODEL = "hermes-4-14b"
 LLM_DISPLAY_NAME = "Hermes-4-14B (Q6_K, llama-server)"
 LLM_BASE_URL = "http://127.0.0.1:8080/v1"
 LLM_TEMPERATURE = 0.4
 LLM_MAX_TOKENS = 4096
-RERANKER = "cross-encoder/ms-marco-MiniLM-L-6-v2"
+LEGACY_RERANKER = "cross-encoder/ms-marco-MiniLM-L-6-v2"
 DEFAULT_DB = str(Path(__file__).resolve().parent / "chroma_db")
 COLLECTION = "security"
 VALID_SOURCES = {"hacktricks", "payloads", "owasp", "mitre"}
@@ -335,11 +335,17 @@ class RetrieveService:
         yield QueryEvent(QueryEventType.STATUS, "[init] loading BM25 index")
         self.bm25, self.bm25_data = load_bm25(self.db_path)
 
-        yield QueryEvent(QueryEventType.STATUS, f"[init] loading reranker {RERANKER}")
-        self.reranker = CrossEncoder(RERANKER)
+        if reranker_mod.USE_QWEN3_RERANKER:
+            yield QueryEvent(QueryEventType.STATUS, "[init] loading reranker: Qwen3-Reranker-0.6B (OpenVINO)")
+            self.reranker = reranker_mod.Qwen3Reranker()
+        else:
+            from sentence_transformers import CrossEncoder
+            yield QueryEvent(QueryEventType.STATUS, f"[init] loading legacy reranker {LEGACY_RERANKER}")
+            self.reranker = CrossEncoder(LEGACY_RERANKER)
 
         backend_info = embedder.active_backend()
         yield QueryEvent(QueryEventType.STATUS, f"[init] embedder: {backend_info}")
+        yield QueryEvent(QueryEventType.STATUS, f"[init] reranker: {reranker_mod.active_backend()}")
         yield QueryEvent(QueryEventType.STATUS, f"[init] generation backend: {LLM_DISPLAY_NAME} @ {LLM_BASE_URL}")
         yield QueryEvent(QueryEventType.STATUS, f"[init] backend ready over {self.col.count()} chunks")
 
