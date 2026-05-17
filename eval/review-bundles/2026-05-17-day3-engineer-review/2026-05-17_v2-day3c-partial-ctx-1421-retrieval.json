@@ -1,0 +1,3731 @@
+{
+  "tag": "v2-day3c-partial-ctx-1421-retrieval",
+  "timestamp_utc": "2026-05-17T13:56:37.781986+00:00",
+  "model": "Hermes-4-14B (Q6_K, llama-server)",
+  "config": {
+    "topk": 5,
+    "rag": true,
+    "think": true,
+    "include_examples": false,
+    "questions_path": "/home/samouraifox/Work/Projects/forged/eval/questions.jsonl",
+    "db_path": "chroma_db_qwen3_partial_ctx",
+    "collection": "forged_v2_qwen3_emb_partial_context",
+    "retrieval_only": true,
+    "embedder": {
+      "backend": "qwen3-embedding-0.6b-openvino",
+      "device": "GPU",
+      "model_dir": "/home/samouraifox/models/openvino/qwen3-embedding-0.6b-int8",
+      "dim": 1024,
+      "max_len": 2048
+    },
+    "per_question_timeout_s": 600.0,
+    "resumed_from": null,
+    "partial_path": "/home/samouraifox/Work/Projects/forged/eval/results/partial-v2-day3c-partial-ctx-1421-retrieval.jsonl"
+  },
+  "question_count": 50,
+  "timeout_count": 0,
+  "total_wall_clock_s": 381.5448895369991,
+  "mean_per_question_s": 7.630897790739982,
+  "aggregate": {
+    "mean_retrieval_score": 0.7064999999999999,
+    "mean_fact_score": null,
+    "mean_hallucination_penalty": null,
+    "mean_combined": 0.7064999999999999,
+    "abstention_precision": null,
+    "n_abstained": 0
+  },
+  "aggregate_by_category": {
+    "cve-specific": {
+      "mean_retrieval_score": 0.19,
+      "mean_fact_score": null,
+      "mean_hallucination_penalty": null,
+      "mean_combined": 0.19,
+      "abstention_precision": null,
+      "n_abstained": 0
+    },
+    "payload-specific": {
+      "mean_retrieval_score": 0.9349999999999999,
+      "mean_fact_score": null,
+      "mean_hallucination_penalty": null,
+      "mean_combined": 0.9349999999999999,
+      "abstention_precision": null,
+      "n_abstained": 0
+    },
+    "attack-technique": {
+      "mean_retrieval_score": 0.915625,
+      "mean_fact_score": null,
+      "mean_hallucination_penalty": null,
+      "mean_combined": 0.915625,
+      "abstention_precision": null,
+      "n_abstained": 0
+    },
+    "multi-step": {
+      "mean_retrieval_score": 0.6911764705882353,
+      "mean_fact_score": null,
+      "mean_hallucination_penalty": null,
+      "mean_combined": 0.6911764705882353,
+      "abstention_precision": null,
+      "n_abstained": 0
+    },
+    "ambiguous": {
+      "mean_retrieval_score": 1.0,
+      "mean_fact_score": null,
+      "mean_hallucination_penalty": null,
+      "mean_combined": 1.0,
+      "abstention_precision": null,
+      "n_abstained": 0
+    }
+  },
+  "per_question": [
+    {
+      "id": "q-001",
+      "category": "cve-specific",
+      "question": "Spring4Shell — what's the actual CVE-2022-22965 primitive on a Spring MVC app, and why does it require a non-default deployment to hit?",
+      "retrieved_chunks": [
+        {
+          "id": "owasp::cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.md::26",
+          "rel_path": "cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.md",
+          "source": "owasp",
+          "section_path": "XML External Entity Prevention Cheat Sheet > Java > Other XML Parsers > Spring Framework MVC/OXM XXE Vulnerabilities",
+          "rerank": 0.07820677012205124,
+          "rrf": 0.03131881575727918,
+          "dense_rank": 7,
+          "sparse_rank": 1
+        },
+        {
+          "id": "payloads::Insecure Management Interface/README.md::2",
+          "rel_path": "Insecure Management Interface/README.md",
+          "source": "payloads",
+          "section_path": "Insecure Management Interface > References",
+          "rerank": 0.007920912466943264,
+          "rrf": 0.014492753623188406,
+          "dense_rank": 9,
+          "sparse_rank": null
+        },
+        {
+          "id": "payloads::CVE Exploits/Log4Shell.md::1",
+          "rel_path": "CVE Exploits/Log4Shell.md",
+          "source": "payloads",
+          "section_path": "CVE-2021-44228 Log4Shell > Vulnerable code",
+          "rerank": 0.006368701346218586,
+          "rrf": 0.015625,
+          "dense_rank": 4,
+          "sparse_rank": null
+        },
+        {
+          "id": "payloads::Directory Traversal/README.md::1",
+          "rel_path": "Directory Traversal/README.md",
+          "source": "payloads",
+          "section_path": "Directory Traversal > Methodology > Double URL Encoding",
+          "rerank": 0.004321236629039049,
+          "rrf": 0.016129032258064516,
+          "dense_rank": null,
+          "sparse_rank": 2
+        },
+        {
+          "id": "hacktricks::src/pentesting-web/ssti-server-side-template-injection/README.md::8",
+          "rel_path": "src/pentesting-web/ssti-server-side-template-injection/README.md",
+          "source": "hacktricks",
+          "section_path": "SSTI (Server Side Template Injection) > Exploits > Spring Framework (Java)",
+          "rerank": 0.004286965820938349,
+          "rrf": 0.014705882352941176,
+          "dense_rank": 8,
+          "sparse_rank": null
+        }
+      ],
+      "answer_text": "",
+      "thinking_text": "",
+      "timing_status": [],
+      "wall_clock_s": 8.227474728999368,
+      "error": null,
+      "status": "ok",
+      "timeout": false,
+      "score": {
+        "retrieval_score": 0.0,
+        "path_recall": 0.0,
+        "substring_recall": 0.0,
+        "fact_score": null,
+        "hallucination_penalty": null,
+        "hallucinations": [],
+        "combined": 0.0
+      }
+    },
+    {
+      "id": "q-002",
+      "category": "cve-specific",
+      "question": "How does PrintNightmare CVE-2021-34527 actually exploit the Print Spooler service? Distinguish the local vs remote variants and the registry workaround failures.",
+      "retrieved_chunks": [
+        {
+          "id": "hacktricks::src/windows-hardening/active-directory-methodology/printnightmare.md::0",
+          "rel_path": "src/windows-hardening/active-directory-methodology/printnightmare.md",
+          "source": "hacktricks",
+          "section_path": "PrintNightmare (Windows Print Spooler RCE/LPE)",
+          "rerank": 0.9996198415756226,
+          "rrf": 0.03278688524590164,
+          "dense_rank": 1,
+          "sparse_rank": 1
+        },
+        {
+          "id": "hacktricks::src/windows-hardening/active-directory-methodology/printnightmare.md::1",
+          "rel_path": "src/windows-hardening/active-directory-methodology/printnightmare.md",
+          "source": "hacktricks",
+          "section_path": "PrintNightmare (Windows Print Spooler RCE/LPE) > 1. Vulnerable components & CVEs",
+          "rerank": 0.9978766441345215,
+          "rrf": 0.03225806451612903,
+          "dense_rank": 2,
+          "sparse_rank": 2
+        },
+        {
+          "id": "hacktricks::src/windows-hardening/active-directory-methodology/printers-spooler-service-abuse.md::0",
+          "rel_path": "src/windows-hardening/active-directory-methodology/printers-spooler-service-abuse.md",
+          "source": "hacktricks",
+          "section_path": "Force NTLM Privileged Authentication > Spooler Service Abuse",
+          "rerank": 0.9970623850822449,
+          "rrf": 0.03149801587301587,
+          "dense_rank": 3,
+          "sparse_rank": 4
+        },
+        {
+          "id": "hacktricks::src/windows-hardening/active-directory-methodology/printnightmare.md::4",
+          "rel_path": "src/windows-hardening/active-directory-methodology/printnightmare.md",
+          "source": "hacktricks",
+          "section_path": "PowerShell wrapper > 5. Related research / tools",
+          "rerank": 0.9049175381660461,
+          "rrf": 0.031009615384615385,
+          "dense_rank": 4,
+          "sparse_rank": 5
+        },
+        {
+          "id": "hacktricks::src/windows-hardening/active-directory-methodology/printnightmare.md::3",
+          "rel_path": "src/windows-hardening/active-directory-methodology/printnightmare.md",
+          "source": "hacktricks",
+          "section_path": "PowerShell wrapper > 4. Mitigation & hardening",
+          "rerank": 0.8101035952568054,
+          "rrf": 0.030798389007344232,
+          "dense_rank": 7,
+          "sparse_rank": 3
+        }
+      ],
+      "answer_text": "",
+      "thinking_text": "",
+      "timing_status": [],
+      "wall_clock_s": 1.204450639001152,
+      "error": null,
+      "status": "ok",
+      "timeout": false,
+      "score": {
+        "retrieval_score": 1.0,
+        "path_recall": 1.0,
+        "substring_recall": 1.0,
+        "fact_score": null,
+        "hallucination_penalty": null,
+        "hallucinations": [],
+        "combined": 1.0
+      }
+    },
+    {
+      "id": "q-003",
+      "category": "cve-specific",
+      "question": "Walk me through PwnKit (CVE-2021-4034) — what's the bug in pkexec, what's the trigger, and what's the minimal exploit payload structure?",
+      "retrieved_chunks": [
+        {
+          "id": "hacktricks::src/windows-hardening/windows-local-privilege-escalation/leaked-handle-exploitation.md::12",
+          "rel_path": "src/windows-hardening/windows-local-privilege-escalation/leaked-handle-exploitation.md",
+          "source": "hacktricks",
+          "section_path": "Leaked Handle Exploitation > Vulnerable Example > Exploit Example 1",
+          "rerank": 0.00826150830835104,
+          "rrf": 0.014705882352941176,
+          "dense_rank": 8,
+          "sparse_rank": null
+        },
+        {
+          "id": "hacktricks::src/macos-hardening/macos-security-and-privilege-escalation/macos-files-folders-and-binaries/macos-installers-abuse.md::5",
+          "rel_path": "src/macos-hardening/macos-security-and-privilege-escalation/macos-files-folders-and-binaries/macos-installers-abuse.md",
+          "source": "hacktricks",
+          "section_path": "Decompress also the CPIO gzip compressed ones > Privesc via pkg abuse > AuthorizationExecuteWithPrivileges",
+          "rerank": 0.0039627631194889545,
+          "rrf": 0.015625,
+          "dense_rank": 4,
+          "sparse_rank": null
+        },
+        {
+          "id": "hacktricks::src/binary-exploitation/stack-overflow/windows-seh-overflow.md::6",
+          "rel_path": "src/binary-exploitation/stack-overflow/windows-seh-overflow.md",
+          "source": "hacktricks",
+          "section_path": "pip install pwntools > Notes and caveats",
+          "rerank": 0.0037168601993471384,
+          "rrf": 0.015873015873015872,
+          "dense_rank": 3,
+          "sparse_rank": null
+        },
+        {
+          "id": "hacktricks::src/linux-hardening/privilege-escalation/container-security/runtimes-and-engines.md::18",
+          "rel_path": "src/linux-hardening/privilege-escalation/container-security/runtimes-and-engines.md",
+          "source": "hacktricks",
+          "section_path": "Container Runtimes, Engines, Builders, And Sandboxes > Runtime Vulnerabilities",
+          "rerank": 0.00211314600892365,
+          "rrf": 0.014705882352941176,
+          "dense_rank": null,
+          "sparse_rank": 8
+        },
+        {
+          "id": "owasp::cheatsheets/Virtual_Patching_Cheat_Sheet.md::9",
+          "rel_path": "cheatsheets/Virtual_Patching_Cheat_Sheet.md",
+          "source": "owasp",
+          "section_path": "Virtual Patching Cheat Sheet > Analysis Phase",
+          "rerank": 0.0020146584138274193,
+          "rrf": 0.015873015873015872,
+          "dense_rank": null,
+          "sparse_rank": 3
+        }
+      ],
+      "answer_text": "",
+      "thinking_text": "",
+      "timing_status": [],
+      "wall_clock_s": 3.05697102799968,
+      "error": null,
+      "status": "ok",
+      "timeout": false,
+      "score": {
+        "retrieval_score": 0.0,
+        "path_recall": 0.0,
+        "substring_recall": 0.0,
+        "fact_score": null,
+        "hallucination_penalty": null,
+        "hallucinations": [],
+        "combined": 0.0
+      }
+    },
+    {
+      "id": "q-004",
+      "category": "cve-specific",
+      "question": "Explain Baron Samedit (CVE-2021-3156) — what triggers the heap overflow in sudo, what's the heap layout abuse, what's affected?",
+      "retrieved_chunks": [
+        {
+          "id": "hacktricks::src/generic-methodologies-and-resources/pentesting-network/telecom-network-exploitation.md::12",
+          "rel_path": "src/generic-methodologies-and-resources/pentesting-network/telecom-network-exploitation.md",
+          "source": "hacktricks",
+          "section_path": "Sudo Baron Samedit – CVE-2021-3156 > 10. Industrial Cellular Routers – Unauthenticated SMS API Abuse (Milesight UR5X/UR32/UR35/UR41) and Credential Recovery (CVE-2023-43261)",
+          "rerank": 0.12094911932945251,
+          "rrf": 0.014705882352941176,
+          "dense_rank": null,
+          "sparse_rank": 8
+        },
+        {
+          "id": "hacktricks::src/generic-methodologies-and-resources/pentesting-network/telecom-network-exploitation.md::11",
+          "rel_path": "src/generic-methodologies-and-resources/pentesting-network/telecom-network-exploitation.md",
+          "source": "hacktricks",
+          "section_path": "Sudo Baron Samedit – CVE-2021-3156 > 9. 5G NAS Registration Attacks: SUCI leaks, downgrade to EEA0/EIA0, and NAS replay > 9.5 Defensive checklist",
+          "rerank": 0.037883460521698,
+          "rrf": 0.016129032258064516,
+          "dense_rank": null,
+          "sparse_rank": 2
+        },
+        {
+          "id": "hacktricks::src/generic-methodologies-and-resources/pentesting-network/telecom-network-exploitation.md::6",
+          "rel_path": "src/generic-methodologies-and-resources/pentesting-network/telecom-network-exploitation.md",
+          "source": "hacktricks",
+          "section_path": "Sudo Baron Samedit – CVE-2021-3156 > 9. 5G NAS Registration Attacks: SUCI leaks, downgrade to EEA0/EIA0, and NAS replay",
+          "rerank": 0.026779284700751305,
+          "rrf": 0.014492753623188406,
+          "dense_rank": null,
+          "sparse_rank": 9
+        },
+        {
+          "id": "hacktricks::src/generic-methodologies-and-resources/pentesting-network/telecom-network-exploitation.md::10",
+          "rel_path": "src/generic-methodologies-and-resources/pentesting-network/telecom-network-exploitation.md",
+          "source": "hacktricks",
+          "section_path": "Sudo Baron Samedit – CVE-2021-3156 > 9. 5G NAS Registration Attacks: SUCI leaks, downgrade to EEA0/EIA0, and NAS replay > 9.4 Tooling pointers (reproducible)",
+          "rerank": 0.013476933352649212,
+          "rrf": 0.015625,
+          "dense_rank": null,
+          "sparse_rank": 4
+        },
+        {
+          "id": "hacktricks::src/generic-methodologies-and-resources/pentesting-network/telecom-network-exploitation.md::7",
+          "rel_path": "src/generic-methodologies-and-resources/pentesting-network/telecom-network-exploitation.md",
+          "source": "hacktricks",
+          "section_path": "Sudo Baron Samedit – CVE-2021-3156 > 9. 5G NAS Registration Attacks: SUCI leaks, downgrade to EEA0/EIA0, and NAS replay > 9.1 Identifier privacy: SUCI failures exposing SUPI/IMSI",
+          "rerank": 0.010292128659784794,
+          "rrf": 0.01639344262295082,
+          "dense_rank": null,
+          "sparse_rank": 1
+        }
+      ],
+      "answer_text": "",
+      "thinking_text": "",
+      "timing_status": [],
+      "wall_clock_s": 3.1162060009992274,
+      "error": null,
+      "status": "ok",
+      "timeout": false,
+      "score": {
+        "retrieval_score": 0.15,
+        "path_recall": 0.0,
+        "substring_recall": 0.5,
+        "fact_score": null,
+        "hallucination_penalty": null,
+        "hallucinations": [],
+        "combined": 0.15
+      }
+    },
+    {
+      "id": "q-005",
+      "category": "cve-specific",
+      "question": "ProxyShell — describe the three CVEs that compose the Exchange chain, and walk through the on-prem exploitation flow end-to-end.",
+      "retrieved_chunks": [
+        {
+          "id": "hacktricks::src/windows-hardening/active-directory-methodology/printers-spooler-service-abuse.md::7",
+          "rel_path": "src/windows-hardening/active-directory-methodology/printers-spooler-service-abuse.md",
+          "source": "hacktricks",
+          "section_path": "Force NTLM Privileged Authentication > PrivExchange",
+          "rerank": 0.3097711503505707,
+          "rrf": 0.01639344262295082,
+          "dense_rank": 1,
+          "sparse_rank": null
+        },
+        {
+          "id": "mitre::enterprise-attack/T1505.002.md::0",
+          "rel_path": "enterprise-attack/T1505.002.md",
+          "source": "mitre",
+          "section_path": "T1505.002: Transport Agent > Description",
+          "rerank": 0.1808471977710724,
+          "rrf": 0.015384615384615385,
+          "dense_rank": null,
+          "sparse_rank": 5
+        },
+        {
+          "id": "hacktricks::src/pentesting-web/web-vulnerabilities-methodology.md::0",
+          "rel_path": "src/pentesting-web/web-vulnerabilities-methodology.md",
+          "source": "hacktricks",
+          "section_path": "Web Vulnerabilities Methodology > Proxies",
+          "rerank": 0.06490492820739746,
+          "rrf": 0.014492753623188406,
+          "dense_rank": 9,
+          "sparse_rank": null
+        },
+        {
+          "id": "hacktricks::src/network-services-pentesting/pentesting-web/microsoft-sharepoint.md::2",
+          "rel_path": "src/network-services-pentesting/pentesting-web/microsoft-sharepoint.md",
+          "source": "hacktricks",
+          "section_path": "enumerate sites & site-collections (requires at least Anonymous) > 2. 2025 exploit chain (a.k.a. “ToolShell”) > 2.5 ToolShell workflow observed in Ink Dragon intrusions",
+          "rerank": 0.04647644981741905,
+          "rrf": 0.015873015873015872,
+          "dense_rank": 3,
+          "sparse_rank": null
+        },
+        {
+          "id": "hacktricks::src/binary-exploitation/ios-exploiting/imessage-media-parser-zero-click-coreaudio-pac-bypass.md::0",
+          "rel_path": "src/binary-exploitation/ios-exploiting/imessage-media-parser-zero-click-coreaudio-pac-bypass.md",
+          "source": "hacktricks",
+          "section_path": "iMessage Media Parser Zero-Click → CoreAudio RCE → PAC/RPAC → Kernel → CryptoTokenKit Abuse",
+          "rerank": 0.015727311372756958,
+          "rrf": 0.015151515151515152,
+          "dense_rank": null,
+          "sparse_rank": 6
+        }
+      ],
+      "answer_text": "",
+      "thinking_text": "",
+      "timing_status": [],
+      "wall_clock_s": 1.8957735130024957,
+      "error": null,
+      "status": "ok",
+      "timeout": false,
+      "score": {
+        "retrieval_score": 0.0,
+        "path_recall": 0.0,
+        "substring_recall": 0.0,
+        "fact_score": null,
+        "hallucination_penalty": null,
+        "hallucinations": [],
+        "combined": 0.0
+      }
+    },
+    {
+      "id": "q-006",
+      "category": "cve-specific",
+      "question": "CitrixBleed (CVE-2023-4966) — what's the leak primitive on NetScaler ADC/Gateway and how do I both verify and exploit it?",
+      "retrieved_chunks": [
+        {
+          "id": "payloads::CVE Exploits/README.md::5",
+          "rel_path": "CVE Exploits/README.md",
+          "source": "payloads",
+          "section_path": "Common Vulnerabilities and Exposures > Big CVEs in the last 15 years > CVE-2019-19781 - Citrix ADC Netscaler",
+          "rerank": 0.9848559498786926,
+          "rrf": 0.03278688524590164,
+          "dense_rank": 1,
+          "sparse_rank": 1
+        },
+        {
+          "id": "payloads::CVE Exploits/README.md::1",
+          "rel_path": "CVE Exploits/README.md",
+          "source": "payloads",
+          "section_path": "Common Vulnerabilities and Exposures > Summary",
+          "rerank": 0.6303112506866455,
+          "rrf": 0.03225806451612903,
+          "dense_rank": 2,
+          "sparse_rank": 2
+        },
+        {
+          "id": "hacktricks::src/pentesting-web/saml-attacks/README.md::21",
+          "rel_path": "src/pentesting-web/saml-attacks/README.md",
+          "source": "hacktricks",
+          "section_path": "Example to simulate interception and redirection of SAML Response > References",
+          "rerank": 0.4162510335445404,
+          "rrf": 0.015873015873015872,
+          "dense_rank": null,
+          "sparse_rank": 3
+        },
+        {
+          "id": "hacktricks::src/windows-hardening/active-directory-methodology/ad-dns-records.md::4",
+          "rel_path": "src/windows-hardening/active-directory-methodology/ad-dns-records.md",
+          "source": "hacktricks",
+          "section_path": "Capture a single INFO line from the real service and replay it to victims",
+          "rerank": 0.004868151620030403,
+          "rrf": 0.015151515151515152,
+          "dense_rank": 6,
+          "sparse_rank": null
+        },
+        {
+          "id": "payloads::CVE Exploits/README.md::6",
+          "rel_path": "CVE Exploits/README.md",
+          "source": "payloads",
+          "section_path": "Common Vulnerabilities and Exposures > Big CVEs in the last 15 years > CVE-2014-0160 - Heartbleed",
+          "rerank": 0.003990507684648037,
+          "rrf": 0.015873015873015872,
+          "dense_rank": 3,
+          "sparse_rank": null
+        }
+      ],
+      "answer_text": "",
+      "thinking_text": "",
+      "timing_status": [],
+      "wall_clock_s": 4.1603730370006815,
+      "error": null,
+      "status": "ok",
+      "timeout": false,
+      "score": {
+        "retrieval_score": 0.15,
+        "path_recall": 0.0,
+        "substring_recall": 0.5,
+        "fact_score": null,
+        "hallucination_penalty": null,
+        "hallucinations": [],
+        "combined": 0.15
+      }
+    },
+    {
+      "id": "q-007",
+      "category": "cve-specific",
+      "question": "MOVEit Transfer CVE-2023-34362 — what's the SQLi-to-RCE chain Cl0p used?",
+      "retrieved_chunks": [
+        {
+          "id": "mitre::enterprise-attack/T1036.010.md::1",
+          "rel_path": "enterprise-attack/T1036.010.md",
+          "source": "mitre",
+          "section_path": "T1036.010: Masquerade Account Name > References",
+          "rerank": 0.6325408816337585,
+          "rrf": 0.01639344262295082,
+          "dense_rank": null,
+          "sparse_rank": 1
+        },
+        {
+          "id": "hacktricks::src/network-services-pentesting/pentesting-postgresql.md::12",
+          "rel_path": "src/network-services-pentesting/pentesting-postgresql.md",
+          "source": "hacktricks",
+          "section_path": "Check CREATEROLE privilege escalation > RCE > **RCE to program** > Bypass keyword filters/WAF to reach COPY PROGRAM",
+          "rerank": 0.1533188819885254,
+          "rrf": 0.01639344262295082,
+          "dense_rank": 1,
+          "sparse_rank": null
+        },
+        {
+          "id": "hacktricks::src/network-services-pentesting/pentesting-mysql.md::20",
+          "rel_path": "src/network-services-pentesting/pentesting-mysql.md",
+          "source": "hacktricks",
+          "section_path": "John the Ripper > References",
+          "rerank": 0.09787602722644806,
+          "rrf": 0.03200204813108039,
+          "dense_rank": 3,
+          "sparse_rank": 2
+        },
+        {
+          "id": "hacktricks::src/network-services-pentesting/pentesting-postgresql.md::11",
+          "rel_path": "src/network-services-pentesting/pentesting-postgresql.md",
+          "source": "hacktricks",
+          "section_path": "Check CREATEROLE privilege escalation > RCE > **RCE to program**",
+          "rerank": 0.021169431507587433,
+          "rrf": 0.016129032258064516,
+          "dense_rank": 2,
+          "sparse_rank": null
+        },
+        {
+          "id": "hacktricks::src/pentesting-web/command-injection.md::10",
+          "rel_path": "src/pentesting-web/command-injection.md",
+          "source": "hacktricks",
+          "section_path": "Unauthenticated RCE when a handler concatenates into a shell > References",
+          "rerank": 0.007452420890331268,
+          "rrf": 0.014285714285714285,
+          "dense_rank": null,
+          "sparse_rank": 10
+        }
+      ],
+      "answer_text": "",
+      "thinking_text": "",
+      "timing_status": [],
+      "wall_clock_s": 3.8761475030005386,
+      "error": null,
+      "status": "ok",
+      "timeout": false,
+      "score": {
+        "retrieval_score": 0.075,
+        "path_recall": 0.0,
+        "substring_recall": 0.25,
+        "fact_score": null,
+        "hallucination_penalty": null,
+        "hallucinations": [],
+        "combined": 0.075
+      }
+    },
+    {
+      "id": "q-008",
+      "category": "cve-specific",
+      "question": "Distinguish Confluence CVE-2022-26134 (OGNL injection) from CVE-2023-22515 (broken access control) — different primitives, different mitigations.",
+      "retrieved_chunks": [
+        {
+          "id": "hacktricks::src/network-services-pentesting/pentesting-web/jira.md::2",
+          "rel_path": "src/network-services-pentesting/pentesting-web/jira.md",
+          "source": "hacktricks",
+          "section_path": "Jira & Confluence > Recent RCEs & practical exploit notes (Confluence) > CVE-2023-22515 – setup reactivation admin creation (auth bypass)",
+          "rerank": 0.9657021164894104,
+          "rrf": 0.03057889822595705,
+          "dense_rank": 8,
+          "sparse_rank": 3
+        },
+        {
+          "id": "hacktricks::src/network-services-pentesting/pentesting-web/jira.md::1",
+          "rel_path": "src/network-services-pentesting/pentesting-web/jira.md",
+          "source": "hacktricks",
+          "section_path": "Jira & Confluence > Recent RCEs & practical exploit notes (Confluence) > CVE-2023-22527 – unauthenticated template/OGNL injection (10.0)",
+          "rerank": 0.9629182815551758,
+          "rrf": 0.03252247488101534,
+          "dense_rank": 1,
+          "sparse_rank": 2
+        },
+        {
+          "id": "hacktricks::src/network-services-pentesting/pentesting-web/jira.md::6",
+          "rel_path": "src/network-services-pentesting/pentesting-web/jira.md",
+          "source": "hacktricks",
+          "section_path": "Jira & Confluence > References",
+          "rerank": 0.8825896978378296,
+          "rrf": 0.03252247488101534,
+          "dense_rank": 2,
+          "sparse_rank": 1
+        },
+        {
+          "id": "hacktricks::src/network-services-pentesting/pentesting-web/jira.md::3",
+          "rel_path": "src/network-services-pentesting/pentesting-web/jira.md",
+          "source": "hacktricks",
+          "section_path": "Jira & Confluence > Recent RCEs & practical exploit notes (Confluence) > CVE-2024-21683 – authenticated RCE via Code Macro upload",
+          "rerank": 0.1900714635848999,
+          "rrf": 0.015151515151515152,
+          "dense_rank": 6,
+          "sparse_rank": null
+        },
+        {
+          "id": "payloads::CVE Exploits/README.md::1",
+          "rel_path": "CVE Exploits/README.md",
+          "source": "payloads",
+          "section_path": "Common Vulnerabilities and Exposures > Summary",
+          "rerank": 0.004280640743672848,
+          "rrf": 0.014285714285714285,
+          "dense_rank": 10,
+          "sparse_rank": null
+        }
+      ],
+      "answer_text": "",
+      "thinking_text": "",
+      "timing_status": [],
+      "wall_clock_s": 1.495471625999926,
+      "error": null,
+      "status": "ok",
+      "timeout": false,
+      "score": {
+        "retrieval_score": 0.22499999999999998,
+        "path_recall": 0.0,
+        "substring_recall": 0.75,
+        "fact_score": null,
+        "hallucination_penalty": null,
+        "hallucinations": [],
+        "combined": 0.22499999999999998
+      }
+    },
+    {
+      "id": "q-009",
+      "category": "cve-specific",
+      "question": "polkit CVE-2021-3560 — what's the authentication bypass, what's the dbus-send trigger, and which distributions backported the fix late?",
+      "retrieved_chunks": [
+        {
+          "id": "hacktricks::src/linux-hardening/privilege-escalation/README.md::46",
+          "rel_path": "src/linux-hardening/privilege-escalation/README.md",
+          "source": "hacktricks",
+          "section_path": "Scan one IP with selected ports > Users > Big UID",
+          "rerank": 0.36549603939056396,
+          "rrf": 0.014705882352941176,
+          "dense_rank": null,
+          "sparse_rank": 8
+        },
+        {
+          "id": "hacktricks::src/linux-hardening/privilege-escalation/d-bus-enumeration-and-command-injection-privilege-escalation.md::19",
+          "rel_path": "src/linux-hardening/privilege-escalation/d-bus-enumeration-and-command-injection-privilege-escalation.md",
+          "source": "hacktricks",
+          "section_path": "D-Bus Enumeration & Command Injection Privilege Escalation > Notable D-Bus Privilege-Escalation Bugs (2024-2025)",
+          "rerank": 0.11222823709249496,
+          "rrf": 0.01639344262295082,
+          "dense_rank": 1,
+          "sparse_rank": null
+        },
+        {
+          "id": "hacktricks::src/linux-hardening/privilege-escalation/d-bus-enumeration-and-command-injection-privilege-escalation.md::8",
+          "rel_path": "src/linux-hardening/privilege-escalation/d-bus-enumeration-and-command-injection-privilege-escalation.md",
+          "source": "hacktricks",
+          "section_path": "D-Bus Enumeration & Command Injection Privilege Escalation > **Cmd line Enumeration** > Correlate D-Bus Methods with Policies and Actions",
+          "rerank": 0.03646105155348778,
+          "rrf": 0.032266458495966696,
+          "dense_rank": 3,
+          "sparse_rank": 1
+        },
+        {
+          "id": "hacktricks::src/linux-hardening/privilege-escalation/d-bus-enumeration-and-command-injection-privilege-escalation.md::20",
+          "rel_path": "src/linux-hardening/privilege-escalation/d-bus-enumeration-and-command-injection-privilege-escalation.md",
+          "source": "hacktricks",
+          "section_path": "D-Bus Enumeration & Command Injection Privilege Escalation > Hardening & Detection Quick-Wins",
+          "rerank": 0.03338858485221863,
+          "rrf": 0.031754032258064516,
+          "dense_rank": 2,
+          "sparse_rank": 4
+        },
+        {
+          "id": "hacktricks::src/linux-hardening/privilege-escalation/d-bus-enumeration-and-command-injection-privilege-escalation.md::14",
+          "rel_path": "src/linux-hardening/privilege-escalation/d-bus-enumeration-and-command-injection-privilege-escalation.md",
+          "source": "hacktricks",
+          "section_path": "D-Bus Enumeration & Command Injection Privilege Escalation > **Vulnerable Scenario** > Exploit it > busctl and dbus-send",
+          "rerank": 0.0008818022324703634,
+          "rrf": 0.014492753623188406,
+          "dense_rank": null,
+          "sparse_rank": 9
+        }
+      ],
+      "answer_text": "",
+      "thinking_text": "",
+      "timing_status": [],
+      "wall_clock_s": 2.2356892329989932,
+      "error": null,
+      "status": "ok",
+      "timeout": false,
+      "score": {
+        "retrieval_score": 0.15,
+        "path_recall": 0.0,
+        "substring_recall": 0.5,
+        "fact_score": null,
+        "hallucination_penalty": null,
+        "hallucinations": [],
+        "combined": 0.15
+      }
+    },
+    {
+      "id": "q-010",
+      "category": "cve-specific",
+      "question": "GoAnywhere MFT CVE-2023-0669 — what's the pre-auth RCE primitive and which path/endpoint is the entry point?",
+      "retrieved_chunks": [
+        {
+          "id": "hacktricks::src/pentesting-web/deserialization/java-signedobject-gated-deserialization.md::7",
+          "rel_path": "src/pentesting-web/deserialization/java-signedobject-gated-deserialization.md",
+          "source": "hacktricks",
+          "section_path": "Java SignedObject-gated Deserialization and Pre-auth Reachability via Error Paths > Example attack chain recap (CVE-2025-10035)",
+          "rerank": 0.9943007230758667,
+          "rrf": 0.015384615384615385,
+          "dense_rank": null,
+          "sparse_rank": 5
+        },
+        {
+          "id": "hacktricks::src/pentesting-web/deserialization/java-signedobject-gated-deserialization.md::4",
+          "rel_path": "src/pentesting-web/deserialization/java-signedobject-gated-deserialization.md",
+          "source": "hacktricks",
+          "section_path": "Java SignedObject-gated Deserialization and Pre-auth Reachability via Error Paths > Pre-auth reachability via error-handling flows",
+          "rerank": 0.9841672778129578,
+          "rrf": 0.016129032258064516,
+          "dense_rank": null,
+          "sparse_rank": 2
+        },
+        {
+          "id": "hacktricks::src/pentesting-web/deserialization/java-signedobject-gated-deserialization.md::8",
+          "rel_path": "src/pentesting-web/deserialization/java-signedobject-gated-deserialization.md",
+          "source": "hacktricks",
+          "section_path": "Java SignedObject-gated Deserialization and Pre-auth Reachability via Error Paths > References",
+          "rerank": 0.8895251154899597,
+          "rrf": 0.03278688524590164,
+          "dense_rank": 1,
+          "sparse_rank": 1
+        },
+        {
+          "id": "hacktricks::src/pentesting-web/deserialization/java-signedobject-gated-deserialization.md::0",
+          "rel_path": "src/pentesting-web/deserialization/java-signedobject-gated-deserialization.md",
+          "source": "hacktricks",
+          "section_path": "Java SignedObject-gated Deserialization and Pre-auth Reachability via Error Paths",
+          "rerank": 0.8662363886833191,
+          "rrf": 0.031024531024531024,
+          "dense_rank": 6,
+          "sparse_rank": 3
+        },
+        {
+          "id": "hacktricks::src/network-services-pentesting/pentesting-web/sitecore/README.md::2",
+          "rel_path": "src/network-services-pentesting/pentesting-web/sitecore/README.md",
+          "source": "hacktricks",
+          "section_path": "Sitecore Experience Platform (XP) – Pre‑auth HTML Cache Poisoning to Post‑auth RCE > Pre‑auth primitive: XAML Ajax reflection → HtmlCache write > PoC request (CVE-2025-53693)",
+          "rerank": 0.04982534423470497,
+          "rrf": 0.014285714285714285,
+          "dense_rank": null,
+          "sparse_rank": 10
+        }
+      ],
+      "answer_text": "",
+      "thinking_text": "",
+      "timing_status": [],
+      "wall_clock_s": 3.305350708000333,
+      "error": null,
+      "status": "ok",
+      "timeout": false,
+      "score": {
+        "retrieval_score": 0.15,
+        "path_recall": 0.0,
+        "substring_recall": 0.5,
+        "fact_score": null,
+        "hallucination_penalty": null,
+        "hallucinations": [],
+        "combined": 0.15
+      }
+    },
+    {
+      "id": "q-011",
+      "category": "payload-specific",
+      "question": "Give me three SQLite UNION-based payloads useful when the backend is SQLite and column count is 3.",
+      "retrieved_chunks": [
+        {
+          "id": "hacktricks::src/pentesting-web/sql-injection/README.md::6",
+          "rel_path": "src/pentesting-web/sql-injection/README.md",
+          "source": "hacktricks",
+          "section_path": "SQL Injection > Exploiting Union Based > Detecting number of columns > UNION SELECT",
+          "rerank": 0.9957958459854126,
+          "rrf": 0.015384615384615385,
+          "dense_rank": 5,
+          "sparse_rank": null
+        },
+        {
+          "id": "hacktricks::src/pentesting-web/sql-injection/README.md::5",
+          "rel_path": "src/pentesting-web/sql-injection/README.md",
+          "source": "hacktricks",
+          "section_path": "SQL Injection > Exploiting Union Based > Detecting number of columns > Order/Group by",
+          "rerank": 0.9914048910140991,
+          "rrf": 0.015873015873015872,
+          "dense_rank": null,
+          "sparse_rank": 3
+        },
+        {
+          "id": "payloads::SQL Injection/README.md::1",
+          "rel_path": "SQL Injection/README.md",
+          "source": "payloads",
+          "section_path": "SQL Injection > Summary",
+          "rerank": 0.9698787927627563,
+          "rrf": 0.014285714285714285,
+          "dense_rank": 10,
+          "sparse_rank": null
+        },
+        {
+          "id": "hacktricks::src/pentesting-web/sql-injection/README.md::7",
+          "rel_path": "src/pentesting-web/sql-injection/README.md",
+          "source": "hacktricks",
+          "section_path": "SQL Injection > Exploiting Union Based > Extract database names, table names and column names",
+          "rerank": 0.9576711058616638,
+          "rrf": 0.014925373134328358,
+          "dense_rank": null,
+          "sparse_rank": 7
+        },
+        {
+          "id": "payloads::SQL Injection/MySQL Injection.md::5",
+          "rel_path": "SQL Injection/MySQL Injection.md",
+          "source": "payloads",
+          "section_path": "MySQL Injection > MYSQL Union Based > Detect Columns Number > LIMIT INTO Method",
+          "rerank": 0.9494377374649048,
+          "rrf": 0.016129032258064516,
+          "dense_rank": 2,
+          "sparse_rank": null
+        }
+      ],
+      "answer_text": "",
+      "thinking_text": "",
+      "timing_status": [],
+      "wall_clock_s": 104.08589161299824,
+      "error": null,
+      "status": "ok",
+      "timeout": false,
+      "score": {
+        "retrieval_score": 0.85,
+        "path_recall": 1.0,
+        "substring_recall": 0.5,
+        "fact_score": null,
+        "hallucination_penalty": null,
+        "hallucinations": [],
+        "combined": 0.85
+      }
+    },
+    {
+      "id": "q-012",
+      "category": "payload-specific",
+      "question": "Build me a time-based blind SQLi payload for MSSQL using WAITFOR DELAY, with a working IF/THEN structure to extract the first character of a username.",
+      "retrieved_chunks": [
+        {
+          "id": "payloads::SQL Injection/MSSQL Injection.md::10",
+          "rel_path": "SQL Injection/MSSQL Injection.md",
+          "source": "payloads",
+          "section_path": "MSSQL Injection > MSSQL Time Based",
+          "rerank": 0.9993880987167358,
+          "rrf": 0.03278688524590164,
+          "dense_rank": 1,
+          "sparse_rank": 1
+        },
+        {
+          "id": "payloads::SQL Injection/README.md::12",
+          "rel_path": "SQL Injection/README.md",
+          "source": "payloads",
+          "section_path": "SQL Injection > Blind Injection > Time Based Injection",
+          "rerank": 0.9977591037750244,
+          "rrf": 0.030834914611005692,
+          "dense_rank": 8,
+          "sparse_rank": 2
+        },
+        {
+          "id": "payloads::SQL Injection/MySQL Injection.md::18",
+          "rel_path": "SQL Injection/MySQL Injection.md",
+          "source": "payloads",
+          "section_path": "MySQL Injection > MYSQL Time Based > Using SLEEP in a Subselect",
+          "rerank": 0.9966214895248413,
+          "rrf": 0.015625,
+          "dense_rank": 4,
+          "sparse_rank": null
+        },
+        {
+          "id": "payloads::SQL Injection/MSSQL Injection.md::9",
+          "rel_path": "SQL Injection/MSSQL Injection.md",
+          "source": "payloads",
+          "section_path": "MSSQL Injection > MSSQL Blind Based > MSSQL Blind With Substring Equivalent",
+          "rerank": 0.9958091974258423,
+          "rrf": 0.0304147465437788,
+          "dense_rank": 2,
+          "sparse_rank": 10
+        },
+        {
+          "id": "hacktricks::src/pentesting-web/sql-injection/README.md::3",
+          "rel_path": "src/pentesting-web/sql-injection/README.md",
+          "source": "hacktricks",
+          "section_path": "SQL Injection > Entry point detection > Confirming with Timing",
+          "rerank": 0.9944460391998291,
+          "rrf": 0.015384615384615385,
+          "dense_rank": 5,
+          "sparse_rank": null
+        }
+      ],
+      "answer_text": "",
+      "thinking_text": "",
+      "timing_status": [],
+      "wall_clock_s": 2.4783514970004035,
+      "error": null,
+      "status": "ok",
+      "timeout": false,
+      "score": {
+        "retrieval_score": 1.0,
+        "path_recall": 1.0,
+        "substring_recall": 1.0,
+        "fact_score": null,
+        "hallucination_penalty": null,
+        "hallucinations": [],
+        "combined": 1.0
+      }
+    },
+    {
+      "id": "q-013",
+      "category": "payload-specific",
+      "question": "Give me a DOM XSS payload that abuses location.hash where the sink is document.write and the page has no CSP.",
+      "retrieved_chunks": [
+        {
+          "id": "hacktricks::src/pentesting-web/xss-cross-site-scripting/dom-xss.md::5",
+          "rel_path": "src/pentesting-web/xss-cross-site-scripting/dom-xss.md",
+          "source": "hacktricks",
+          "section_path": "DOM XSS > Examples > Open Redirect",
+          "rerank": 0.9957371950149536,
+          "rrf": 0.014492753623188406,
+          "dense_rank": null,
+          "sparse_rank": 9
+        },
+        {
+          "id": "hacktricks::src/pentesting-web/xss-cross-site-scripting/README.md::59",
+          "rel_path": "src/pentesting-web/xss-cross-site-scripting/README.md",
+          "source": "hacktricks",
+          "section_path": "XSS (Cross Site Scripting) > XSS common payloads > Blind XSS payloads",
+          "rerank": 0.9921221137046814,
+          "rrf": 0.014705882352941176,
+          "dense_rank": 8,
+          "sparse_rank": null
+        },
+        {
+          "id": "hacktricks::src/pentesting-web/xss-cross-site-scripting/dom-xss.md::4",
+          "rel_path": "src/pentesting-web/xss-cross-site-scripting/dom-xss.md",
+          "source": "hacktricks",
+          "section_path": "DOM XSS > DOM Vulnerabilities",
+          "rerank": 0.9881150722503662,
+          "rrf": 0.014492753623188406,
+          "dense_rank": 9,
+          "sparse_rank": null
+        },
+        {
+          "id": "hacktricks::src/pentesting-web/xss-cross-site-scripting/README.md::29",
+          "rel_path": "src/pentesting-web/xss-cross-site-scripting/README.md",
+          "source": "hacktricks",
+          "section_path": "XSS (Cross Site Scripting) > **DOM vulnerabilities**",
+          "rerank": 0.9879853129386902,
+          "rrf": 0.03278688524590164,
+          "dense_rank": 1,
+          "sparse_rank": 1
+        },
+        {
+          "id": "hacktricks::src/pentesting-web/xss-cross-site-scripting/dom-xss.md::0",
+          "rel_path": "src/pentesting-web/xss-cross-site-scripting/dom-xss.md",
+          "source": "hacktricks",
+          "section_path": "DOM XSS > DOM Vulnerabilities",
+          "rerank": 0.981804370880127,
+          "rrf": 0.015873015873015872,
+          "dense_rank": null,
+          "sparse_rank": 3
+        }
+      ],
+      "answer_text": "",
+      "thinking_text": "",
+      "timing_status": [],
+      "wall_clock_s": 3.3180521319991385,
+      "error": null,
+      "status": "ok",
+      "timeout": false,
+      "score": {
+        "retrieval_score": 0.7999999999999999,
+        "path_recall": 1.0,
+        "substring_recall": 0.3333333333333333,
+        "fact_score": null,
+        "hallucination_penalty": null,
+        "hallucinations": [],
+        "combined": 0.7999999999999999
+      }
+    },
+    {
+      "id": "q-014",
+      "category": "payload-specific",
+      "question": "SSTI in Jinja2 — give the canonical sandbox escape that reaches os.popen via __globals__, and explain why it works.",
+      "retrieved_chunks": [
+        {
+          "id": "payloads::Server Side Template Injection/Python.md::5",
+          "rel_path": "Server Side Template Injection/Python.md",
+          "source": "payloads",
+          "section_path": "https://github.com/pallets/flask/blob/master/src/flask/helpers.py#L398 > Jinja2 - Write Into Remote File > Jinja2 - Remote Command Execution > Exploit The SSTI By Calling os.popen().read()",
+          "rerank": 0.9992904663085938,
+          "rrf": 0.03225806451612903,
+          "dense_rank": 2,
+          "sparse_rank": 2
+        },
+        {
+          "id": "payloads::Server Side Template Injection/Python.md::6",
+          "rel_path": "Server Side Template Injection/Python.md",
+          "source": "payloads",
+          "section_path": "https://github.com/pallets/flask/blob/master/src/flask/helpers.py#L398 > Jinja2 - Write Into Remote File > Jinja2 - Remote Command Execution > Exploit The SSTI By Calling Popen Without Guessing The Offset",
+          "rerank": 0.9991531372070312,
+          "rrf": 0.014925373134328358,
+          "dense_rank": null,
+          "sparse_rank": 7
+        },
+        {
+          "id": "hacktricks::src/pentesting-web/ssti-server-side-template-injection/jinja2-ssti.md::8",
+          "rel_path": "src/pentesting-web/ssti-server-side-template-injection/jinja2-ssti.md",
+          "source": "hacktricks",
+          "section_path": "RCE using default Jinja globals",
+          "rerank": 0.9981099367141724,
+          "rrf": 0.031024531024531024,
+          "dense_rank": 3,
+          "sparse_rank": 6
+        },
+        {
+          "id": "hacktricks::src/pentesting-web/ssti-server-side-template-injection/README.md::35",
+          "rel_path": "src/pentesting-web/ssti-server-side-template-injection/README.md",
+          "source": "hacktricks",
+          "section_path": "Or in the shotest versions:",
+          "rerank": 0.997628390789032,
+          "rrf": 0.03131881575727918,
+          "dense_rank": 7,
+          "sparse_rank": 1
+        },
+        {
+          "id": "payloads::Server Side Template Injection/Python.md::7",
+          "rel_path": "Server Side Template Injection/Python.md",
+          "source": "payloads",
+          "section_path": "connect to evil host > Jinja2 - Remote Command Execution with Obfuscation",
+          "rerank": 0.9974122643470764,
+          "rrf": 0.014705882352941176,
+          "dense_rank": null,
+          "sparse_rank": 8
+        }
+      ],
+      "answer_text": "",
+      "thinking_text": "",
+      "timing_status": [],
+      "wall_clock_s": 2.824059696002223,
+      "error": null,
+      "status": "ok",
+      "timeout": false,
+      "score": {
+        "retrieval_score": 0.9249999999999999,
+        "path_recall": 1.0,
+        "substring_recall": 0.75,
+        "fact_score": null,
+        "hallucination_penalty": null,
+        "hallucinations": [],
+        "combined": 0.9249999999999999
+      }
+    },
+    {
+      "id": "q-015",
+      "category": "payload-specific",
+      "question": "Twig (PHP) SSTI — what's the typical exploitation primitive and how do I get from {{7*7}} reflected to RCE?",
+      "retrieved_chunks": [
+        {
+          "id": "payloads::Server Side Template Injection/PHP.md::7",
+          "rel_path": "Server Side Template Injection/PHP.md",
+          "source": "payloads",
+          "section_path": "Server Side Template Injection - PHP > Twig > Twig - Code Execution with Obfuscation",
+          "rerank": 0.9991938471794128,
+          "rrf": 0.031544957774465976,
+          "dense_rank": 1,
+          "sparse_rank": 6
+        },
+        {
+          "id": "payloads::Server Side Template Injection/README.md::10",
+          "rel_path": "Server Side Template Injection/README.md",
+          "source": "payloads",
+          "section_path": "Server Side Template Injection > Methodology > Manual Detection and Exploitation > Inject Template Syntax",
+          "rerank": 0.9984450936317444,
+          "rrf": 0.030621785881252923,
+          "dense_rank": 9,
+          "sparse_rank": 2
+        },
+        {
+          "id": "hacktricks::src/pentesting-web/ssti-server-side-template-injection/README.md::19",
+          "rel_path": "src/pentesting-web/ssti-server-side-template-injection/README.md",
+          "source": "hacktricks",
+          "section_path": "Usage: python3 gen.py \"id\" > ### Smarty (PHP) > Twig (PHP)",
+          "rerank": 0.9974191188812256,
+          "rrf": 0.031544957774465976,
+          "dense_rank": 6,
+          "sparse_rank": 1
+        },
+        {
+          "id": "payloads::Server Side Template Injection/PHP.md::11",
+          "rel_path": "Server Side Template Injection/PHP.md",
+          "source": "payloads",
+          "section_path": "Server Side Template Injection - PHP > References",
+          "rerank": 0.9974130988121033,
+          "rrf": 0.031754032258064516,
+          "dense_rank": 2,
+          "sparse_rank": 4
+        },
+        {
+          "id": "payloads::Server Side Template Injection/PHP.md::6",
+          "rel_path": "Server Side Template Injection/PHP.md",
+          "source": "payloads",
+          "section_path": "Server Side Template Injection - PHP > Twig > Twig - Code Execution",
+          "rerank": 0.9972729086875916,
+          "rrf": 0.015625,
+          "dense_rank": 4,
+          "sparse_rank": null
+        }
+      ],
+      "answer_text": "",
+      "thinking_text": "",
+      "timing_status": [],
+      "wall_clock_s": 2.482296153997595,
+      "error": null,
+      "status": "ok",
+      "timeout": false,
+      "score": {
+        "retrieval_score": 1.0,
+        "path_recall": 1.0,
+        "substring_recall": 1.0,
+        "fact_score": null,
+        "hallucination_penalty": null,
+        "hallucinations": [],
+        "combined": 1.0
+      }
+    },
+    {
+      "id": "q-016",
+      "category": "payload-specific",
+      "question": "SSRF to AWS IMDS — give me the request sequence for IMDSv1 vs IMDSv2 token-protected metadata. What changes for the attacker?",
+      "retrieved_chunks": [
+        {
+          "id": "hacktricks::src/pentesting-web/ssrf-server-side-request-forgery/cloud-ssrf.md::0",
+          "rel_path": "src/pentesting-web/ssrf-server-side-request-forgery/cloud-ssrf.md",
+          "source": "hacktricks",
+          "section_path": "Cloud SSRF > AWS > Abusing SSRF in AWS EC2 environment",
+          "rerank": 0.9989191293716431,
+          "rrf": 0.03225806451612903,
+          "dense_rank": 2,
+          "sparse_rank": 2
+        },
+        {
+          "id": "owasp::cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.md::16",
+          "rel_path": "cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.md",
+          "source": "owasp",
+          "section_path": "Configure the DNS resolver to use for all DNS queries > IMDSv2 in AWS",
+          "rerank": 0.9981942772865295,
+          "rrf": 0.03278688524590164,
+          "dense_rank": 1,
+          "sparse_rank": 1
+        },
+        {
+          "id": "payloads::Server Side Request Forgery/SSRF-Cloud-Instances.md::11",
+          "rel_path": "Server Side Request Forgery/SSRF-Cloud-Instances.md",
+          "source": "payloads",
+          "section_path": "SSRF URL for Cloud Instances > References",
+          "rerank": 0.987864077091217,
+          "rrf": 0.029857397504456328,
+          "dense_rank": 8,
+          "sparse_rank": 6
+        },
+        {
+          "id": "owasp::cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.md::18",
+          "rel_path": "cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.md",
+          "source": "owasp",
+          "section_path": "Configure the DNS resolver to use for all DNS queries > References",
+          "rerank": 0.9827398061752319,
+          "rrf": 0.015873015873015872,
+          "dense_rank": null,
+          "sparse_rank": 3
+        },
+        {
+          "id": "payloads::Server Side Request Forgery/SSRF-Cloud-Instances.md::2",
+          "rel_path": "Server Side Request Forgery/SSRF-Cloud-Instances.md",
+          "source": "payloads",
+          "section_path": "SSRF URL for Cloud Instances > SSRF URL for AWS",
+          "rerank": 0.9796930551528931,
+          "rrf": 0.014285714285714285,
+          "dense_rank": 10,
+          "sparse_rank": null
+        }
+      ],
+      "answer_text": "",
+      "thinking_text": "",
+      "timing_status": [],
+      "wall_clock_s": 2.819122899996728,
+      "error": null,
+      "status": "ok",
+      "timeout": false,
+      "score": {
+        "retrieval_score": 1.0,
+        "path_recall": 1.0,
+        "substring_recall": 1.0,
+        "fact_score": null,
+        "hallucination_penalty": null,
+        "hallucinations": [],
+        "combined": 1.0
+      }
+    },
+    {
+      "id": "q-017",
+      "category": "payload-specific",
+      "question": "XXE out-of-band exfiltration when the response is blind — give the parameter-entity payload that exfils /etc/passwd via attacker-controlled DTD.",
+      "retrieved_chunks": [
+        {
+          "id": "hacktricks::src/pentesting-web/xxe-xee-xml-external-entity.md::4",
+          "rel_path": "src/pentesting-web/xxe-xee-xml-external-entity.md",
+          "source": "hacktricks",
+          "section_path": "XXE - XEE - XML External Entity > Main attacks > \"Blind\" SSRF - Exfiltrate data out-of-band",
+          "rerank": 0.9995535016059875,
+          "rrf": 0.030621785881252923,
+          "dense_rank": 2,
+          "sparse_rank": 9
+        },
+        {
+          "id": "hacktricks::src/pentesting-web/xxe-xee-xml-external-entity.md::6",
+          "rel_path": "src/pentesting-web/xxe-xee-xml-external-entity.md",
+          "source": "hacktricks",
+          "section_path": "XXE - XEE - XML External Entity > Main attacks > Error Based(External DTD)",
+          "rerank": 0.9994783997535706,
+          "rrf": 0.015384615384615385,
+          "dense_rank": null,
+          "sparse_rank": 5
+        },
+        {
+          "id": "payloads::XXE Injection/README.md::23",
+          "rel_path": "XXE Injection/README.md",
+          "source": "payloads",
+          "section_path": "XML External Entity > Labs",
+          "rerank": 0.9987315535545349,
+          "rrf": 0.016129032258064516,
+          "dense_rank": null,
+          "sparse_rank": 2
+        },
+        {
+          "id": "hacktricks::src/pentesting-web/xxe-xee-xml-external-entity.md::7",
+          "rel_path": "src/pentesting-web/xxe-xee-xml-external-entity.md",
+          "source": "hacktricks",
+          "section_path": "XXE - XEE - XML External Entity > Main attacks > **Error Based (system DTD)**",
+          "rerank": 0.9985620379447937,
+          "rrf": 0.032018442622950824,
+          "dense_rank": 4,
+          "sparse_rank": 1
+        },
+        {
+          "id": "payloads::XXE Injection/README.md::22",
+          "rel_path": "XXE Injection/README.md",
+          "source": "payloads",
+          "section_path": "XML External Entity > XXE in Exotic Files > XXE Inside DTD file",
+          "rerank": 0.9983262419700623,
+          "rrf": 0.015151515151515152,
+          "dense_rank": 6,
+          "sparse_rank": null
+        }
+      ],
+      "answer_text": "",
+      "thinking_text": "",
+      "timing_status": [],
+      "wall_clock_s": 2.0534964129983564,
+      "error": null,
+      "status": "ok",
+      "timeout": false,
+      "score": {
+        "retrieval_score": 1.0,
+        "path_recall": 1.0,
+        "substring_recall": 1.0,
+        "fact_score": null,
+        "hallucination_penalty": null,
+        "hallucinations": [],
+        "combined": 1.0
+      }
+    },
+    {
+      "id": "q-018",
+      "category": "payload-specific",
+      "question": "JWT with alg=none and alg confusion (HS256 forged with public key) — show both bypass payloads and when each applies.",
+      "retrieved_chunks": [
+        {
+          "id": "hacktricks::src/pentesting-web/hacking-jwt-json-web-tokens.md::6",
+          "rel_path": "src/pentesting-web/hacking-jwt-json-web-tokens.md",
+          "source": "hacktricks",
+          "section_path": "JWT Vulnerabilities (Json Web Tokens) > **Quick Wins** > Modify the algorithm to None",
+          "rerank": 0.9988511800765991,
+          "rrf": 0.015625,
+          "dense_rank": 4,
+          "sparse_rank": null
+        },
+        {
+          "id": "hacktricks::src/pentesting-web/hacking-jwt-json-web-tokens.md::8",
+          "rel_path": "src/pentesting-web/hacking-jwt-json-web-tokens.md",
+          "source": "hacktricks",
+          "section_path": "JWT Vulnerabilities (Json Web Tokens) > **Quick Wins** > Change the algorithm RS256(asymmetric) to HS256(symmetric) (CVE-2016-5431/CVE-2016-10555)",
+          "rerank": 0.9988420605659485,
+          "rrf": 0.030886196246139225,
+          "dense_rank": 1,
+          "sparse_rank": 9
+        },
+        {
+          "id": "payloads::JSON Web Token/README.md::8",
+          "rel_path": "JSON Web Token/README.md",
+          "source": "payloads",
+          "section_path": "JWT - JSON Web Token > JWT Signature > JWT Signature - Key Confusion Attack RS256 to HS256 (CVE-2016-5431)",
+          "rerank": 0.9981339573860168,
+          "rrf": 0.032266458495966696,
+          "dense_rank": 3,
+          "sparse_rank": 1
+        },
+        {
+          "id": "hacktricks::src/pentesting-web/hacking-jwt-json-web-tokens.md::19",
+          "rel_path": "src/pentesting-web/hacking-jwt-json-web-tokens.md",
+          "source": "hacktricks",
+          "section_path": "JWT Vulnerabilities (Json Web Tokens) > **Quick Wins** > Tools",
+          "rerank": 0.997649610042572,
+          "rrf": 0.014285714285714285,
+          "dense_rank": null,
+          "sparse_rank": 10
+        },
+        {
+          "id": "hacktricks::src/pentesting-web/hacking-jwt-json-web-tokens.md::7",
+          "rel_path": "src/pentesting-web/hacking-jwt-json-web-tokens.md",
+          "source": "hacktricks",
+          "section_path": "JWT Vulnerabilities (Json Web Tokens) > **Quick Wins** > JWE-wrapped PlainJWT / public-key auth bypass (pac4j-jwt CVE-2026-29000)",
+          "rerank": 0.9972177743911743,
+          "rrf": 0.03225806451612903,
+          "dense_rank": 2,
+          "sparse_rank": 2
+        }
+      ],
+      "answer_text": "",
+      "thinking_text": "",
+      "timing_status": [],
+      "wall_clock_s": 2.6991623529975186,
+      "error": null,
+      "status": "ok",
+      "timeout": false,
+      "score": {
+        "retrieval_score": 0.9249999999999999,
+        "path_recall": 1.0,
+        "substring_recall": 0.75,
+        "fact_score": null,
+        "hallucination_penalty": null,
+        "hallucinations": [],
+        "combined": 0.9249999999999999
+      }
+    },
+    {
+      "id": "q-019",
+      "category": "payload-specific",
+      "question": "ysoserial CommonsCollections5 gadget — what gadget chain does it use, what's the trigger, and what Java versions does it work against?",
+      "retrieved_chunks": [
+        {
+          "id": "hacktricks::src/pentesting-web/deserialization/README.md::18",
+          "rel_path": "src/pentesting-web/deserialization/README.md",
+          "source": "hacktricks",
+          "section_path": "Deserialization > Java - HTTP > Check if vulnerable > White Box Test",
+          "rerank": 0.9938532114028931,
+          "rrf": 0.030536130536130537,
+          "dense_rank": 5,
+          "sparse_rank": 6
+        },
+        {
+          "id": "payloads::Insecure Deserialization/Java.md::2",
+          "rel_path": "Insecure Deserialization/Java.md",
+          "source": "payloads",
+          "section_path": "Java Deserialization > Tools > Ysoserial",
+          "rerank": 0.9888916015625,
+          "rrf": 0.015873015873015872,
+          "dense_rank": 3,
+          "sparse_rank": null
+        },
+        {
+          "id": "hacktricks::src/pentesting-web/deserialization/jndi-java-naming-and-directory-interface-and-log4shell.md::16",
+          "rel_path": "src/pentesting-web/deserialization/jndi-java-naming-and-directory-interface-and-log4shell.md",
+          "source": "hacktricks",
+          "section_path": "Rev shell via CommonsCollections5",
+          "rerank": 0.9587240219116211,
+          "rrf": 0.015151515151515152,
+          "dense_rank": 6,
+          "sparse_rank": null
+        },
+        {
+          "id": "payloads::Insecure Deserialization/Java.md::1",
+          "rel_path": "Insecure Deserialization/Java.md",
+          "source": "payloads",
+          "section_path": "Java Deserialization > Tools > Ysoserial",
+          "rerank": 0.7961727380752563,
+          "rrf": 0.01639344262295082,
+          "dense_rank": 1,
+          "sparse_rank": null
+        },
+        {
+          "id": "hacktricks::src/pentesting-web/deserialization/README.md::34",
+          "rel_path": "src/pentesting-web/deserialization/README.md",
+          "source": "hacktricks",
+          "section_path": "You may need to update the payloads > serialkillerbypassgadgets > References",
+          "rerank": 0.6159186363220215,
+          "rrf": 0.014925373134328358,
+          "dense_rank": 7,
+          "sparse_rank": null
+        }
+      ],
+      "answer_text": "",
+      "thinking_text": "",
+      "timing_status": [],
+      "wall_clock_s": 4.311440023000614,
+      "error": null,
+      "status": "ok",
+      "timeout": false,
+      "score": {
+        "retrieval_score": 0.85,
+        "path_recall": 1.0,
+        "substring_recall": 0.5,
+        "fact_score": null,
+        "hallucination_penalty": null,
+        "hallucinations": [],
+        "combined": 0.85
+      }
+    },
+    {
+      "id": "q-020",
+      "category": "payload-specific",
+      "question": "GraphQL introspection — give the canonical introspection query and what fields indicate dangerous mutations or admin functionality.",
+      "retrieved_chunks": [
+        {
+          "id": "owasp::cheatsheets/GraphQL_Cheat_Sheet.md::19",
+          "rel_path": "cheatsheets/GraphQL_Cheat_Sheet.md",
+          "source": "owasp",
+          "section_path": "GraphQL Cheat Sheet > Best Practices and Recommendations > Secure Configurations > Introspection + GraphiQL",
+          "rerank": 0.9992159605026245,
+          "rrf": 0.032266458495966696,
+          "dense_rank": 3,
+          "sparse_rank": 1
+        },
+        {
+          "id": "payloads::GraphQL Injection/README.md::4",
+          "rel_path": "GraphQL Injection/README.md",
+          "source": "payloads",
+          "section_path": "GraphQL Injection > Enumeration > Enumerate Database Schema via Introspection",
+          "rerank": 0.9983212351799011,
+          "rrf": 0.030776515151515152,
+          "dense_rank": 4,
+          "sparse_rank": 6
+        },
+        {
+          "id": "hacktricks::src/network-services-pentesting/pentesting-web/graphql.md::4",
+          "rel_path": "src/network-services-pentesting/pentesting-web/graphql.md",
+          "source": "hacktricks",
+          "section_path": "GraphQL > GraphQL and Security > Basic Enumeration > Introspection",
+          "rerank": 0.9978510141372681,
+          "rrf": 0.0315136476426799,
+          "dense_rank": 2,
+          "sparse_rank": 5
+        },
+        {
+          "id": "payloads::GraphQL Injection/README.md::5",
+          "rel_path": "GraphQL Injection/README.md",
+          "source": "payloads",
+          "section_path": "GraphQL Injection > Enumeration > Enumerate Database Schema via Introspection",
+          "rerank": 0.9900396466255188,
+          "rrf": 0.014492753623188406,
+          "dense_rank": 9,
+          "sparse_rank": null
+        },
+        {
+          "id": "hacktricks::src/network-services-pentesting/pentesting-web/graphql.md::5",
+          "rel_path": "src/network-services-pentesting/pentesting-web/graphql.md",
+          "source": "hacktricks",
+          "section_path": "GraphQL > GraphQL and Security > Basic Enumeration > Introspection",
+          "rerank": 0.9900122880935669,
+          "rrf": 0.01639344262295082,
+          "dense_rank": 1,
+          "sparse_rank": null
+        }
+      ],
+      "answer_text": "",
+      "thinking_text": "",
+      "timing_status": [],
+      "wall_clock_s": 73.13710140900002,
+      "error": null,
+      "status": "ok",
+      "timeout": false,
+      "score": {
+        "retrieval_score": 1.0,
+        "path_recall": 1.0,
+        "substring_recall": 1.0,
+        "fact_score": null,
+        "hallucination_penalty": null,
+        "hallucinations": [],
+        "combined": 1.0
+      }
+    },
+    {
+      "id": "q-021",
+      "category": "attack-technique",
+      "question": "MITRE T1059.001 (PowerShell) — what variants of execution does it cover, what tools map to it, and what detection signals catch it?",
+      "retrieved_chunks": [
+        {
+          "id": "mitre::enterprise-attack/T1059.001.md::0",
+          "rel_path": "enterprise-attack/T1059.001.md",
+          "source": "mitre",
+          "section_path": "T1059.001: PowerShell > Description",
+          "rerank": 0.9982683658599854,
+          "rrf": 0.016129032258064516,
+          "dense_rank": 2,
+          "sparse_rank": null
+        },
+        {
+          "id": "mitre::enterprise-attack/T1059.md::1",
+          "rel_path": "enterprise-attack/T1059.md",
+          "source": "mitre",
+          "section_path": "T1059: Command and Scripting Interpreter > References",
+          "rerank": 0.9840736389160156,
+          "rrf": 0.029850746268656716,
+          "dense_rank": 7,
+          "sparse_rank": 7
+        },
+        {
+          "id": "mitre::enterprise-attack/T1059.001.md::1",
+          "rel_path": "enterprise-attack/T1059.001.md",
+          "source": "mitre",
+          "section_path": "T1059.001: PowerShell > References",
+          "rerank": 0.9824565649032593,
+          "rrf": 0.01639344262295082,
+          "dense_rank": 1,
+          "sparse_rank": null
+        },
+        {
+          "id": "mitre::enterprise-attack/T1086.md::0",
+          "rel_path": "enterprise-attack/T1086.md",
+          "source": "mitre",
+          "section_path": "T1086: PowerShell > Description",
+          "rerank": 0.9779460430145264,
+          "rrf": 0.015873015873015872,
+          "dense_rank": 3,
+          "sparse_rank": null
+        },
+        {
+          "id": "mitre::enterprise-attack/T1059.md::0",
+          "rel_path": "enterprise-attack/T1059.md",
+          "source": "mitre",
+          "section_path": "T1059: Command and Scripting Interpreter > Description",
+          "rerank": 0.9772509932518005,
+          "rrf": 0.014705882352941176,
+          "dense_rank": null,
+          "sparse_rank": 8
+        }
+      ],
+      "answer_text": "",
+      "thinking_text": "",
+      "timing_status": [],
+      "wall_clock_s": 9.38458866899964,
+      "error": null,
+      "status": "ok",
+      "timeout": false,
+      "score": {
+        "retrieval_score": 1.0,
+        "path_recall": 1.0,
+        "substring_recall": 1.0,
+        "fact_score": null,
+        "hallucination_penalty": null,
+        "hallucinations": [],
+        "combined": 1.0
+      }
+    },
+    {
+      "id": "q-022",
+      "category": "attack-technique",
+      "question": "T1021.001 (Remote Services: RDP) — walk through lateral movement via RDP including credential reuse and the OpSec considerations.",
+      "retrieved_chunks": [
+        {
+          "id": "mitre::enterprise-attack/T1021.001.md::0",
+          "rel_path": "enterprise-attack/T1021.001.md",
+          "source": "mitre",
+          "section_path": "T1021.001: Remote Desktop Protocol > Description",
+          "rerank": 0.9996660947799683,
+          "rrf": 0.03278688524590164,
+          "dense_rank": 1,
+          "sparse_rank": 1
+        },
+        {
+          "id": "mitre::enterprise-attack/T1021.md::0",
+          "rel_path": "enterprise-attack/T1021.md",
+          "source": "mitre",
+          "section_path": "T1021: Remote Services > Description",
+          "rerank": 0.9962623715400696,
+          "rrf": 0.015151515151515152,
+          "dense_rank": null,
+          "sparse_rank": 6
+        },
+        {
+          "id": "mitre::enterprise-attack/T1076.md::0",
+          "rel_path": "enterprise-attack/T1076.md",
+          "source": "mitre",
+          "section_path": "T1076: Remote Desktop Protocol > Description",
+          "rerank": 0.9959852695465088,
+          "rrf": 0.03149801587301587,
+          "dense_rank": 3,
+          "sparse_rank": 4
+        },
+        {
+          "id": "mitre::enterprise-attack/T1563.002.md::0",
+          "rel_path": "enterprise-attack/T1563.002.md",
+          "source": "mitre",
+          "section_path": "T1563.002: RDP Hijacking > Description",
+          "rerank": 0.9958711266517639,
+          "rrf": 0.015151515151515152,
+          "dense_rank": 6,
+          "sparse_rank": null
+        },
+        {
+          "id": "mitre::enterprise-attack/T1210.md::0",
+          "rel_path": "enterprise-attack/T1210.md",
+          "source": "mitre",
+          "section_path": "T1210: Exploitation of Remote Services > Description",
+          "rerank": 0.9956629872322083,
+          "rrf": 0.014492753623188406,
+          "dense_rank": 9,
+          "sparse_rank": null
+        }
+      ],
+      "answer_text": "",
+      "thinking_text": "",
+      "timing_status": [],
+      "wall_clock_s": 2.264915760999429,
+      "error": null,
+      "status": "ok",
+      "timeout": false,
+      "score": {
+        "retrieval_score": 0.9249999999999999,
+        "path_recall": 1.0,
+        "substring_recall": 0.75,
+        "fact_score": null,
+        "hallucination_penalty": null,
+        "hallucinations": [],
+        "combined": 0.9249999999999999
+      }
+    },
+    {
+      "id": "q-023",
+      "category": "attack-technique",
+      "question": "T1003.001 (LSASS Memory) — what are the variants of dumping LSASS, and what does ProcessAccess 0x1010 / 0x1410 signal mean to a defender?",
+      "retrieved_chunks": [
+        {
+          "id": "mitre::enterprise-attack/T1003.001.md::0",
+          "rel_path": "enterprise-attack/T1003.001.md",
+          "source": "mitre",
+          "section_path": "T1003.001: LSASS Memory > Description",
+          "rerank": 0.9856632351875305,
+          "rrf": 0.032018442622950824,
+          "dense_rank": 1,
+          "sparse_rank": 4
+        },
+        {
+          "id": "hacktricks::src/windows-hardening/stealing-credentials/README.md::3",
+          "rel_path": "src/windows-hardening/stealing-credentials/README.md",
+          "source": "hacktricks",
+          "section_path": "Stealing Windows Credentials > Bypassing AV > Procdump + Mimikatz",
+          "rerank": 0.9850826263427734,
+          "rrf": 0.029631255487269532,
+          "dense_rank": 7,
+          "sparse_rank": 8
+        },
+        {
+          "id": "hacktricks::src/windows-hardening/windows-local-privilege-escalation/privilege-escalation-abusing-tokens.md::9",
+          "rel_path": "src/windows-hardening/windows-local-privilege-escalation/privilege-escalation-abusing-tokens.md",
+          "source": "hacktricks",
+          "section_path": "Use this with files that might contain credentials such as > SeDebugPrivilege > Dump memory",
+          "rerank": 0.9843277931213379,
+          "rrf": 0.015873015873015872,
+          "dense_rank": 3,
+          "sparse_rank": null
+        },
+        {
+          "id": "hacktricks::src/windows-hardening/stealing-credentials/credentials-mimikatz.md::1",
+          "rel_path": "src/windows-hardening/stealing-credentials/credentials-mimikatz.md",
+          "source": "hacktricks",
+          "section_path": "Mimikatz > LM and Clear-Text in memory > Counteracting SeDebugPrivilege Removal",
+          "rerank": 0.96488356590271,
+          "rrf": 0.015384615384615385,
+          "dense_rank": null,
+          "sparse_rank": 5
+        },
+        {
+          "id": "hacktricks::src/windows-hardening/stealing-credentials/README.md::6",
+          "rel_path": "src/windows-hardening/stealing-credentials/README.md",
+          "source": "hacktricks",
+          "section_path": "Get it from webdav > Dumpin lsass with PPLBlade",
+          "rerank": 0.9589930772781372,
+          "rrf": 0.03007688828584351,
+          "dense_rank": 6,
+          "sparse_rank": 7
+        }
+      ],
+      "answer_text": "",
+      "thinking_text": "",
+      "timing_status": [],
+      "wall_clock_s": 2.4084768850007094,
+      "error": null,
+      "status": "ok",
+      "timeout": false,
+      "score": {
+        "retrieval_score": 0.85,
+        "path_recall": 1.0,
+        "substring_recall": 0.5,
+        "fact_score": null,
+        "hallucination_penalty": null,
+        "hallucinations": [],
+        "combined": 0.85
+      }
+    },
+    {
+      "id": "q-024",
+      "category": "attack-technique",
+      "question": "T1078.004 (Cloud Accounts) — give two concrete escalation paths in AWS and which IAM action sequences map to it.",
+      "retrieved_chunks": [
+        {
+          "id": "mitre::enterprise-attack/T1078.004.md::1",
+          "rel_path": "enterprise-attack/T1078.004.md",
+          "source": "mitre",
+          "section_path": "T1078.004: Cloud Accounts > References",
+          "rerank": 0.9915093183517456,
+          "rrf": 0.01639344262295082,
+          "dense_rank": null,
+          "sparse_rank": 1
+        },
+        {
+          "id": "mitre::enterprise-attack/T1098.001.md::0",
+          "rel_path": "enterprise-attack/T1098.001.md",
+          "source": "mitre",
+          "section_path": "T1098.001: Additional Cloud Credentials > Description",
+          "rerank": 0.9770436882972717,
+          "rrf": 0.016129032258064516,
+          "dense_rank": null,
+          "sparse_rank": 2
+        },
+        {
+          "id": "mitre::enterprise-attack/T1548.005.md::1",
+          "rel_path": "enterprise-attack/T1548.005.md",
+          "source": "mitre",
+          "section_path": "T1548.005: Temporary Elevated Cloud Access > Description",
+          "rerank": 0.9704744219779968,
+          "rrf": 0.014492753623188406,
+          "dense_rank": 9,
+          "sparse_rank": null
+        },
+        {
+          "id": "mitre::enterprise-attack/T1098.003.md::0",
+          "rel_path": "enterprise-attack/T1098.003.md",
+          "source": "mitre",
+          "section_path": "T1098.003: Additional Cloud Roles > Description",
+          "rerank": 0.966609537601471,
+          "rrf": 0.03149801587301587,
+          "dense_rank": 4,
+          "sparse_rank": 3
+        },
+        {
+          "id": "owasp::cheatsheets/Secrets_Management_Cheat_Sheet.md::38",
+          "rel_path": "cheatsheets/Secrets_Management_Cheat_Sheet.md",
+          "source": "owasp",
+          "section_path": "Secrets Management Cheat Sheet > 4 Cloud Providers > 4.3 Identity and Access Management (IAM)",
+          "rerank": 0.9420469999313354,
+          "rrf": 0.029411764705882353,
+          "dense_rank": 8,
+          "sparse_rank": 8
+        }
+      ],
+      "answer_text": "",
+      "thinking_text": "",
+      "timing_status": [],
+      "wall_clock_s": 2.244286272001773,
+      "error": null,
+      "status": "ok",
+      "timeout": false,
+      "score": {
+        "retrieval_score": 0.85,
+        "path_recall": 1.0,
+        "substring_recall": 0.5,
+        "fact_score": null,
+        "hallucination_penalty": null,
+        "hallucinations": [],
+        "combined": 0.85
+      }
+    },
+    {
+      "id": "q-025",
+      "category": "attack-technique",
+      "question": "T1098 (Account Manipulation) — what AD persistence variants fall under this technique and what sub-techniques exist?",
+      "retrieved_chunks": [
+        {
+          "id": "mitre::enterprise-attack/T1098.md::0",
+          "rel_path": "enterprise-attack/T1098.md",
+          "source": "mitre",
+          "section_path": "T1098: Account Manipulation > Description",
+          "rerank": 0.9942588806152344,
+          "rrf": 0.03252247488101534,
+          "dense_rank": 1,
+          "sparse_rank": 2
+        },
+        {
+          "id": "mitre::enterprise-attack/T1098.007.md::0",
+          "rel_path": "enterprise-attack/T1098.007.md",
+          "source": "mitre",
+          "section_path": "T1098.007: Additional Local or Domain Groups > Description",
+          "rerank": 0.9864186644554138,
+          "rrf": 0.014285714285714285,
+          "dense_rank": null,
+          "sparse_rank": 10
+        },
+        {
+          "id": "mitre::enterprise-attack/T1207.md::0",
+          "rel_path": "enterprise-attack/T1207.md",
+          "source": "mitre",
+          "section_path": "T1207: Rogue Domain Controller > Description",
+          "rerank": 0.9804766178131104,
+          "rrf": 0.015384615384615385,
+          "dense_rank": null,
+          "sparse_rank": 5
+        },
+        {
+          "id": "mitre::enterprise-attack/T1098.006.md::0",
+          "rel_path": "enterprise-attack/T1098.006.md",
+          "source": "mitre",
+          "section_path": "T1098.006: Additional Container Cluster Roles > Description",
+          "rerank": 0.9718621969223022,
+          "rrf": 0.014925373134328358,
+          "dense_rank": null,
+          "sparse_rank": 7
+        },
+        {
+          "id": "mitre::enterprise-attack/T1136.003.md::0",
+          "rel_path": "enterprise-attack/T1136.003.md",
+          "source": "mitre",
+          "section_path": "T1136.003: Cloud Account > Description",
+          "rerank": 0.9678046107292175,
+          "rrf": 0.015151515151515152,
+          "dense_rank": null,
+          "sparse_rank": 6
+        }
+      ],
+      "answer_text": "",
+      "thinking_text": "",
+      "timing_status": [],
+      "wall_clock_s": 1.8152646160015138,
+      "error": null,
+      "status": "ok",
+      "timeout": false,
+      "score": {
+        "retrieval_score": 0.85,
+        "path_recall": 1.0,
+        "substring_recall": 0.5,
+        "fact_score": null,
+        "hallucination_penalty": null,
+        "hallucinations": [],
+        "combined": 0.85
+      }
+    },
+    {
+      "id": "q-026",
+      "category": "attack-technique",
+      "question": "T1505.003 (Web Shell) — where would I drop a web shell on IIS vs Apache vs Tomcat, and what's the detection telemetry on each?",
+      "retrieved_chunks": [
+        {
+          "id": "hacktricks::src/pentesting-web/web-vulnerabilities-methodology.md::10",
+          "rel_path": "src/pentesting-web/web-vulnerabilities-methodology.md",
+          "source": "hacktricks",
+          "section_path": "Web Vulnerabilities Methodology > **User input** > **Web Servers & Middleware**",
+          "rerank": 0.9790058732032776,
+          "rrf": 0.030117753623188408,
+          "dense_rank": 9,
+          "sparse_rank": 4
+        },
+        {
+          "id": "hacktricks::src/network-services-pentesting/pentesting-web/iis-internet-information-services.md::0",
+          "rel_path": "src/network-services-pentesting/pentesting-web/iis-internet-information-services.md",
+          "source": "hacktricks",
+          "section_path": "IIS - Internet Information Services > Writable webroot → ASPX command shell",
+          "rerank": 0.973224937915802,
+          "rrf": 0.029877369007803793,
+          "dense_rank": 5,
+          "sparse_rank": 9
+        },
+        {
+          "id": "hacktricks::src/pentesting-web/file-inclusion/README.md::22",
+          "rel_path": "src/pentesting-web/file-inclusion/README.md",
+          "source": "hacktricks",
+          "section_path": "To compress with rar > LFI2RCE > Arbitrary File Write via Path Traversal (Webshell RCE)",
+          "rerank": 0.9668612480163574,
+          "rrf": 0.015151515151515152,
+          "dense_rank": null,
+          "sparse_rank": 6
+        },
+        {
+          "id": "mitre::enterprise-attack/T1505.003.md::0",
+          "rel_path": "enterprise-attack/T1505.003.md",
+          "source": "mitre",
+          "section_path": "T1505.003: Web Shell > Description",
+          "rerank": 0.966821014881134,
+          "rrf": 0.032266458495966696,
+          "dense_rank": 1,
+          "sparse_rank": 3
+        },
+        {
+          "id": "mitre::enterprise-attack/T1505.003.md::1",
+          "rel_path": "enterprise-attack/T1505.003.md",
+          "source": "mitre",
+          "section_path": "T1505.003: Web Shell > References",
+          "rerank": 0.9498369097709656,
+          "rrf": 0.032266458495966696,
+          "dense_rank": 3,
+          "sparse_rank": 1
+        }
+      ],
+      "answer_text": "",
+      "thinking_text": "",
+      "timing_status": [],
+      "wall_clock_s": 2.8090378170018084,
+      "error": null,
+      "status": "ok",
+      "timeout": false,
+      "score": {
+        "retrieval_score": 1.0,
+        "path_recall": 1.0,
+        "substring_recall": 1.0,
+        "fact_score": null,
+        "hallucination_penalty": null,
+        "hallucinations": [],
+        "combined": 1.0
+      }
+    },
+    {
+      "id": "q-027",
+      "category": "attack-technique",
+      "question": "T1110.003 (Password Spraying) vs T1110.001 (Brute Force) — what's the discriminator, and how do account lockout policies change the technique?",
+      "retrieved_chunks": [
+        {
+          "id": "hacktricks::src/windows-hardening/active-directory-methodology/password-spraying.md::0",
+          "rel_path": "src/windows-hardening/active-directory-methodology/password-spraying.md",
+          "source": "hacktricks",
+          "section_path": "Password Spraying / Brute Force > **Password Spraying**",
+          "rerank": 0.9977686405181885,
+          "rrf": 0.030621785881252923,
+          "dense_rank": 2,
+          "sparse_rank": 9
+        },
+        {
+          "id": "mitre::enterprise-attack/T1110.003.md::0",
+          "rel_path": "enterprise-attack/T1110.003.md",
+          "source": "mitre",
+          "section_path": "T1110.003: Password Spraying > Description",
+          "rerank": 0.9961357712745667,
+          "rrf": 0.031024531024531024,
+          "dense_rank": 3,
+          "sparse_rank": 6
+        },
+        {
+          "id": "owasp::cheatsheets/Authentication_Cheat_Sheet.md::15",
+          "rel_path": "cheatsheets/Authentication_Cheat_Sheet.md",
+          "source": "owasp",
+          "section_path": "Authentication Cheat Sheet > Authentication General Guidelines > Protect Against Automated Attacks",
+          "rerank": 0.988318920135498,
+          "rrf": 0.014285714285714285,
+          "dense_rank": 10,
+          "sparse_rank": null
+        },
+        {
+          "id": "mitre::enterprise-attack/T1110.md::0",
+          "rel_path": "enterprise-attack/T1110.md",
+          "source": "mitre",
+          "section_path": "T1110: Brute Force > Description",
+          "rerank": 0.9863226413726807,
+          "rrf": 0.03252247488101534,
+          "dense_rank": 1,
+          "sparse_rank": 2
+        },
+        {
+          "id": "mitre::enterprise-attack/T1110.001.md::0",
+          "rel_path": "enterprise-attack/T1110.001.md",
+          "source": "mitre",
+          "section_path": "T1110.001: Password Guessing > Description",
+          "rerank": 0.9841140508651733,
+          "rrf": 0.014705882352941176,
+          "dense_rank": null,
+          "sparse_rank": 8
+        }
+      ],
+      "answer_text": "",
+      "thinking_text": "",
+      "timing_status": [],
+      "wall_clock_s": 1.8351763669998036,
+      "error": null,
+      "status": "ok",
+      "timeout": false,
+      "score": {
+        "retrieval_score": 1.0,
+        "path_recall": 1.0,
+        "substring_recall": 1.0,
+        "fact_score": null,
+        "hallucination_penalty": null,
+        "hallucinations": [],
+        "combined": 1.0
+      }
+    },
+    {
+      "id": "q-028",
+      "category": "attack-technique",
+      "question": "T1486 (Data Encrypted for Impact) — what process behaviors flag this technique pre-detonation and which API calls are signals?",
+      "retrieved_chunks": [
+        {
+          "id": "mitre::enterprise-attack/T1486.md::1",
+          "rel_path": "enterprise-attack/T1486.md",
+          "source": "mitre",
+          "section_path": "T1486: Data Encrypted for Impact > References",
+          "rerank": 0.8566892147064209,
+          "rrf": 0.01639344262295082,
+          "dense_rank": 1,
+          "sparse_rank": null
+        },
+        {
+          "id": "mitre::enterprise-attack/T1673.md::0",
+          "rel_path": "enterprise-attack/T1673.md",
+          "source": "mitre",
+          "section_path": "T1673: Virtual Machine Discovery > Description",
+          "rerank": 0.7176109552383423,
+          "rrf": 0.015873015873015872,
+          "dense_rank": null,
+          "sparse_rank": 3
+        },
+        {
+          "id": "mitre::enterprise-attack/T1531.md::0",
+          "rel_path": "enterprise-attack/T1531.md",
+          "source": "mitre",
+          "section_path": "T1531: Account Access Removal > Description",
+          "rerank": 0.5884147882461548,
+          "rrf": 0.015151515151515152,
+          "dense_rank": null,
+          "sparse_rank": 6
+        },
+        {
+          "id": "mitre::enterprise-attack/T1518.002.md::0",
+          "rel_path": "enterprise-attack/T1518.002.md",
+          "source": "mitre",
+          "section_path": "T1518.002: Backup Software Discovery > Description",
+          "rerank": 0.2975345253944397,
+          "rrf": 0.01639344262295082,
+          "dense_rank": null,
+          "sparse_rank": 1
+        },
+        {
+          "id": "mitre::mobile-attack/T1471.md::0",
+          "rel_path": "mobile-attack/T1471.md",
+          "source": "mitre",
+          "section_path": "T1471: Data Encrypted for Impact > Description",
+          "rerank": 0.06861424446105957,
+          "rrf": 0.015384615384615385,
+          "dense_rank": 5,
+          "sparse_rank": null
+        }
+      ],
+      "answer_text": "",
+      "thinking_text": "",
+      "timing_status": [],
+      "wall_clock_s": 2.2210487949996605,
+      "error": null,
+      "status": "ok",
+      "timeout": false,
+      "score": {
+        "retrieval_score": 0.85,
+        "path_recall": 1.0,
+        "substring_recall": 0.5,
+        "fact_score": null,
+        "hallucination_penalty": null,
+        "hallucinations": [],
+        "combined": 0.85
+      }
+    },
+    {
+      "id": "q-029",
+      "category": "multi-step",
+      "question": "I have a low-privilege domain user. Walk me from recon to Kerberoasting to ticket extraction to offline crack to admin reuse.",
+      "retrieved_chunks": [
+        {
+          "id": "hacktricks::src/windows-hardening/active-directory-methodology/bloodhound.md::2",
+          "rel_path": "src/windows-hardening/active-directory-methodology/bloodhound.md",
+          "source": "hacktricks",
+          "section_path": "Web UI ➜ http://localhost:8080  (user: admin / password from logs) > Collectors > Prioritising Kerberoasting with BloodHound",
+          "rerank": 0.9986546039581299,
+          "rrf": 0.03252247488101534,
+          "dense_rank": 2,
+          "sparse_rank": 1
+        },
+        {
+          "id": "hacktricks::src/network-services-pentesting/pentesting-kerberos-88/harvesting-tickets-from-windows.md::0",
+          "rel_path": "src/network-services-pentesting/pentesting-kerberos-88/harvesting-tickets-from-windows.md",
+          "source": "hacktricks",
+          "section_path": "Harvesting tickets from Windows",
+          "rerank": 0.9975021481513977,
+          "rrf": 0.031009615384615385,
+          "dense_rank": 4,
+          "sparse_rank": 5
+        },
+        {
+          "id": "hacktricks::src/windows-hardening/active-directory-methodology/kerberoast.md::1",
+          "rel_path": "src/windows-hardening/active-directory-methodology/kerberoast.md",
+          "source": "hacktricks",
+          "section_path": "Kerberoast > Kerberoast > Key Points",
+          "rerank": 0.9964021444320679,
+          "rrf": 0.015873015873015872,
+          "dense_rank": 3,
+          "sparse_rank": null
+        },
+        {
+          "id": "hacktricks::src/windows-hardening/active-directory-methodology/kerberoast.md::0",
+          "rel_path": "src/windows-hardening/active-directory-methodology/kerberoast.md",
+          "source": "hacktricks",
+          "section_path": "Kerberoast > Kerberoast",
+          "rerank": 0.9923789501190186,
+          "rrf": 0.030679156908665108,
+          "dense_rank": 1,
+          "sparse_rank": 10
+        },
+        {
+          "id": "mitre::enterprise-attack/T1558.003.md::0",
+          "rel_path": "enterprise-attack/T1558.003.md",
+          "source": "mitre",
+          "section_path": "T1558.003: Kerberoasting > Description",
+          "rerank": 0.9879933595657349,
+          "rrf": 0.03055037313432836,
+          "dense_rank": 7,
+          "sparse_rank": 4
+        }
+      ],
+      "answer_text": "",
+      "thinking_text": "",
+      "timing_status": [],
+      "wall_clock_s": 2.3607132350007305,
+      "error": null,
+      "status": "ok",
+      "timeout": false,
+      "score": {
+        "retrieval_score": 0.9249999999999999,
+        "path_recall": 1.0,
+        "substring_recall": 0.75,
+        "fact_score": null,
+        "hallucination_penalty": null,
+        "hallucinations": [],
+        "combined": 0.9249999999999999
+      }
+    },
+    {
+      "id": "q-030",
+      "category": "multi-step",
+      "question": "An account is configured with unconstrained delegation and I have local admin on its host. Walk me through extracting TGTs and impersonating a DA via the printer bug.",
+      "retrieved_chunks": [
+        {
+          "id": "hacktricks::src/windows-hardening/active-directory-methodology/printers-spooler-service-abuse.md::4",
+          "rel_path": "src/windows-hardening/active-directory-methodology/printers-spooler-service-abuse.md",
+          "source": "hacktricks",
+          "section_path": "Force NTLM Privileged Authentication > Spooler Service Abuse > Combining with Unconstrained Delegation",
+          "rerank": 0.9999150037765503,
+          "rrf": 0.03278688524590164,
+          "dense_rank": 1,
+          "sparse_rank": 1
+        },
+        {
+          "id": "hacktricks::src/windows-hardening/active-directory-methodology/README.md::24",
+          "rel_path": "src/windows-hardening/active-directory-methodology/README.md",
+          "source": "hacktricks",
+          "section_path": "Local Auth Spray (once you found some local admin pass or hash) > --local-auth flag indicate to only try 1 time per machine > Unconstrained Delegation",
+          "rerank": 0.9997900128364563,
+          "rrf": 0.03225806451612903,
+          "dense_rank": 2,
+          "sparse_rank": 2
+        },
+        {
+          "id": "hacktricks::src/windows-hardening/active-directory-methodology/unconstrained-delegation.md::2",
+          "rel_path": "src/windows-hardening/active-directory-methodology/unconstrained-delegation.md",
+          "source": "hacktricks",
+          "section_path": "Monitor logins and export new tickets > Doens't access LSASS memory directly, but uses Windows APIs > **Force Authentication**",
+          "rerank": 0.9997138381004333,
+          "rrf": 0.015873015873015872,
+          "dense_rank": 3,
+          "sparse_rank": null
+        },
+        {
+          "id": "hacktricks::src/windows-hardening/ntlm/README.md::4",
+          "rel_path": "src/windows-hardening/ntlm/README.md",
+          "source": "hacktricks",
+          "section_path": "NTLM > Basic NTLM Domain authentication Scheme > NTLMv1 attack",
+          "rerank": 0.999527096748352,
+          "rrf": 0.014925373134328358,
+          "dense_rank": null,
+          "sparse_rank": 7
+        },
+        {
+          "id": "hacktricks::src/windows-hardening/active-directory-methodology/unconstrained-delegation.md::0",
+          "rel_path": "src/windows-hardening/active-directory-methodology/unconstrained-delegation.md",
+          "source": "hacktricks",
+          "section_path": "Unconstrained Delegation > Unconstrained delegation",
+          "rerank": 0.9994288086891174,
+          "rrf": 0.030536130536130537,
+          "dense_rank": 5,
+          "sparse_rank": 6
+        }
+      ],
+      "answer_text": "",
+      "thinking_text": "",
+      "timing_status": [],
+      "wall_clock_s": 1.6613738220003142,
+      "error": null,
+      "status": "ok",
+      "timeout": false,
+      "score": {
+        "retrieval_score": 0.85,
+        "path_recall": 1.0,
+        "substring_recall": 0.5,
+        "fact_score": null,
+        "hallucination_penalty": null,
+        "hallucinations": [],
+        "combined": 0.85
+      }
+    },
+    {
+      "id": "q-031",
+      "category": "multi-step",
+      "question": "I have GenericWrite over a service account configured with constrained delegation to CIFS on a DC. Walk me to DA via S4U2Self -> S4U2Proxy.",
+      "retrieved_chunks": [
+        {
+          "id": "hacktricks::src/windows-hardening/active-directory-methodology/constrained-delegation.md::0",
+          "rel_path": "src/windows-hardening/active-directory-methodology/constrained-delegation.md",
+          "source": "hacktricks",
+          "section_path": "Constrained Delegation > Constrained Delegation",
+          "rerank": 0.9992280006408691,
+          "rrf": 0.030309988518943745,
+          "dense_rank": 7,
+          "sparse_rank": 5
+        },
+        {
+          "id": "hacktricks::src/windows-hardening/active-directory-methodology/constrained-delegation.md::4",
+          "rel_path": "src/windows-hardening/active-directory-methodology/constrained-delegation.md",
+          "source": "hacktricks",
+          "section_path": "Set TRUSTED_TO_AUTH_FOR_DELEGATION and point delegation to CIFS/DC",
+          "rerank": 0.9987263083457947,
+          "rrf": 0.03128054740957967,
+          "dense_rank": 6,
+          "sparse_rank": 2
+        },
+        {
+          "id": "hacktricks::src/windows-hardening/active-directory-methodology/resource-based-constrained-delegation.md::7",
+          "rel_path": "src/windows-hardening/active-directory-methodology/resource-based-constrained-delegation.md",
+          "source": "hacktricks",
+          "section_path": "Example: dump local secrets via Kerberos (no NTLM) > Cross-domain & cross-forest RBCD > Cross-domain RBCD: cross-realm S4U sequence",
+          "rerank": 0.9980370402336121,
+          "rrf": 0.015625,
+          "dense_rank": null,
+          "sparse_rank": 4
+        },
+        {
+          "id": "hacktricks::src/windows-hardening/active-directory-methodology/resource-based-constrained-delegation.md::2",
+          "rel_path": "src/windows-hardening/active-directory-methodology/resource-based-constrained-delegation.md",
+          "source": "hacktricks",
+          "section_path": "Resource-based Constrained Delegation > Basics of Resource-based Constrained Delegation > Attack structure",
+          "rerank": 0.9970822930335999,
+          "rrf": 0.03252247488101534,
+          "dense_rank": 2,
+          "sparse_rank": 1
+        },
+        {
+          "id": "hacktricks::src/windows-hardening/active-directory-methodology/resource-based-constrained-delegation.md::4",
+          "rel_path": "src/windows-hardening/active-directory-methodology/resource-based-constrained-delegation.md",
+          "source": "hacktricks",
+          "section_path": "Check if created > Configuring Resource-based Constrained Delegation > Performing a complete S4U attack (Windows/Rubeus)",
+          "rerank": 0.9948722720146179,
+          "rrf": 0.014705882352941176,
+          "dense_rank": 8,
+          "sparse_rank": null
+        }
+      ],
+      "answer_text": "",
+      "thinking_text": "",
+      "timing_status": [],
+      "wall_clock_s": 1.8283294510001724,
+      "error": null,
+      "status": "ok",
+      "timeout": false,
+      "score": {
+        "retrieval_score": 1.0,
+        "path_recall": 1.0,
+        "substring_recall": 1.0,
+        "fact_score": null,
+        "hallucination_penalty": null,
+        "hallucinations": [],
+        "combined": 1.0
+      }
+    },
+    {
+      "id": "q-032",
+      "category": "multi-step",
+      "question": "ADCS ESC1: misconfigured certificate template with Client Authentication EKU and Enrollee supplies subject. Walk me to DA.",
+      "retrieved_chunks": [
+        {
+          "id": "hacktricks::src/windows-hardening/active-directory-methodology/ad-certificates/domain-escalation.md::1",
+          "rel_path": "src/windows-hardening/active-directory-methodology/ad-certificates/domain-escalation.md",
+          "source": "hacktricks",
+          "section_path": "AD CS Domain Escalation > Misconfigured Certificate Templates - ESC1 > Misconfigured Certificate Templates - ESC1 Explained",
+          "rerank": 0.9992903470993042,
+          "rrf": 0.032266458495966696,
+          "dense_rank": 1,
+          "sparse_rank": 3
+        },
+        {
+          "id": "hacktricks::src/windows-hardening/active-directory-methodology/ad-certificates/domain-persistence.md::6",
+          "rel_path": "src/windows-hardening/active-directory-methodology/ad-certificates/domain-persistence.md",
+          "source": "hacktricks",
+          "section_path": "(Optional) publish into AD CA containers to improve chain building across the forest > Malicious Misconfiguration - DPERSIST3",
+          "rerank": 0.9985010623931885,
+          "rrf": 0.015384615384615385,
+          "dense_rank": null,
+          "sparse_rank": 5
+        },
+        {
+          "id": "hacktricks::src/windows-hardening/active-directory-methodology/ad-certificates.md::12",
+          "rel_path": "src/windows-hardening/active-directory-methodology/ad-certificates.md",
+          "source": "hacktricks",
+          "section_path": "Enumerate Enterprise CAs and certificate templates with certutil > Detection & Hardening Enhancements",
+          "rerank": 0.9981116056442261,
+          "rrf": 0.030330882352941176,
+          "dense_rank": 4,
+          "sparse_rank": 8
+        },
+        {
+          "id": "hacktricks::src/windows-hardening/active-directory-methodology/ad-certificates.md::3",
+          "rel_path": "src/windows-hardening/active-directory-methodology/ad-certificates.md",
+          "source": "hacktricks",
+          "section_path": "AD Certificates > Introduction > Certificate Templates",
+          "rerank": 0.9979442954063416,
+          "rrf": 0.015873015873015872,
+          "dense_rank": 3,
+          "sparse_rank": null
+        },
+        {
+          "id": "hacktricks::src/windows-hardening/active-directory-methodology/ad-certificates/README.md::9",
+          "rel_path": "src/windows-hardening/active-directory-methodology/ad-certificates/README.md",
+          "source": "hacktricks",
+          "section_path": "Identify vulnerable certificate templates and filter for common abuse cases",
+          "rerank": 0.9968146681785583,
+          "rrf": 0.0304147465437788,
+          "dense_rank": 10,
+          "sparse_rank": 2
+        }
+      ],
+      "answer_text": "",
+      "thinking_text": "",
+      "timing_status": [],
+      "wall_clock_s": 1.9240821640014474,
+      "error": null,
+      "status": "ok",
+      "timeout": false,
+      "score": {
+        "retrieval_score": 0.22499999999999998,
+        "path_recall": 0.0,
+        "substring_recall": 0.75,
+        "fact_score": null,
+        "hallucination_penalty": null,
+        "hallucinations": [],
+        "combined": 0.22499999999999998
+      }
+    },
+    {
+      "id": "q-033",
+      "category": "multi-step",
+      "question": "I'm www-data. tar runs in a cronjob as root with a wildcard. Walk me through the wildcard-injection escalation to root.",
+      "retrieved_chunks": [
+        {
+          "id": "hacktricks::src/linux-hardening/privilege-escalation/README.md::18",
+          "rel_path": "src/linux-hardening/privilege-escalation/README.md",
+          "source": "hacktricks",
+          "section_path": "Command: > Cron path > Cron using a script with a wildcard (Wildcard Injection)",
+          "rerank": 0.9992733597755432,
+          "rrf": 0.03252247488101534,
+          "dense_rank": 1,
+          "sparse_rank": 2
+        },
+        {
+          "id": "hacktricks::src/linux-hardening/linux-privilege-escalation-checklist.md::2",
+          "rel_path": "src/linux-hardening/linux-privilege-escalation-checklist.md",
+          "source": "hacktricks",
+          "section_path": "Checklist - Linux Privilege Escalation > **Best tool to look for Linux local privilege escalation vectors:** [**LinPEAS**](https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite/tree/master/linPEAS) > [Scheduled/Cron jobs?](privilege-escalation/index.html#scheduled-jobs)",
+          "rerank": 0.9974494576454163,
+          "rrf": 0.030309988518943745,
+          "dense_rank": 7,
+          "sparse_rank": 5
+        },
+        {
+          "id": "hacktricks::src/linux-hardening/privilege-escalation/README.md::19",
+          "rel_path": "src/linux-hardening/privilege-escalation/README.md",
+          "source": "hacktricks",
+          "section_path": "Command: > Cron path > Bash arithmetic expansion injection in cron log parsers",
+          "rerank": 0.994461178779602,
+          "rrf": 0.014705882352941176,
+          "dense_rank": 8,
+          "sparse_rank": null
+        },
+        {
+          "id": "hacktricks::src/linux-hardening/privilege-escalation/README.md::17",
+          "rel_path": "src/linux-hardening/privilege-escalation/README.md",
+          "source": "hacktricks",
+          "section_path": "Command: > Cron path",
+          "rerank": 0.9943339824676514,
+          "rrf": 0.015625,
+          "dense_rank": 4,
+          "sparse_rank": null
+        },
+        {
+          "id": "hacktricks::src/linux-hardening/privilege-escalation/wildcards-spare-tricks.md::0",
+          "rel_path": "src/linux-hardening/privilege-escalation/wildcards-spare-tricks.md",
+          "source": "hacktricks",
+          "section_path": "Wildcards Spare Tricks",
+          "rerank": 0.9942155480384827,
+          "rrf": 0.03252247488101534,
+          "dense_rank": 2,
+          "sparse_rank": 1
+        }
+      ],
+      "answer_text": "",
+      "thinking_text": "",
+      "timing_status": [],
+      "wall_clock_s": 2.0151715940010035,
+      "error": null,
+      "status": "ok",
+      "timeout": false,
+      "score": {
+        "retrieval_score": 0.7999999999999999,
+        "path_recall": 1.0,
+        "substring_recall": 0.3333333333333333,
+        "fact_score": null,
+        "hallucination_penalty": null,
+        "hallucinations": [],
+        "combined": 0.7999999999999999
+      }
+    },
+    {
+      "id": "q-034",
+      "category": "multi-step",
+      "question": "I'm root inside a --privileged Docker container. Walk me through breaking out to the host.",
+      "retrieved_chunks": [
+        {
+          "id": "hacktricks::src/linux-hardening/privilege-escalation/README.md::38",
+          "rel_path": "src/linux-hardening/privilege-escalation/README.md",
+          "source": "hacktricks",
+          "section_path": "Service=vuln.service > Writable sockets > Writable Docker Socket > **Privilege Escalation with Docker CLI**",
+          "rerank": 0.9996017813682556,
+          "rrf": 0.030679156908665108,
+          "dense_rank": 10,
+          "sparse_rank": 1
+        },
+        {
+          "id": "hacktricks::src/linux-hardening/privilege-escalation/container-security/runtime-api-and-daemon-exposure.md::5",
+          "rel_path": "src/linux-hardening/privilege-escalation/container-security/runtime-api-and-daemon-exposure.md",
+          "source": "hacktricks",
+          "section_path": "Runtime API And Daemon Exposure > Abuse > Full Example: Docker Socket To Host Root",
+          "rerank": 0.9993624091148376,
+          "rrf": 0.032266458495966696,
+          "dense_rank": 1,
+          "sparse_rank": 3
+        },
+        {
+          "id": "hacktricks::src/linux-hardening/privilege-escalation/interesting-groups-linux-pe/README.md::7",
+          "rel_path": "src/linux-hardening/privilege-escalation/interesting-groups-linux-pe/README.md",
+          "source": "hacktricks",
+          "section_path": "0x5 root it > Docker Group",
+          "rerank": 0.9984163045883179,
+          "rrf": 0.03125,
+          "dense_rank": 4,
+          "sparse_rank": 4
+        },
+        {
+          "id": "mitre::enterprise-attack/T1611.md::0",
+          "rel_path": "enterprise-attack/T1611.md",
+          "source": "mitre",
+          "section_path": "T1611: Escape to Host > Description",
+          "rerank": 0.9983494281768799,
+          "rrf": 0.03128054740957967,
+          "dense_rank": 2,
+          "sparse_rank": 6
+        },
+        {
+          "id": "hacktricks::src/linux-hardening/privilege-escalation/containerd-ctr-privilege-escalation.md::1",
+          "rel_path": "src/linux-hardening/privilege-escalation/containerd-ctr-privilege-escalation.md",
+          "source": "hacktricks",
+          "section_path": "Containerd (ctr) Privilege Escalation > PE 2",
+          "rerank": 0.9980782270431519,
+          "rrf": 0.014925373134328358,
+          "dense_rank": 7,
+          "sparse_rank": null
+        }
+      ],
+      "answer_text": "",
+      "thinking_text": "",
+      "timing_status": [],
+      "wall_clock_s": 1.5041139019995171,
+      "error": null,
+      "status": "ok",
+      "timeout": false,
+      "score": {
+        "retrieval_score": 0.5,
+        "path_recall": 0.5,
+        "substring_recall": 0.5,
+        "fact_score": null,
+        "hallucination_penalty": null,
+        "hallucinations": [],
+        "combined": 0.5
+      }
+    },
+    {
+      "id": "q-035",
+      "category": "multi-step",
+      "question": "I have a shell in a Kubernetes pod with hostPID=true. Walk me through stealing kubelet credentials and escalating to cluster-admin.",
+      "retrieved_chunks": [
+        {
+          "id": "payloads::Methodology and Resources/Container - Kubernetes Pentest.md::0",
+          "rel_path": "Methodology and Resources/Container - Kubernetes Pentest.md",
+          "source": "payloads",
+          "section_path": "Container - Kubernetes",
+          "rerank": 0.9993941783905029,
+          "rrf": 0.015384615384615385,
+          "dense_rank": 5,
+          "sparse_rank": null
+        },
+        {
+          "id": "hacktricks::src/linux-hardening/privilege-escalation/container-security/runtime-api-and-daemon-exposure.md::9",
+          "rel_path": "src/linux-hardening/privilege-escalation/container-security/runtime-api-and-daemon-exposure.md",
+          "source": "hacktricks",
+          "section_path": "Runtime API And Daemon Exposure > Abuse > Kubelet API Over TCP",
+          "rerank": 0.9983365535736084,
+          "rrf": 0.01639344262295082,
+          "dense_rank": 1,
+          "sparse_rank": null
+        },
+        {
+          "id": "mitre::enterprise-attack/T1552.007.md::0",
+          "rel_path": "enterprise-attack/T1552.007.md",
+          "source": "mitre",
+          "section_path": "T1552.007: Container API > Description",
+          "rerank": 0.9980506896972656,
+          "rrf": 0.02967032967032967,
+          "dense_rank": 10,
+          "sparse_rank": 5
+        },
+        {
+          "id": "hacktricks::src/linux-hardening/privilege-escalation/container-security/protections/namespaces/network-namespace.md::6",
+          "rel_path": "src/linux-hardening/privilege-escalation/container-security/protections/namespaces/network-namespace.md",
+          "source": "hacktricks",
+          "section_path": "Network Namespace > Abuse > Full Example: Host Networking + Local Runtime / Kubelet Access",
+          "rerank": 0.9978871941566467,
+          "rrf": 0.015625,
+          "dense_rank": 4,
+          "sparse_rank": null
+        },
+        {
+          "id": "hacktricks::src/linux-hardening/privilege-escalation/container-security/privileged-containers.md::8",
+          "rel_path": "src/linux-hardening/privilege-escalation/container-security/privileged-containers.md",
+          "source": "hacktricks",
+          "section_path": "Escaping From `--privileged` Containers > Escape Paths > 7. Read Host Secrets And Runtime State",
+          "rerank": 0.9940603375434875,
+          "rrf": 0.015873015873015872,
+          "dense_rank": 3,
+          "sparse_rank": null
+        }
+      ],
+      "answer_text": "",
+      "thinking_text": "",
+      "timing_status": [],
+      "wall_clock_s": 1.944979688996682,
+      "error": null,
+      "status": "ok",
+      "timeout": false,
+      "score": {
+        "retrieval_score": 0.9249999999999999,
+        "path_recall": 1.0,
+        "substring_recall": 0.75,
+        "fact_score": null,
+        "hallucination_penalty": null,
+        "hallucinations": [],
+        "combined": 0.9249999999999999
+      }
+    },
+    {
+      "id": "q-036",
+      "category": "multi-step",
+      "question": "Blind SSRF on a backend running in AWS. Walk me through SSRF -> IMDS -> IAM creds -> escalation.",
+      "retrieved_chunks": [
+        {
+          "id": "payloads::Server Side Request Forgery/SSRF-Cloud-Instances.md::3",
+          "rel_path": "Server Side Request Forgery/SSRF-Cloud-Instances.md",
+          "source": "payloads",
+          "section_path": "SSRF URL for Cloud Instances > SSRF URL for AWS Elastic Beanstalk",
+          "rerank": 0.9976734519004822,
+          "rrf": 0.031054405392392875,
+          "dense_rank": 7,
+          "sparse_rank": 2
+        },
+        {
+          "id": "hacktricks::src/pentesting-web/ssrf-server-side-request-forgery/cloud-ssrf.md::7",
+          "rel_path": "src/pentesting-web/ssrf-server-side-request-forgery/cloud-ssrf.md",
+          "source": "hacktricks",
+          "section_path": "Use the projected token to query the local Pod Identity credential endpoint > SSRF for AWS Lambda > SSRF URL for AWS Elastic Beanstalk",
+          "rerank": 0.9974203109741211,
+          "rrf": 0.029437229437229435,
+          "dense_rank": 10,
+          "sparse_rank": 6
+        },
+        {
+          "id": "hacktricks::src/pentesting-web/ssrf-server-side-request-forgery/cloud-ssrf.md::4",
+          "rel_path": "src/pentesting-web/ssrf-server-side-request-forgery/cloud-ssrf.md",
+          "source": "hacktricks",
+          "section_path": "Search hardcoded credentials > SSRF in AWS ECS (Container Service) credentials > SSRF in AWS EKS Pod Identity credentials",
+          "rerank": 0.9960342049598694,
+          "rrf": 0.03036576949620428,
+          "dense_rank": 9,
+          "sparse_rank": 3
+        },
+        {
+          "id": "hacktricks::src/pentesting-web/ssrf-server-side-request-forgery/cloud-ssrf.md::3",
+          "rel_path": "src/pentesting-web/ssrf-server-side-request-forgery/cloud-ssrf.md",
+          "source": "hacktricks",
+          "section_path": "Search hardcoded credentials > SSRF in AWS ECS (Container Service) credentials",
+          "rerank": 0.9958615899085999,
+          "rrf": 0.015625,
+          "dense_rank": 4,
+          "sparse_rank": null
+        },
+        {
+          "id": "hacktricks::src/pentesting-web/ssrf-server-side-request-forgery/cloud-ssrf.md::0",
+          "rel_path": "src/pentesting-web/ssrf-server-side-request-forgery/cloud-ssrf.md",
+          "source": "hacktricks",
+          "section_path": "Cloud SSRF > AWS > Abusing SSRF in AWS EC2 environment",
+          "rerank": 0.9890507459640503,
+          "rrf": 0.015873015873015872,
+          "dense_rank": 3,
+          "sparse_rank": null
+        }
+      ],
+      "answer_text": "",
+      "thinking_text": "",
+      "timing_status": [],
+      "wall_clock_s": 3.914066545999958,
+      "error": null,
+      "status": "ok",
+      "timeout": false,
+      "score": {
+        "retrieval_score": 1.0,
+        "path_recall": 1.0,
+        "substring_recall": 1.0,
+        "fact_score": null,
+        "hallucination_penalty": null,
+        "hallucinations": [],
+        "combined": 1.0
+      }
+    },
+    {
+      "id": "q-037",
+      "category": "multi-step",
+      "question": "GraphQL endpoint with introspection on. Walk me from introspection -> batch-query DoS -> auth bypass via field aliasing.",
+      "retrieved_chunks": [
+        {
+          "id": "hacktricks::src/network-services-pentesting/pentesting-web/graphql.md::21",
+          "rel_path": "src/network-services-pentesting/pentesting-web/graphql.md",
+          "source": "hacktricks",
+          "section_path": "Example of a request utilizing aliased queries to check for valid discount codes > DoS in GraphQL > Alias Overloading",
+          "rerank": 0.9979033470153809,
+          "rrf": 0.01639344262295082,
+          "dense_rank": 1,
+          "sparse_rank": null
+        },
+        {
+          "id": "payloads::GraphQL Injection/README.md::13",
+          "rel_path": "GraphQL Injection/README.md",
+          "source": "payloads",
+          "section_path": "GraphQL Injection > Methodology > GraphQL Batching Attacks > Query Name Based Batching",
+          "rerank": 0.9942869544029236,
+          "rrf": 0.014285714285714285,
+          "dense_rank": 10,
+          "sparse_rank": null
+        },
+        {
+          "id": "owasp::cheatsheets/GraphQL_Cheat_Sheet.md::19",
+          "rel_path": "cheatsheets/GraphQL_Cheat_Sheet.md",
+          "source": "owasp",
+          "section_path": "GraphQL Cheat Sheet > Best Practices and Recommendations > Secure Configurations > Introspection + GraphiQL",
+          "rerank": 0.9940469264984131,
+          "rrf": 0.031009615384615385,
+          "dense_rank": 4,
+          "sparse_rank": 5
+        },
+        {
+          "id": "payloads::GraphQL Injection/README.md::0",
+          "rel_path": "GraphQL Injection/README.md",
+          "source": "payloads",
+          "section_path": "GraphQL Injection > Summary",
+          "rerank": 0.9903743267059326,
+          "rrf": 0.014925373134328358,
+          "dense_rank": null,
+          "sparse_rank": 7
+        },
+        {
+          "id": "owasp::cheatsheets/GraphQL_Cheat_Sheet.md::16",
+          "rel_path": "cheatsheets/GraphQL_Cheat_Sheet.md",
+          "source": "owasp",
+          "section_path": "GraphQL Cheat Sheet > Best Practices and Recommendations > Batching Attacks",
+          "rerank": 0.9870563745498657,
+          "rrf": 0.014705882352941176,
+          "dense_rank": 8,
+          "sparse_rank": null
+        }
+      ],
+      "answer_text": "",
+      "thinking_text": "",
+      "timing_status": [],
+      "wall_clock_s": 3.1988635179986886,
+      "error": null,
+      "status": "ok",
+      "timeout": false,
+      "score": {
+        "retrieval_score": 1.0,
+        "path_recall": 1.0,
+        "substring_recall": 1.0,
+        "fact_score": null,
+        "hallucination_penalty": null,
+        "hallucinations": [],
+        "combined": 1.0
+      }
+    },
+    {
+      "id": "q-038",
+      "category": "multi-step",
+      "question": "Leaked AKIA access key. Walk me through enum -> identify the principal -> find iam:PassRole or lambda:InvokeFunction -> escalate to Admin.",
+      "retrieved_chunks": [
+        {
+          "id": "payloads::Methodology and Resources/Cloud - AWS Pentest.md::0",
+          "rel_path": "Methodology and Resources/Cloud - AWS Pentest.md",
+          "source": "payloads",
+          "section_path": "Cloud - AWS",
+          "rerank": 0.9926816821098328,
+          "rrf": 0.030330882352941176,
+          "dense_rank": 4,
+          "sparse_rank": 8
+        },
+        {
+          "id": "payloads::API Key Leaks/README.md::2",
+          "rel_path": "API Key Leaks/README.md",
+          "source": "payloads",
+          "section_path": "API Key and Token Leaks > Methodology > Validate The API Key",
+          "rerank": 0.701508641242981,
+          "rrf": 0.014285714285714285,
+          "dense_rank": null,
+          "sparse_rank": 10
+        },
+        {
+          "id": "mitre::enterprise-attack/T1136.003.md::1",
+          "rel_path": "enterprise-attack/T1136.003.md",
+          "source": "mitre",
+          "section_path": "T1136.003: Cloud Account > References",
+          "rerank": 0.5175675749778748,
+          "rrf": 0.01639344262295082,
+          "dense_rank": null,
+          "sparse_rank": 1
+        },
+        {
+          "id": "owasp::cheatsheets/Secrets_Management_Cheat_Sheet.md::38",
+          "rel_path": "cheatsheets/Secrets_Management_Cheat_Sheet.md",
+          "source": "owasp",
+          "section_path": "Secrets Management Cheat Sheet > 4 Cloud Providers > 4.3 Identity and Access Management (IAM)",
+          "rerank": 0.515091598033905,
+          "rrf": 0.016129032258064516,
+          "dense_rank": null,
+          "sparse_rank": 2
+        },
+        {
+          "id": "mitre::enterprise-attack/T1548.005.md::2",
+          "rel_path": "enterprise-attack/T1548.005.md",
+          "source": "mitre",
+          "section_path": "T1548.005: Temporary Elevated Cloud Access > References",
+          "rerank": 0.2278580218553543,
+          "rrf": 0.015384615384615385,
+          "dense_rank": 5,
+          "sparse_rank": null
+        }
+      ],
+      "answer_text": "",
+      "thinking_text": "",
+      "timing_status": [],
+      "wall_clock_s": 5.947895356999652,
+      "error": null,
+      "status": "ok",
+      "timeout": false,
+      "score": {
+        "retrieval_score": 0.9249999999999999,
+        "path_recall": 1.0,
+        "substring_recall": 0.75,
+        "fact_score": null,
+        "hallucination_penalty": null,
+        "hallucinations": [],
+        "combined": 0.9249999999999999
+      }
+    },
+    {
+      "id": "q-039",
+      "category": "multi-step",
+      "question": "User phished into a device-code phishing flow on Azure AD. Walk me from the device-code grant to Graph API takeover including conditional-access evasion.",
+      "retrieved_chunks": [
+        {
+          "id": "mitre::enterprise-attack/T1566.002.md::1",
+          "rel_path": "enterprise-attack/T1566.002.md",
+          "source": "mitre",
+          "section_path": "T1566.002: Spearphishing Link > Description",
+          "rerank": 0.9978098273277283,
+          "rrf": 0.03278688524590164,
+          "dense_rank": 1,
+          "sparse_rank": 1
+        },
+        {
+          "id": "payloads::Methodology and Resources/Cloud - Azure Pentest.md::0",
+          "rel_path": "Methodology and Resources/Cloud - Azure Pentest.md",
+          "source": "payloads",
+          "section_path": "Cloud - Azure",
+          "rerank": 0.9969273209571838,
+          "rrf": 0.015625,
+          "dense_rank": 4,
+          "sparse_rank": null
+        },
+        {
+          "id": "mitre::enterprise-attack/T1566.002.md::2",
+          "rel_path": "enterprise-attack/T1566.002.md",
+          "source": "mitre",
+          "section_path": "T1566.002: Spearphishing Link > References",
+          "rerank": 0.991381824016571,
+          "rrf": 0.031054405392392875,
+          "dense_rank": 2,
+          "sparse_rank": 7
+        },
+        {
+          "id": "mitre::enterprise-attack/T1528.md::1",
+          "rel_path": "enterprise-attack/T1528.md",
+          "source": "mitre",
+          "section_path": "T1528: Steal Application Access Token > Description",
+          "rerank": 0.9855857491493225,
+          "rrf": 0.03057889822595705,
+          "dense_rank": 3,
+          "sparse_rank": 8
+        },
+        {
+          "id": "mitre::enterprise-attack/T1528.md::2",
+          "rel_path": "enterprise-attack/T1528.md",
+          "source": "mitre",
+          "section_path": "T1528: Steal Application Access Token > References",
+          "rerank": 0.9527640342712402,
+          "rrf": 0.015625,
+          "dense_rank": null,
+          "sparse_rank": 4
+        }
+      ],
+      "answer_text": "",
+      "thinking_text": "",
+      "timing_status": [],
+      "wall_clock_s": 1.722364134999225,
+      "error": null,
+      "status": "ok",
+      "timeout": false,
+      "score": {
+        "retrieval_score": 0.85,
+        "path_recall": 1.0,
+        "substring_recall": 0.5,
+        "fact_score": null,
+        "hallucination_penalty": null,
+        "hallucinations": [],
+        "combined": 0.85
+      }
+    },
+    {
+      "id": "q-040",
+      "category": "multi-step",
+      "question": "SSRF on a GCP-hosted app. Walk me from SSRF -> metadata.google.internal -> service account access token -> impersonation to org admin.",
+      "retrieved_chunks": [
+        {
+          "id": "payloads::Server Side Request Forgery/SSRF-Cloud-Instances.md::6",
+          "rel_path": "Server Side Request Forgery/SSRF-Cloud-Instances.md",
+          "source": "payloads",
+          "section_path": "SSRF URL for Cloud Instances > SSRF URL for Google Cloud > Add an SSH key",
+          "rerank": 0.9974303841590881,
+          "rrf": 0.030309988518943745,
+          "dense_rank": 7,
+          "sparse_rank": 5
+        },
+        {
+          "id": "hacktricks::src/pentesting-web/ssrf-server-side-request-forgery/cloud-ssrf.md::11",
+          "rel_path": "src/pentesting-web/ssrf-server-side-request-forgery/cloud-ssrf.md",
+          "source": "hacktricks",
+          "section_path": "All custom project attributes instance attributes",
+          "rerank": 0.995001494884491,
+          "rrf": 0.014925373134328358,
+          "dense_rank": null,
+          "sparse_rank": 7
+        },
+        {
+          "id": "mitre::enterprise-attack/T1522.md::0",
+          "rel_path": "enterprise-attack/T1522.md",
+          "source": "mitre",
+          "section_path": "T1522: Cloud Instance Metadata API > Description",
+          "rerank": 0.9912701845169067,
+          "rrf": 0.02967032967032967,
+          "dense_rank": 5,
+          "sparse_rank": 10
+        },
+        {
+          "id": "payloads::Server Side Request Forgery/SSRF-Cloud-Instances.md::5",
+          "rel_path": "Server Side Request Forgery/SSRF-Cloud-Instances.md",
+          "source": "payloads",
+          "section_path": "SSRF URL for Cloud Instances > SSRF URL for Google Cloud",
+          "rerank": 0.985945999622345,
+          "rrf": 0.03252247488101534,
+          "dense_rank": 1,
+          "sparse_rank": 2
+        },
+        {
+          "id": "payloads::Server Side Request Forgery/SSRF-Cloud-Instances.md::11",
+          "rel_path": "Server Side Request Forgery/SSRF-Cloud-Instances.md",
+          "source": "payloads",
+          "section_path": "SSRF URL for Cloud Instances > References",
+          "rerank": 0.9841678738594055,
+          "rrf": 0.030303030303030304,
+          "dense_rank": 6,
+          "sparse_rank": 6
+        }
+      ],
+      "answer_text": "",
+      "thinking_text": "",
+      "timing_status": [],
+      "wall_clock_s": 1.7445664450024196,
+      "error": null,
+      "status": "ok",
+      "timeout": false,
+      "score": {
+        "retrieval_score": 0.3,
+        "path_recall": 0.0,
+        "substring_recall": 1.0,
+        "fact_score": null,
+        "hallucination_penalty": null,
+        "hallucinations": [],
+        "combined": 0.3
+      }
+    },
+    {
+      "id": "q-041",
+      "category": "multi-step",
+      "question": "Shell on a jump host inside a corp net, no direct line to the DC. Walk me from SSH dynamic forward (SOCKS) to running BloodHound from outside.",
+      "retrieved_chunks": [
+        {
+          "id": "hacktricks::src/windows-hardening/active-directory-methodology/lansweeper-security.md::9",
+          "rel_path": "src/windows-hardening/active-directory-methodology/lansweeper-security.md",
+          "source": "hacktricks",
+          "section_path": "Reverse shell example (adapt to your listener) > References",
+          "rerank": 0.9795290231704712,
+          "rrf": 0.03128054740957967,
+          "dense_rank": 2,
+          "sparse_rank": 6
+        },
+        {
+          "id": "hacktricks::src/windows-hardening/mythic.md::11",
+          "rel_path": "src/windows-hardening/mythic.md",
+          "source": "hacktricks",
+          "section_path": "Mythic > [Poseidon Agent](https://github.com/MythicAgents/Poseidon) > Move laterally",
+          "rerank": 0.9727531671524048,
+          "rrf": 0.03125763125763126,
+          "dense_rank": 5,
+          "sparse_rank": 3
+        },
+        {
+          "id": "hacktricks::src/generic-hacking/tunneling-and-port-forwarding.md::19",
+          "rel_path": "src/generic-hacking/tunneling-and-port-forwarding.md",
+          "source": "hacktricks",
+          "section_path": "On victim (OpenSSH client only) > Covert VM-based Tunnels with QEMU",
+          "rerank": 0.9191300868988037,
+          "rrf": 0.01639344262295082,
+          "dense_rank": 1,
+          "sparse_rank": null
+        },
+        {
+          "id": "mitre::enterprise-attack/T1563.001.md::0",
+          "rel_path": "enterprise-attack/T1563.001.md",
+          "source": "mitre",
+          "section_path": "T1563.001: SSH Hijacking > Description",
+          "rerank": 0.8566948771476746,
+          "rrf": 0.015873015873015872,
+          "dense_rank": 3,
+          "sparse_rank": null
+        },
+        {
+          "id": "mitre::enterprise-attack/T1184.md::0",
+          "rel_path": "enterprise-attack/T1184.md",
+          "source": "mitre",
+          "section_path": "T1184: SSH Hijacking > Description",
+          "rerank": 0.8014004826545715,
+          "rrf": 0.015625,
+          "dense_rank": 4,
+          "sparse_rank": null
+        }
+      ],
+      "answer_text": "",
+      "thinking_text": "",
+      "timing_status": [],
+      "wall_clock_s": 2.2128009619991644,
+      "error": null,
+      "status": "ok",
+      "timeout": false,
+      "score": {
+        "retrieval_score": 0.22499999999999998,
+        "path_recall": 0.0,
+        "substring_recall": 0.75,
+        "fact_score": null,
+        "hallucination_penalty": null,
+        "hallucinations": [],
+        "combined": 0.22499999999999998
+      }
+    },
+    {
+      "id": "q-042",
+      "category": "multi-step",
+      "question": "Evilginx2 standing up an MITM phishlet for Microsoft 365. Walk from phishlet config -> reverse-proxy MITM -> MFA bypass via session cookie capture.",
+      "retrieved_chunks": [
+        {
+          "id": "hacktricks::src/generic-methodologies-and-resources/phishing-methodology/README.md::17",
+          "rel_path": "src/generic-methodologies-and-resources/phishing-methodology/README.md",
+          "source": "hacktricks",
+          "section_path": "define script variables > Phishing MFA > Via Proxy MitM",
+          "rerank": 0.9994650483131409,
+          "rrf": 0.03278688524590164,
+          "dense_rank": 1,
+          "sparse_rank": 1
+        },
+        {
+          "id": "mitre::enterprise-attack/T1598.003.md::1",
+          "rel_path": "enterprise-attack/T1598.003.md",
+          "source": "mitre",
+          "section_path": "T1598.003: Spearphishing Link > Description",
+          "rerank": 0.9983164072036743,
+          "rrf": 0.016129032258064516,
+          "dense_rank": 2,
+          "sparse_rank": null
+        },
+        {
+          "id": "mitre::enterprise-attack/T1539.md::0",
+          "rel_path": "enterprise-attack/T1539.md",
+          "source": "mitre",
+          "section_path": "T1539: Steal Web Session Cookie > Description",
+          "rerank": 0.9960546493530273,
+          "rrf": 0.015625,
+          "dense_rank": null,
+          "sparse_rank": 4
+        },
+        {
+          "id": "mitre::enterprise-attack/T1506.md::0",
+          "rel_path": "enterprise-attack/T1506.md",
+          "source": "mitre",
+          "section_path": "T1506: Web Session Cookie > Description",
+          "rerank": 0.9906010627746582,
+          "rrf": 0.014925373134328358,
+          "dense_rank": 7,
+          "sparse_rank": null
+        },
+        {
+          "id": "mitre::enterprise-attack/T1550.004.md::0",
+          "rel_path": "enterprise-attack/T1550.004.md",
+          "source": "mitre",
+          "section_path": "T1550.004: Web Session Cookie > Description",
+          "rerank": 0.9848237037658691,
+          "rrf": 0.015384615384615385,
+          "dense_rank": 5,
+          "sparse_rank": null
+        }
+      ],
+      "answer_text": "",
+      "thinking_text": "",
+      "timing_status": [],
+      "wall_clock_s": 3.1220329239986313,
+      "error": null,
+      "status": "ok",
+      "timeout": false,
+      "score": {
+        "retrieval_score": 0.15,
+        "path_recall": 0.0,
+        "substring_recall": 0.5,
+        "fact_score": null,
+        "hallucination_penalty": null,
+        "hallucinations": [],
+        "combined": 0.15
+      }
+    },
+    {
+      "id": "q-043",
+      "category": "multi-step",
+      "question": "Android APK with no certificate pinning. Walk me from decompile -> identify absence of pinning -> proxy TLS -> capture session token -> server-side abuse.",
+      "retrieved_chunks": [
+        {
+          "id": "hacktricks::src/mobile-pentesting/android-app-pentesting/insecure-in-app-update-rce.md::2",
+          "rel_path": "src/mobile-pentesting/android-app-pentesting/insecure-in-app-update-rce.md",
+          "source": "hacktricks",
+          "section_path": "Insecure In-App Update Mechanisms – Remote Code Execution via Malicious Plugins > 1. Identifying an Insecure TLS TrustManager",
+          "rerank": 0.9984853863716125,
+          "rrf": 0.03131881575727918,
+          "dense_rank": 7,
+          "sparse_rank": 1
+        },
+        {
+          "id": "hacktricks::src/mobile-pentesting/android-app-pentesting/android-anti-instrumentation-and-ssl-pinning-bypass.md::0",
+          "rel_path": "src/mobile-pentesting/android-app-pentesting/android-anti-instrumentation-and-ssl-pinning-bypass.md",
+          "source": "hacktricks",
+          "section_path": "Android Anti-Instrumentation & SSL Pinning Bypass (Frida/Objection)",
+          "rerank": 0.9978446960449219,
+          "rrf": 0.015151515151515152,
+          "dense_rank": 6,
+          "sparse_rank": null
+        },
+        {
+          "id": "hacktricks::src/mobile-pentesting/android-app-pentesting/make-apk-accept-ca-certificate.md::0",
+          "rel_path": "src/mobile-pentesting/android-app-pentesting/make-apk-accept-ca-certificate.md",
+          "source": "hacktricks",
+          "section_path": "Make APK accept CA certificate > Manual",
+          "rerank": 0.9972147345542908,
+          "rrf": 0.031754032258064516,
+          "dense_rank": 4,
+          "sparse_rank": 2
+        },
+        {
+          "id": "hacktricks::src/mobile-pentesting/android-app-pentesting/README.md::37",
+          "rel_path": "src/mobile-pentesting/android-app-pentesting/README.md",
+          "source": "hacktricks",
+          "section_path": "Verbose (timings + per-match path:line + snippet) > Bypassing SSL Pinning",
+          "rerank": 0.9961550831794739,
+          "rrf": 0.030834914611005692,
+          "dense_rank": 2,
+          "sparse_rank": 8
+        },
+        {
+          "id": "hacktricks::src/mobile-pentesting/android-app-pentesting/README.md::36",
+          "rel_path": "src/mobile-pentesting/android-app-pentesting/README.md",
+          "source": "hacktricks",
+          "section_path": "Verbose (timings + per-match path:line + snippet)",
+          "rerank": 0.9811087250709534,
+          "rrf": 0.015873015873015872,
+          "dense_rank": 3,
+          "sparse_rank": null
+        }
+      ],
+      "answer_text": "",
+      "thinking_text": "",
+      "timing_status": [],
+      "wall_clock_s": 3.844566956999188,
+      "error": null,
+      "status": "ok",
+      "timeout": false,
+      "score": {
+        "retrieval_score": 1.0,
+        "path_recall": 1.0,
+        "substring_recall": 1.0,
+        "fact_score": null,
+        "hallucination_penalty": null,
+        "hallucinations": [],
+        "combined": 1.0
+      }
+    },
+    {
+      "id": "q-044",
+      "category": "multi-step",
+      "question": "External recon -> vulnerable Confluence on attack surface -> OGNL -> C2 callback. Full chain.",
+      "retrieved_chunks": [
+        {
+          "id": "hacktricks::src/network-services-pentesting/pentesting-web/jira.md::1",
+          "rel_path": "src/network-services-pentesting/pentesting-web/jira.md",
+          "source": "hacktricks",
+          "section_path": "Jira & Confluence > Recent RCEs & practical exploit notes (Confluence) > CVE-2023-22527 – unauthenticated template/OGNL injection (10.0)",
+          "rerank": 0.9976567029953003,
+          "rrf": 0.03278688524590164,
+          "dense_rank": 1,
+          "sparse_rank": 1
+        },
+        {
+          "id": "hacktricks::src/network-services-pentesting/pentesting-web/jira.md::6",
+          "rel_path": "src/network-services-pentesting/pentesting-web/jira.md",
+          "source": "hacktricks",
+          "section_path": "Jira & Confluence > References",
+          "rerank": 0.974195659160614,
+          "rrf": 0.016129032258064516,
+          "dense_rank": 2,
+          "sparse_rank": null
+        },
+        {
+          "id": "hacktricks::src/network-services-pentesting/pentesting-web/jira.md::5",
+          "rel_path": "src/network-services-pentesting/pentesting-web/jira.md",
+          "source": "hacktricks",
+          "section_path": "Jira & Confluence > Backdoor Plugin",
+          "rerank": 0.9738483428955078,
+          "rrf": 0.015384615384615385,
+          "dense_rank": 5,
+          "sparse_rank": null
+        },
+        {
+          "id": "hacktricks::src/network-services-pentesting/pentesting-web/jira.md::3",
+          "rel_path": "src/network-services-pentesting/pentesting-web/jira.md",
+          "source": "hacktricks",
+          "section_path": "Jira & Confluence > Recent RCEs & practical exploit notes (Confluence) > CVE-2024-21683 – authenticated RCE via Code Macro upload",
+          "rerank": 0.972542405128479,
+          "rrf": 0.015151515151515152,
+          "dense_rank": 6,
+          "sparse_rank": null
+        },
+        {
+          "id": "hacktricks::src/network-services-pentesting/pentesting-web/jira.md::2",
+          "rel_path": "src/network-services-pentesting/pentesting-web/jira.md",
+          "source": "hacktricks",
+          "section_path": "Jira & Confluence > Recent RCEs & practical exploit notes (Confluence) > CVE-2023-22515 – setup reactivation admin creation (auth bypass)",
+          "rerank": 0.9599127173423767,
+          "rrf": 0.014285714285714285,
+          "dense_rank": 10,
+          "sparse_rank": null
+        }
+      ],
+      "answer_text": "",
+      "thinking_text": "",
+      "timing_status": [],
+      "wall_clock_s": 1.9446308730002784,
+      "error": null,
+      "status": "ok",
+      "timeout": false,
+      "score": {
+        "retrieval_score": 0.15,
+        "path_recall": 0.0,
+        "substring_recall": 0.5,
+        "fact_score": null,
+        "hallucination_penalty": null,
+        "hallucinations": [],
+        "combined": 0.15
+      }
+    },
+    {
+      "id": "q-045",
+      "category": "multi-step",
+      "question": "Cobalt Strike beacon in-memory on a Windows box. Walk from AMSI patch -> Mimikatz sekurlsa::logonpasswords -> ticket extraction -> pass-the-hash to a second host.",
+      "retrieved_chunks": [
+        {
+          "id": "hacktricks::src/windows-hardening/stealing-credentials/README.md::1",
+          "rel_path": "src/windows-hardening/stealing-credentials/README.md",
+          "source": "hacktricks",
+          "section_path": "Stealing Windows Credentials > Credentials Mimikatz > Invoke-Mimikatz",
+          "rerank": 0.9970267415046692,
+          "rrf": 0.015384615384615385,
+          "dense_rank": null,
+          "sparse_rank": 5
+        },
+        {
+          "id": "hacktricks::src/windows-hardening/stealing-credentials/README.md::2",
+          "rel_path": "src/windows-hardening/stealing-credentials/README.md",
+          "source": "hacktricks",
+          "section_path": "Stealing Windows Credentials > Credentials with Meterpreter",
+          "rerank": 0.9966773986816406,
+          "rrf": 0.029211087420042643,
+          "dense_rank": 10,
+          "sparse_rank": 7
+        },
+        {
+          "id": "hacktricks::src/windows-hardening/windows-local-privilege-escalation/privilege-escalation-abusing-tokens.md::9",
+          "rel_path": "src/windows-hardening/windows-local-privilege-escalation/privilege-escalation-abusing-tokens.md",
+          "source": "hacktricks",
+          "section_path": "Use this with files that might contain credentials such as > SeDebugPrivilege > Dump memory",
+          "rerank": 0.9964099526405334,
+          "rrf": 0.030330882352941176,
+          "dense_rank": 4,
+          "sparse_rank": 8
+        },
+        {
+          "id": "payloads::Methodology and Resources/Windows - Mimikatz.md::0",
+          "rel_path": "Methodology and Resources/Windows - Mimikatz.md",
+          "source": "payloads",
+          "section_path": "Windows - Mimikatz",
+          "rerank": 0.9955449104309082,
+          "rrf": 0.01639344262295082,
+          "dense_rank": 1,
+          "sparse_rank": null
+        },
+        {
+          "id": "hacktricks::src/windows-hardening/stealing-credentials/README.md::0",
+          "rel_path": "src/windows-hardening/stealing-credentials/README.md",
+          "source": "hacktricks",
+          "section_path": "Stealing Windows Credentials > Credentials Mimikatz",
+          "rerank": 0.9917295575141907,
+          "rrf": 0.031024531024531024,
+          "dense_rank": 6,
+          "sparse_rank": 3
+        }
+      ],
+      "answer_text": "",
+      "thinking_text": "",
+      "timing_status": [],
+      "wall_clock_s": 2.735964088999026,
+      "error": null,
+      "status": "ok",
+      "timeout": false,
+      "score": {
+        "retrieval_score": 0.9249999999999999,
+        "path_recall": 1.0,
+        "substring_recall": 0.75,
+        "fact_score": null,
+        "hallucination_penalty": null,
+        "hallucinations": [],
+        "combined": 0.9249999999999999
+      }
+    },
+    {
+      "id": "q-046",
+      "category": "ambiguous",
+      "question": "Help me hack my own server.",
+      "retrieved_chunks": [
+        {
+          "id": "hacktricks::src/network-services-pentesting/pentesting-web/README.md::3",
+          "rel_path": "src/network-services-pentesting/pentesting-web/README.md",
+          "source": "hacktricks",
+          "section_path": "80,443 - Pentesting Web Methodology > Server Version (Vulnerable?) > Web tech tricks",
+          "rerank": 0.6592055559158325,
+          "rrf": 0.014705882352941176,
+          "dense_rank": 8,
+          "sparse_rank": null
+        },
+        {
+          "id": "mitre::enterprise-attack/T1583.004.md::0",
+          "rel_path": "enterprise-attack/T1583.004.md",
+          "source": "mitre",
+          "section_path": "T1583.004: Server > Description",
+          "rerank": 0.5757657885551453,
+          "rrf": 0.01639344262295082,
+          "dense_rank": 1,
+          "sparse_rank": null
+        },
+        {
+          "id": "hacktricks::src/SUMMARY.md::4",
+          "rel_path": "src/SUMMARY.md",
+          "source": "hacktricks",
+          "section_path": "🧙‍♂️ Generic Hacking",
+          "rerank": 0.4803251028060913,
+          "rrf": 0.015151515151515152,
+          "dense_rank": 6,
+          "sparse_rank": null
+        },
+        {
+          "id": "mitre::enterprise-attack/T1505.md::0",
+          "rel_path": "enterprise-attack/T1505.md",
+          "source": "mitre",
+          "section_path": "T1505: Server Software Component > Description",
+          "rerank": 0.42527326941490173,
+          "rrf": 0.015873015873015872,
+          "dense_rank": 3,
+          "sparse_rank": null
+        },
+        {
+          "id": "mitre::enterprise-attack/T1583.004.md::1",
+          "rel_path": "enterprise-attack/T1583.004.md",
+          "source": "mitre",
+          "section_path": "T1583.004: Server > References",
+          "rerank": 0.10168880224227905,
+          "rrf": 0.015625,
+          "dense_rank": 4,
+          "sparse_rank": null
+        }
+      ],
+      "answer_text": "",
+      "thinking_text": "",
+      "timing_status": [],
+      "wall_clock_s": 2.3907311750008375,
+      "error": null,
+      "status": "ok",
+      "timeout": false,
+      "score": {
+        "retrieval_score": 1.0,
+        "path_recall": 1.0,
+        "substring_recall": 1.0,
+        "fact_score": null,
+        "hallucination_penalty": null,
+        "hallucinations": [],
+        "combined": 1.0
+      }
+    },
+    {
+      "id": "q-047",
+      "category": "ambiguous",
+      "question": "How do I get into a network?",
+      "retrieved_chunks": [
+        {
+          "id": "mitre::enterprise-attack/T1669.md::0",
+          "rel_path": "enterprise-attack/T1669.md",
+          "source": "mitre",
+          "section_path": "T1669: Wi-Fi Networks > Description",
+          "rerank": 0.8853702545166016,
+          "rrf": 0.01639344262295082,
+          "dense_rank": 1,
+          "sparse_rank": null
+        },
+        {
+          "id": "mitre::enterprise-attack/T1557.004.md::0",
+          "rel_path": "enterprise-attack/T1557.004.md",
+          "source": "mitre",
+          "section_path": "T1557.004: Evil Twin > Description",
+          "rerank": 0.2941599190235138,
+          "rrf": 0.014705882352941176,
+          "dense_rank": 8,
+          "sparse_rank": null
+        },
+        {
+          "id": "mitre::enterprise-attack/T1650.md::0",
+          "rel_path": "enterprise-attack/T1650.md",
+          "source": "mitre",
+          "section_path": "T1650: Acquire Access > Description",
+          "rerank": 0.10323453694581985,
+          "rrf": 0.015625,
+          "dense_rank": 4,
+          "sparse_rank": null
+        },
+        {
+          "id": "hacktricks::src/generic-methodologies-and-resources/pentesting-wifi/README.md::27",
+          "rel_path": "src/generic-methodologies-and-resources/pentesting-wifi/README.md",
+          "source": "hacktricks",
+          "section_path": "20815XXXXXXXXXX@wlan.mnc015.mcc208.3gppnetwork.org > EAP-Bruteforce (password spray)",
+          "rerank": 0.09325087815523148,
+          "rrf": 0.014492753623188406,
+          "dense_rank": null,
+          "sparse_rank": 9
+        },
+        {
+          "id": "hacktricks::src/generic-methodologies-and-resources/pentesting-methodology.md::1",
+          "rel_path": "src/generic-methodologies-and-resources/pentesting-methodology.md",
+          "source": "hacktricks",
+          "section_path": "Pentesting Methodology > Pentesting Methodology > **2-** [**Having Fun with the network**](pentesting-network/index.html) **(Internal)**",
+          "rerank": 0.047689635306596756,
+          "rrf": 0.015873015873015872,
+          "dense_rank": 3,
+          "sparse_rank": null
+        }
+      ],
+      "answer_text": "",
+      "thinking_text": "",
+      "timing_status": [],
+      "wall_clock_s": 2.3742074649999267,
+      "error": null,
+      "status": "ok",
+      "timeout": false,
+      "score": {
+        "retrieval_score": 1.0,
+        "path_recall": 1.0,
+        "substring_recall": 1.0,
+        "fact_score": null,
+        "hallucination_penalty": null,
+        "hallucinations": [],
+        "combined": 1.0
+      }
+    },
+    {
+      "id": "q-048",
+      "category": "ambiguous",
+      "question": "What's the best tool for cybersecurity?",
+      "retrieved_chunks": [
+        {
+          "id": "hacktricks::src/network-services-pentesting/pentesting-web/README.md::10",
+          "rel_path": "src/network-services-pentesting/pentesting-web/README.md",
+          "source": "hacktricks",
+          "section_path": "You can also use other tools, by testssl.sh at this momment is the best one (I think) > Spidering",
+          "rerank": 0.8393832445144653,
+          "rrf": 0.014492753623188406,
+          "dense_rank": 9,
+          "sparse_rank": null
+        },
+        {
+          "id": "hacktricks::src/generic-methodologies-and-resources/threat-modeling.md::5",
+          "rel_path": "src/generic-methodologies-and-resources/threat-modeling.md",
+          "source": "hacktricks",
+          "section_path": "Threat Modeling > Tools > [SpiderSuite](https://github.com/3nock/SpiderSuite)",
+          "rerank": 0.4186992347240448,
+          "rrf": 0.01639344262295082,
+          "dense_rank": 1,
+          "sparse_rank": null
+        },
+        {
+          "id": "hacktricks::src/todo/more-tools.md::5",
+          "rel_path": "src/todo/more-tools.md",
+          "source": "hacktricks",
+          "section_path": "More tools > OTHER",
+          "rerank": 0.2651941776275635,
+          "rrf": 0.016129032258064516,
+          "dense_rank": 2,
+          "sparse_rank": null
+        },
+        {
+          "id": "owasp::cheatsheets/Threat_Modeling_Cheat_Sheet.md::14",
+          "rel_path": "cheatsheets/Threat_Modeling_Cheat_Sheet.md",
+          "source": "owasp",
+          "section_path": "Threat Modeling Cheat Sheet > References > Tools",
+          "rerank": 0.2571694552898407,
+          "rrf": 0.015873015873015872,
+          "dense_rank": 3,
+          "sparse_rank": null
+        },
+        {
+          "id": "hacktricks::src/linux-hardening/privilege-escalation/container-security/assessment-and-hardening.md::5",
+          "rel_path": "src/linux-hardening/privilege-escalation/container-security/assessment-and-hardening.md",
+          "source": "hacktricks",
+          "section_path": "Assessment And Hardening > Hardening Tooling",
+          "rerank": 0.08732777088880539,
+          "rrf": 0.014705882352941176,
+          "dense_rank": 8,
+          "sparse_rank": null
+        }
+      ],
+      "answer_text": "",
+      "thinking_text": "",
+      "timing_status": [],
+      "wall_clock_s": 3.3341570749980747,
+      "error": null,
+      "status": "ok",
+      "timeout": false,
+      "score": {
+        "retrieval_score": 1.0,
+        "path_recall": 1.0,
+        "substring_recall": 1.0,
+        "fact_score": null,
+        "hallucination_penalty": null,
+        "hallucinations": [],
+        "combined": 1.0
+      }
+    },
+    {
+      "id": "q-049",
+      "category": "ambiguous",
+      "question": "How do I bypass MFA?",
+      "retrieved_chunks": [
+        {
+          "id": "mitre::enterprise-attack/T1556.006.md::0",
+          "rel_path": "enterprise-attack/T1556.006.md",
+          "source": "mitre",
+          "section_path": "T1556.006: Multi-Factor Authentication > Description",
+          "rerank": 0.9987590312957764,
+          "rrf": 0.03128054740957967,
+          "dense_rank": 6,
+          "sparse_rank": 2
+        },
+        {
+          "id": "payloads::Account Takeover/mfa-bypass.md::0",
+          "rel_path": "Account Takeover/mfa-bypass.md",
+          "source": "payloads",
+          "section_path": "MFA Bypasses",
+          "rerank": 0.9981120824813843,
+          "rrf": 0.01639344262295082,
+          "dense_rank": 1,
+          "sparse_rank": null
+        },
+        {
+          "id": "mitre::enterprise-attack/T1621.md::0",
+          "rel_path": "enterprise-attack/T1621.md",
+          "source": "mitre",
+          "section_path": "T1621: Multi-Factor Authentication Request Generation > Description",
+          "rerank": 0.9977927207946777,
+          "rrf": 0.015873015873015872,
+          "dense_rank": 3,
+          "sparse_rank": null
+        },
+        {
+          "id": "owasp::cheatsheets/Multifactor_Authentication_Cheat_Sheet.md::11",
+          "rel_path": "cheatsheets/Multifactor_Authentication_Cheat_Sheet.md",
+          "source": "owasp",
+          "section_path": "Multifactor Authentication Cheat Sheet > Implementing MFA > Resetting MFA",
+          "rerank": 0.9930765628814697,
+          "rrf": 0.03007688828584351,
+          "dense_rank": 7,
+          "sparse_rank": 6
+        },
+        {
+          "id": "owasp::cheatsheets/Multifactor_Authentication_Cheat_Sheet.md::13",
+          "rel_path": "cheatsheets/Multifactor_Authentication_Cheat_Sheet.md",
+          "source": "owasp",
+          "section_path": "Multifactor Authentication Cheat Sheet > Implementing MFA > Consider Using a Third Party Service",
+          "rerank": 0.9902135729789734,
+          "rrf": 0.015625,
+          "dense_rank": null,
+          "sparse_rank": 4
+        }
+      ],
+      "answer_text": "",
+      "thinking_text": "",
+      "timing_status": [],
+      "wall_clock_s": 1.7091673969989643,
+      "error": null,
+      "status": "ok",
+      "timeout": false,
+      "score": {
+        "retrieval_score": 1.0,
+        "path_recall": 1.0,
+        "substring_recall": 1.0,
+        "fact_score": null,
+        "hallucination_penalty": null,
+        "hallucinations": [],
+        "combined": 1.0
+      }
+    },
+    {
+      "id": "q-050",
+      "category": "ambiguous",
+      "question": "Someone is in my account, help.",
+      "retrieved_chunks": [
+        {
+          "id": "mitre::enterprise-attack/T1087.md::0",
+          "rel_path": "enterprise-attack/T1087.md",
+          "source": "mitre",
+          "section_path": "T1087: Account Discovery > Description",
+          "rerank": 0.8186871409416199,
+          "rrf": 0.01639344262295082,
+          "dense_rank": 1,
+          "sparse_rank": null
+        },
+        {
+          "id": "payloads::Account Takeover/README.md::7",
+          "rel_path": "Account Takeover/README.md",
+          "source": "payloads",
+          "section_path": "separator > References",
+          "rerank": 0.7950595617294312,
+          "rrf": 0.015384615384615385,
+          "dense_rank": 5,
+          "sparse_rank": null
+        },
+        {
+          "id": "mitre::enterprise-attack/T1087.md::1",
+          "rel_path": "enterprise-attack/T1087.md",
+          "source": "mitre",
+          "section_path": "T1087: Account Discovery > References",
+          "rerank": 0.6507495641708374,
+          "rrf": 0.014285714285714285,
+          "dense_rank": 10,
+          "sparse_rank": null
+        },
+        {
+          "id": "mitre::enterprise-attack/T1586.md::0",
+          "rel_path": "enterprise-attack/T1586.md",
+          "source": "mitre",
+          "section_path": "T1586: Compromise Accounts > Description",
+          "rerank": 0.49918174743652344,
+          "rrf": 0.015625,
+          "dense_rank": 4,
+          "sparse_rank": null
+        },
+        {
+          "id": "mitre::enterprise-attack/T1036.010.md::0",
+          "rel_path": "enterprise-attack/T1036.010.md",
+          "source": "mitre",
+          "section_path": "T1036.010: Masquerade Account Name > Description",
+          "rerank": 0.4156281054019928,
+          "rrf": 0.014705882352941176,
+          "dense_rank": 8,
+          "sparse_rank": null
+        }
+      ],
+      "answer_text": "",
+      "thinking_text": "",
+      "timing_status": [],
+      "wall_clock_s": 69.87992944399957,
+      "error": null,
+      "status": "ok",
+      "timeout": false,
+      "score": {
+        "retrieval_score": 1.0,
+        "path_recall": 1.0,
+        "substring_recall": 1.0,
+        "fact_score": null,
+        "hallucination_penalty": null,
+        "hallucinations": [],
+        "combined": 1.0
+      }
+    }
+  ]
+}
