@@ -45,12 +45,16 @@ _SYSTEM = (
 _PREFIX = f"<|im_start|>system\n{_SYSTEM}<|im_end|>\n<|im_start|>user\n"
 _SUFFIX = "<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n"
 
-# Conservative batch / length caps for the Arc 140V iGPU shared-memory budget.
-# Reranker prompt overhead (~150 tokens) + query (~50) + doc (up to ~900) gives
-# ~1100 tokens per pair; BATCH=8 keeps the per-batch activation pool under
-# control (mirrors the embedder's BATCH=16 sizing scaled by sequence length).
-BATCH = 8
-MAX_LEN = 2048
+# Attention activation scratch scales as B × heads × L² × 2 bytes per layer.
+# Qwen3-Reranker has 28 layers × 14 heads; at B=8, L=2048 that pre-allocates
+# ~26 GB on the OpenVINO GPU plugin (UMA: comes out of system RAM, owned by
+# i915, invisible to ps RSS). At B=4, L=1024 it is ~3.3 GB. The chunker caps
+# bodies at ~900 approx-tokens (TARGET=600, MAX=900); the reranker prompt
+# wrapper (instruct + chat scaffolding) adds ~100 tokens, leaving headroom
+# inside the 1024 budget. See LOGS/day-3.5-reranker-budget-fix.md for the
+# kernel-driver-owned UMA memory diagnosis and the activation-pool math.
+BATCH = 4
+MAX_LEN = 1024
 
 _model = None
 _tokenizer = None
@@ -77,8 +81,17 @@ def _lazy_init() -> str:
 
     # `fix_mistral_regex=True` — same case-boundary fix applied to the embedder
     # tokenizer; the Qwen3-Reranker tokenizer.json has the same broken regex.
+    # `truncation_side="left"` is required for correctness at any MAX_LEN tight
+    # enough to cut: the yes/no logits are read from position -1, which is the
+    # `<|im_start|>assistant\n<think>\n\n</think>\n\n` suffix. Right-truncation
+    # (the default) drops that suffix and silently reads logits from a random
+    # mid-document token, so scores drift in unpredictable ways. Left-truncation
+    # drops doc-start tokens instead, preserving the answer-extraction position.
     _tokenizer = AutoTokenizer.from_pretrained(
-        str(MODEL_DIR), padding_side="left", fix_mistral_regex=True
+        str(MODEL_DIR),
+        padding_side="left",
+        truncation_side="left",
+        fix_mistral_regex=True,
     )
     _yes_id = _tokenizer.convert_tokens_to_ids("yes")
     _no_id = _tokenizer.convert_tokens_to_ids("no")
