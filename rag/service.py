@@ -72,7 +72,20 @@ User question:
 
 NO_RETRIEVED_CONTEXT = "(no retrieved context)"
 NO_CONVERSATION_HISTORY = "(no prior conversation)"
-NO_THINK_INSTRUCTION = "Do not use <think> blocks for this response. Answer directly."
+
+# Hermes-4 thinking activation — verbatim from the model's chat template
+# `thinking_prompt`. Hermes-4 does NOT emit <think> blocks by default; it needs
+# this directive (or `chat_template_kwargs: {thinking: true}` with no user
+# system message) to engage extended reasoning. When F2/think is off we omit
+# this prefix and Hermes returns a direct answer.
+THINK_ACTIVATION_PREFIX = (
+    "You are a deep thinking AI, you may use extremely long chains of thought "
+    "to deeply consider the problem and deliberate with yourself via systematic "
+    "reasoning processes to help come to a correct solution prior to answering. "
+    "You should enclose your thoughts and internal monologue inside "
+    "<think> </think> tags, and then provide your solution or response to the "
+    "problem."
+)
 
 TOKEN_RE = re.compile(r"\w+")
 
@@ -314,7 +327,7 @@ class RetrieveService:
     provider = "local"
     backend_name = "hacker_lm"
     model_name = LLM_DISPLAY_NAME
-    think_control = "prompt-policy"
+    think_control = "hermes-prefix"
 
     def __init__(self, db_path: str = DEFAULT_DB, collection: str = COLLECTION) -> None:
         self.db_path = str(Path(db_path))
@@ -334,27 +347,27 @@ class RetrieveService:
 
         yield QueryEvent(
             QueryEventType.STATUS,
-            f"[init] opening vector store at {self.db_path} (collection={self.collection_name})",
+            f"▸ init · opening vector store at {self.db_path} (collection={self.collection_name})",
         )
         client = chromadb.PersistentClient(path=self.db_path)
         self.col = client.get_collection(self.collection_name)
 
-        yield QueryEvent(QueryEventType.STATUS, "[init] loading BM25 index")
+        yield QueryEvent(QueryEventType.STATUS, "▸ init · loading BM25 index")
         self.bm25, self.bm25_data = load_bm25(self.db_path)
 
         if reranker_mod.USE_QWEN3_RERANKER:
-            yield QueryEvent(QueryEventType.STATUS, "[init] loading reranker: Qwen3-Reranker-0.6B (OpenVINO)")
+            yield QueryEvent(QueryEventType.STATUS, "▸ init · loading reranker: Qwen3-Reranker-0.6B (OpenVINO)")
             self.reranker = reranker_mod.Qwen3Reranker()
         else:
             from sentence_transformers import CrossEncoder
-            yield QueryEvent(QueryEventType.STATUS, f"[init] loading legacy reranker {LEGACY_RERANKER}")
+            yield QueryEvent(QueryEventType.STATUS, f"▸ init · loading legacy reranker {LEGACY_RERANKER}")
             self.reranker = CrossEncoder(LEGACY_RERANKER)
 
         backend_info = embedder.active_backend()
-        yield QueryEvent(QueryEventType.STATUS, f"[init] embedder: {backend_info}")
-        yield QueryEvent(QueryEventType.STATUS, f"[init] reranker: {reranker_mod.active_backend()}")
-        yield QueryEvent(QueryEventType.STATUS, f"[init] generation backend: {LLM_DISPLAY_NAME} @ {LLM_BASE_URL}")
-        yield QueryEvent(QueryEventType.STATUS, f"[init] backend ready over {self.col.count()} chunks")
+        yield QueryEvent(QueryEventType.STATUS, f"▸ init · embedder: {backend_info}")
+        yield QueryEvent(QueryEventType.STATUS, f"▸ init · reranker: {reranker_mod.active_backend()}")
+        yield QueryEvent(QueryEventType.STATUS, f"▸ init · generation backend: {LLM_DISPLAY_NAME} @ {LLM_BASE_URL}")
+        yield QueryEvent(QueryEventType.STATUS, f"▸ init · backend ready over {self.col.count()} chunks")
 
     def retrieve_top_hits(
         self,
@@ -416,24 +429,25 @@ class RetrieveService:
             if config.show_context:
                 yield QueryEvent(
                     QueryEventType.STATUS,
-                    "[ctx] CTX only shows retrieved chunks, so it has no effect while RAG is off",
+                    "▸ ctx · CTX only shows retrieved chunks, so it has no effect while RAG is off",
                 )
-            yield QueryEvent(QueryEventType.STATUS, "[retrieve] disabled; sending question directly to LLM")
-            yield QueryEvent(QueryEventType.STATUS, f"[llm] streaming response ({mode})…")
+            yield QueryEvent(QueryEventType.STATUS, "▸ retrieve · disabled; sending question directly to LLM")
+            yield QueryEvent(QueryEventType.STATUS, f"▸ llm · streaming response ({mode})…")
             t0 = time.perf_counter()
             yield from self._generate(
                 prompt=DIRECT_PROMPT_TEMPLATE.format(history=history_block, question=question),
                 system=DIRECT_RUNTIME_SYSTEM,
                 think=config.think,
             )
-            yield QueryEvent(QueryEventType.STATUS, f"[timing] llm={time.perf_counter() - t0:.2f} s")
+            yield QueryEvent(QueryEventType.STATUS, f"▸ timing · llm={time.perf_counter() - t0:.2f} s")
             yield QueryEvent(QueryEventType.DONE)
             return
 
         source_clause = f" (source={config.source})" if config.source else ""
+        yield QueryEvent(QueryEventType.STATUS, "▸ retrieve · embedding query…")
         yield QueryEvent(
             QueryEventType.STATUS,
-            f"[retrieve] hybrid search over {self.col.count()} chunks{source_clause}…",
+            f"▸ retrieve · searching corpus ({self.col.count()} chunks{source_clause})…",
         )
         t0 = time.perf_counter()
         hits = hybrid_search(retrieval_query, self.col, self.bm25, self.bm25_data, source_filter=config.source)
@@ -443,11 +457,15 @@ class RetrieveService:
         if hits:
             yield QueryEvent(
                 QueryEventType.STATUS,
-                f"[retrieve] {len(hits)} candidates in {t_search * 1000:.0f} ms -> reranking",
+                f"▸ retrieve · reranking {len(hits)} candidates (search took {t_search * 1000:.0f} ms)…",
             )
             t0 = time.perf_counter()
             top_hits = rerank(retrieval_query, hits, config.topk, self.reranker)
             t_rerank = time.perf_counter() - t0
+            yield QueryEvent(
+                QueryEventType.STATUS,
+                f"▸ retrieve · context ready ({len(top_hits)} chunks)",
+            )
 
             if config.show_context:
                 context_lines = [
@@ -464,7 +482,7 @@ class RetrieveService:
         else:
             yield QueryEvent(
                 QueryEventType.STATUS,
-                f"[retrieve] no hits in {t_search * 1000:.0f} ms; falling back to general knowledge",
+                f"▸ retrieve · no hits in {t_search * 1000:.0f} ms; falling back to general knowledge",
             )
             if config.show_context:
                 yield QueryEvent(QueryEventType.RETRIEVED_CONTEXT, NO_RETRIEVED_CONTEXT)
@@ -473,18 +491,18 @@ class RetrieveService:
         yield QueryEvent(
             QueryEventType.STATUS,
             (
-                f"[timing] search={t_search * 1000:.0f} ms  rerank={t_rerank * 1000:.0f} ms  "
+                f"▸ timing · search={t_search * 1000:.0f} ms  rerank={t_rerank * 1000:.0f} ms  "
                 f"retrieval_total={(t_search + t_rerank) * 1000:.0f} ms"
             ),
         )
-        yield QueryEvent(QueryEventType.STATUS, f"[llm] streaming response ({mode})…")
+        yield QueryEvent(QueryEventType.STATUS, f"▸ llm · streaming response ({mode})…")
         t0 = time.perf_counter()
         yield from self._generate(
             prompt=RAG_PROMPT_TEMPLATE.format(history=history_block, context=context_text, question=question),
             system=RAG_RUNTIME_SYSTEM,
             think=config.think,
         )
-        yield QueryEvent(QueryEventType.STATUS, f"[timing] llm={time.perf_counter() - t0:.2f} s")
+        yield QueryEvent(QueryEventType.STATUS, f"▸ timing · llm={time.perf_counter() - t0:.2f} s")
         yield QueryEvent(QueryEventType.DONE)
 
     def _generate(self, prompt: str, *, system: str, think: bool):
@@ -493,9 +511,10 @@ class RetrieveService:
             prompt=prompt,
             system=effective_system,
             emit_thinking=think,
+            thinking=think,
         )
 
-    def _stream_generate(self, prompt: str, *, system: str, emit_thinking: bool):
+    def _stream_generate(self, prompt: str, *, system: str, emit_thinking: bool, thinking: bool):
         parser = ThinkTagStreamParser()
         stream = _LLM_CLIENT.chat.completions.create(
             model=LLM_MODEL,
@@ -506,6 +525,7 @@ class RetrieveService:
             stream=True,
             temperature=LLM_TEMPERATURE,
             max_tokens=LLM_MAX_TOKENS,
+            extra_body={"chat_template_kwargs": {"thinking": thinking}},
         )
         for chunk in stream:
             if not chunk.choices:
@@ -535,5 +555,5 @@ class RetrieveService:
 
     def _effective_system(self, system: str, think: bool) -> str:
         if think:
-            return system
-        return f"{system}\n\n{NO_THINK_INSTRUCTION}"
+            return f"{THINK_ACTIVATION_PREFIX}\n\n{system}"
+        return system

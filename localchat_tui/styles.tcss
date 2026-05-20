@@ -230,7 +230,10 @@ MessageBlock.kind-user {
     align-horizontal: left;
 }
 
-MessageBlock.kind-status,
+MessageBlock.kind-status {
+    align-horizontal: left;
+}
+
 MessageBlock.kind-system {
     align-horizontal: center;
 }
@@ -274,7 +277,11 @@ MessageBlock.kind-system {
     border: round #ff3939;
 }
 
-.kind-status .message-card,
+.kind-status .message-card {
+    width: 100%;
+    padding: 0 0 0 2;
+}
+
 .kind-system .message-card {
     width: auto;
     max-width: 92;
@@ -328,9 +335,9 @@ MessageBlock.kind-system {
 }
 
 .kind-status .message-body {
-    color: #5a8060;
-    text-align: center;
-    text-style: italic;
+    color: #39c6ff;
+    text-align: left;
+    text-style: bold;
 }
 
 .kind-system .message-body {

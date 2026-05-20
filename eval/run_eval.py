@@ -258,7 +258,7 @@ def run_one(
                         thinking_chunks.append(event.text)
                     elif event.type == QueryEventType.STATUS:
                         status_lines.append(event.text)
-                        if "[timing]" in event.text:
+                        if "[timing]" in event.text or "▸ timing" in event.text:
                             timing_lines.append(event.text)
                     elif event.type == QueryEventType.ERROR:
                         error_text = event.text
