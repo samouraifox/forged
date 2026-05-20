@@ -377,6 +377,22 @@ class RetrieveService:
             return []
         return rerank(retrieval_query, hits, config.topk, self.reranker)
 
+    def adaptive_query(self, question: str) -> dict:
+        """Run the question through the LangGraph adaptive pipeline.
+
+        Returns a dict with the final graph state (retrieved_chunks, answer,
+        thinking_text, branch, classify_decision, rewritten_queries, hyde_doc,
+        relevance_grades, avg_relevance, retry_count, timing, status_log).
+        """
+        for _ in self.initialize():
+            pass
+        from rag import adaptive_pipeline
+
+        adaptive_pipeline.attach_service(self)
+        app = adaptive_pipeline.build_adaptive_graph()
+        final = app.invoke({"query": question})
+        return final
+
     def stream_query(self, question: str, config: QueryConfig, history: list[dict[str, object]] | None = None):
         if not question.strip():
             yield QueryEvent(QueryEventType.ERROR, "Prompt is empty.")

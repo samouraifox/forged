@@ -148,6 +148,13 @@ def parse_args() -> argparse.Namespace:
         "hallucination_penalty become n/a; mean_retrieval_score is the diagnostic. "
         "~10-30x faster than full inference for retrieval-stack A/B work.",
     )
+    parser.add_argument(
+        "--adaptive",
+        action="store_true",
+        help="Route each question through the LangGraph adaptive pipeline "
+        "(classify -> easy linear path OR hard multi-strategy path -> CRAG -> generate). "
+        "Mutually exclusive with --retrieval-only.",
+    )
     parser.add_argument("--show-progress", action="store_true", default=True)
     return parser.parse_args()
 
@@ -204,35 +211,61 @@ def run_one(
     question_obj: dict,
     config: QueryConfig,
     retrieval_only: bool = False,
+    adaptive: bool = False,
 ) -> dict:
     question_text = question_obj["question"]
     t0 = time.perf_counter()
-
-    top_hits_raw = service.retrieve_top_hits(question_text, config, history=[]) if config.rag else []
 
     answer_chunks: list[str] = []
     thinking_chunks: list[str] = []
     status_lines: list[str] = []
     timing_lines: list[str] = []
     error_text: str | None = None
+    adaptive_meta: dict | None = None
 
-    if not retrieval_only:
+    if adaptive:
         try:
-            for event in service.stream_query(question_text, config, history=[]):
-                if event.type == QueryEventType.ANSWER_CHUNK:
-                    answer_chunks.append(event.text)
-                elif event.type == QueryEventType.THINKING:
-                    thinking_chunks.append(event.text)
-                elif event.type == QueryEventType.STATUS:
-                    status_lines.append(event.text)
-                    if "[timing]" in event.text:
-                        timing_lines.append(event.text)
-                elif event.type == QueryEventType.ERROR:
-                    error_text = event.text
-                elif event.type == QueryEventType.DONE:
-                    continue
+            final = service.adaptive_query(question_text)
+            top_hits_raw = final.get("retrieved_chunks", []) or []
+            answer_chunks.append(final.get("answer") or "")
+            thinking_chunks.append(final.get("thinking_text") or "")
+            status_lines.extend(final.get("status_log", []))
+            timing = final.get("timing", {}) or {}
+            for k, v in timing.items():
+                timing_lines.append(f"[timing] {k}={v}")
+            adaptive_meta = {
+                "branch": final.get("branch"),
+                "classify_decision": final.get("classify_decision"),
+                "rewritten_queries": final.get("rewritten_queries", []),
+                "hyde_doc": final.get("hyde_doc"),
+                "relevance_grades": final.get("relevance_grades", {}),
+                "avg_relevance": final.get("avg_relevance"),
+                "retry_count": final.get("retry_count", 0),
+                "timing": timing,
+            }
         except Exception as exc:
             error_text = f"{type(exc).__name__}: {exc}"
+            top_hits_raw = []
+    else:
+        top_hits_raw = service.retrieve_top_hits(question_text, config, history=[]) if config.rag else []
+
+        if not retrieval_only:
+            try:
+                for event in service.stream_query(question_text, config, history=[]):
+                    if event.type == QueryEventType.ANSWER_CHUNK:
+                        answer_chunks.append(event.text)
+                    elif event.type == QueryEventType.THINKING:
+                        thinking_chunks.append(event.text)
+                    elif event.type == QueryEventType.STATUS:
+                        status_lines.append(event.text)
+                        if "[timing]" in event.text:
+                            timing_lines.append(event.text)
+                    elif event.type == QueryEventType.ERROR:
+                        error_text = event.text
+                    elif event.type == QueryEventType.DONE:
+                        continue
+            except Exception as exc:
+                error_text = f"{type(exc).__name__}: {exc}"
 
     wall_clock = time.perf_counter() - t0
     answer_text = "".join(answer_chunks)
@@ -261,7 +294,7 @@ def run_one(
     else:
         qs = scoring.score_question(question_obj, top_hits_raw, answer_text)
 
-    return {
+    record = {
         "id": question_obj["id"],
         "category": question_obj["category"],
         "question": question_text,
@@ -283,6 +316,9 @@ def run_one(
             "combined": qs.combined,
         },
     }
+    if adaptive_meta is not None:
+        record["adaptive"] = adaptive_meta
+    return record
 
 
 def timeout_record(question_obj: dict, timeout_s: float) -> dict:
@@ -316,6 +352,7 @@ def run_with_timeout(
     config: QueryConfig,
     timeout_s: float,
     retrieval_only: bool = False,
+    adaptive: bool = False,
 ) -> dict:
     """Run a single question in a daemon worker thread. If it doesn't return
     within timeout_s, fabricate a timeout record and move on. The worker
@@ -323,7 +360,7 @@ def run_with_timeout(
     question gets its own one-shot executor so leaked threads don't block
     subsequent work."""
     executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="eval-q")
-    future = executor.submit(run_one, service, question_obj, config, retrieval_only)
+    future = executor.submit(run_one, service, question_obj, config, retrieval_only, adaptive)
     try:
         return future.result(timeout=timeout_s)
     except FutTimeout:
@@ -412,6 +449,9 @@ def main() -> int:
     args = parse_args()
     if args.timeout is not None:
         args.per_question_timeout = args.timeout
+    if args.adaptive and args.retrieval_only:
+        print("--adaptive and --retrieval-only are mutually exclusive", file=sys.stderr)
+        return 2
     questions = load_questions(args.questions, args.include_examples)
     if args.ids:
         wanted = {qid.strip() for qid in args.ids.split(",") if qid.strip()}
@@ -479,6 +519,7 @@ def main() -> int:
         record = run_with_timeout(
             service, question_obj, config, args.per_question_timeout,
             retrieval_only=args.retrieval_only,
+            adaptive=args.adaptive,
         )
         _append_partial(partial_path, record)
         per_question.append(record)
@@ -528,6 +569,7 @@ def main() -> int:
             "db_path": str(args.db),
             "collection": args.collection,
             "retrieval_only": args.retrieval_only,
+            "adaptive": args.adaptive,
             "embedder": rag_embedder.active_backend(),
             "per_question_timeout_s": args.per_question_timeout,
             "resumed_from": str(args.resume) if args.resume else None,
