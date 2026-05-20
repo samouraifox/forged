@@ -1,12 +1,12 @@
 Screen {
-    background: #060912;
-    color: #e7edf5;
+    background: #050706;
+    color: #c8f5d4;
 }
 
 #layout {
     width: 100%;
     height: 100%;
-    background: #060912;
+    background: #050706;
 }
 
 #layout.session-idle {
@@ -15,7 +15,7 @@ Screen {
 }
 
 #layout.session-active {
-    padding: 1 2;
+    padding: 1 2 0 2;
     align: center top;
 }
 
@@ -25,12 +25,12 @@ Screen {
 }
 
 #shell.session-idle {
-    max-width: 84;
+    max-width: 86;
     height: auto;
 }
 
 #shell.session-active {
-    max-width: 112;
+    max-width: 120;
     height: 100%;
 }
 
@@ -46,25 +46,60 @@ AppHeader {
     margin-bottom: 0;
 }
 
+#ascii-logo {
+    width: 100%;
+    height: auto;
+    content-align: center top;
+    text-align: center;
+    color: #39ff14;
+    text-style: bold;
+}
+
+#logo-divider {
+    width: 100%;
+    height: 1;
+    margin-top: 1;
+    text-align: center;
+    color: #7a1f60;
+}
+
 #app-title {
     width: 100%;
     text-align: center;
-    color: #f4f7fb;
+    color: #39ff14;
     text-style: bold;
+}
+
+#shell.session-idle #app-title {
+    display: none;
+}
+
+#shell.session-active #app-title {
+    display: block;
+    margin-bottom: 0;
 }
 
 #app-subtitle {
     width: 100%;
     margin-top: 1;
     text-align: center;
-    color: #8f98a6;
+    color: #ff39c6;
+    text-style: italic;
+}
+
+#shell.session-active #app-subtitle {
+    display: none;
 }
 
 #backend-line {
     width: 100%;
     margin-top: 1;
     text-align: center;
-    color: #6d7685;
+    color: #39c6ff;
+}
+
+#shell.session-active #backend-line {
+    display: none;
 }
 
 #landing-status {
@@ -73,7 +108,8 @@ AppHeader {
     margin-top: 1;
     margin-bottom: 1;
     text-align: center;
-    color: #9aa4b4;
+    color: #5a8060;
+    text-style: italic;
 }
 
 ModeBar {
@@ -98,57 +134,64 @@ ModeBar {
 }
 
 .mode-pill {
-    width: auto;
-    min-width: 12;
+    width: 14;
     height: 3;
     margin: 0 1 0 0;
     padding: 0 1;
-    background: #0d121b;
-    color: #778191;
-    border: round #1a2330;
+    background: #0a0e0a;
+    color: #5a8060;
+    border: round #1a2a1f;
+    text-style: bold;
 }
 
 .mode-pill.is-on {
-    background: #111b22;
-    color: #cddfd6;
-    border: round #2f5964;
+    background: #0d1410;
+    color: #39ff14;
+    border: round #ff39c6;
     text-style: bold;
 }
 
 .mode-pill.is-off {
-    background: #0a0f17;
-    color: #7a8494;
-    border: round #1a2330;
+    background: #0a0e0a;
+    color: #6a8a70;
+    border: round #2a3a30;
 }
 
 .mode-pill:focus {
-    border: round #3a6571;
-    color: #eef5fb;
+    border: round #39c6ff;
+    color: #c8f5d4;
 }
 
 #topk-shell {
-    min-width: 11;
-    padding: 0 1;
-    background: #0d121b;
+    width: 16;
+    height: 3;
+    padding: 0 0 0 1;
+    background: #0a0e0a;
+    border: round #2a3a30;
+    align: left middle;
 }
 
 #topk-label {
-    width: auto;
-    padding: 1 1 0 0;
-    color: #7f8998;
+    width: 6;
+    height: 1;
+    color: #39c6ff;
     text-style: bold;
+    content-align: left middle;
 }
 
 #topk-input {
-    width: 5;
-    height: 3;
-    background: #111722;
-    color: #edf4fb;
+    width: 6;
+    height: 1;
+    background: #0d1410;
+    color: #39ff14;
     border: none;
+    text-style: bold;
+    padding: 0;
 }
 
 #topk-input:focus {
-    background: #151d28;
+    background: #112019;
+    color: #c8f5d4;
 }
 
 #conversation {
@@ -156,11 +199,11 @@ ModeBar {
     padding: 0 1;
     background: transparent;
     border: none;
-    scrollbar-background: #060912;
-    scrollbar-background-hover: #0d121a;
-    scrollbar-color: #1d2835;
-    scrollbar-color-active: #2d4150;
-    scrollbar-color-hover: #243443;
+    scrollbar-background: #050706;
+    scrollbar-background-hover: #0a0e0a;
+    scrollbar-color: #1a2a1f;
+    scrollbar-color-active: #ff39c6;
+    scrollbar-color-hover: #2a4a30;
 }
 
 #transcript-column {
@@ -172,7 +215,8 @@ ModeBar {
     width: 100%;
     height: 1;
     margin-top: 1;
-    background: #101824;
+    background: transparent;
+    color: #1a2a1f;
 }
 
 MessageBlock {
@@ -183,7 +227,7 @@ MessageBlock {
 }
 
 MessageBlock.kind-user {
-    align-horizontal: right;
+    align-horizontal: left;
 }
 
 MessageBlock.kind-status,
@@ -200,31 +244,34 @@ MessageBlock.kind-system {
 }
 
 .kind-user .message-card {
-    width: 78%;
-    max-width: 88;
-    padding: 1 2;
-    background: #0d141d;
-    border: round #23394c;
+    width: 100%;
+    padding: 0 0 0 2;
+    background: transparent;
+    border-left: tall #39c6ff;
 }
 
 .kind-assistant .message-card {
     padding: 0 0 1 0;
+    border-left: tall #39ff14;
+    padding-left: 2;
 }
 
 .kind-thinking .message-card {
     padding: 0 1;
+    border-left: tall #7a1f60;
+    padding-left: 2;
 }
 
 .kind-tool .message-card {
     padding: 1 2;
-    background: #0c1218;
-    border: round #1d2a36;
+    background: #0d0f08;
+    border: round #ffaa00;
 }
 
 .kind-error .message-card {
     padding: 1 2;
-    background: #170d12;
-    border: round #683a44;
+    background: #1a0808;
+    border: round #ff3939;
 }
 
 .kind-status .message-card,
@@ -237,65 +284,66 @@ MessageBlock.kind-system {
 .message-label {
     width: 100%;
     margin-bottom: 1;
-    color: #6f7b8d;
+    color: #5a8060;
     text-style: bold;
 }
 
 .kind-user .message-label {
-    text-align: right;
-    color: #89aecd;
+    color: #39c6ff;
 }
 
 .kind-assistant .message-label {
-    color: #94bbb0;
+    color: #39ff14;
 }
 
 .kind-thinking .message-label {
-    color: #6d7b8e;
+    color: #ff39c6;
 }
 
 .kind-tool .message-label {
-    color: #8eaab5;
+    color: #ffaa00;
 }
 
 .kind-error .message-label {
-    color: #d6a5ae;
+    color: #ff3939;
 }
 
 .message-body {
     width: 100%;
-    color: #edf3f9;
+    color: #c8f5d4;
     text-wrap: wrap;
 }
 
 .kind-user .message-body {
-    color: #dce6f2;
+    color: #c8e6ff;
 }
 
 .kind-assistant .message-body {
-    color: #f3f7fb;
+    color: #c8f5d4;
 }
 
 .kind-thinking .message-body {
-    color: #8e98a8;
+    color: #7090a0;
+    text-style: italic;
 }
 
 .kind-status .message-body {
-    color: #667181;
+    color: #5a8060;
     text-align: center;
+    text-style: italic;
 }
 
 .kind-system .message-body {
-    color: #9aa4b4;
+    color: #39c6ff;
     text-align: center;
 }
 
 .kind-tool .message-body {
-    color: #c9d6df;
+    color: #d8c08a;
 }
 
 .kind-error .message-body {
-    color: #eab9c1;
+    color: #ffb8b8;
 }
 
 ChatComposer {
@@ -306,19 +354,27 @@ ChatComposer {
 #composer-shell {
     height: auto;
     padding: 0 1 1 1;
-    background: #0a1017;
-    border: round #1a2330;
+    background: #0a0e0a;
+    border: round #1a2a1f;
 }
 
 ChatComposer.is-busy #composer-shell {
-    border: round #2f5964;
+    border: round #ff39c6;
+}
+
+ChatComposer:focus-within #composer-shell {
+    border: round #39ff14;
 }
 
 #composer-label {
     width: 100%;
     padding: 1 1 0 1;
-    color: #7f8998;
+    color: #39c6ff;
     text-style: bold;
+}
+
+ChatComposer.is-busy #composer-label {
+    color: #ff39c6;
 }
 
 ComposerInput {
@@ -326,18 +382,40 @@ ComposerInput {
     min-height: 4;
     max-height: 8;
     background: transparent;
-    color: #edf3f9;
+    color: #c8f5d4;
     border: none;
     padding: 0 1;
 }
 
 ComposerInput:focus {
-    background: #0c141c;
+    background: #0d1410;
+}
+
+StatusBar {
+    width: 100%;
+    height: 3;
+    margin-top: 1;
+    padding: 0 1;
+    background: #0a0e0a;
+    border-top: tall #1a2a1f;
+}
+
+#status-line-1 {
+    width: 100%;
+    height: 1;
+    color: #39ff14;
+    text-style: bold;
+}
+
+#status-line-2 {
+    width: 100%;
+    height: 1;
+    color: #5a8060;
 }
 
 #footer-hints {
     width: 100%;
-    margin-top: 1;
+    margin-top: 0;
     text-align: center;
-    color: #667181;
+    color: #3a5a40;
 }

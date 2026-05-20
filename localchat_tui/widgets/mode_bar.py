@@ -10,6 +10,11 @@ from textual.widgets import Button, Input, Static
 from ..state import ModeState
 
 
+def _pill_label(name: str, active: bool) -> str:
+    indicator = "▮" if active else "·"
+    return f"⟦ {indicator} {name} ⟧"
+
+
 class ModeBar(Widget):
     class ToggleRequested(Message):
         def __init__(self, mode: str) -> None:
@@ -28,9 +33,9 @@ class ModeBar(Widget):
     def compose(self) -> ComposeResult:
         with Container(id="mode-row"):
             with Horizontal(id="mode-cluster"):
-                yield Button("", id="think-toggle", classes="mode-pill")
-                yield Button("", id="rag-toggle", classes="mode-pill")
-                yield Button("", id="ctx-toggle", classes="mode-pill")
+                yield Button(_pill_label("THINK", self.modes.think), id="think-toggle", classes="mode-pill")
+                yield Button(_pill_label("RAG", self.modes.rag), id="rag-toggle", classes="mode-pill")
+                yield Button(_pill_label("CTX", self.modes.ctx), id="ctx-toggle", classes="mode-pill")
                 with Horizontal(id="topk-shell", classes="mode-pill"):
                     yield Static("TOPK", id="topk-label")
                     yield Input(value=str(self.modes.topk), id="topk-input", classes="topk-input")
@@ -45,7 +50,7 @@ class ModeBar(Widget):
         for mode_name in ("think", "rag", "ctx"):
             button = self.query_one(f"#{mode_name}-toggle", Button)
             active = getattr(modes, mode_name)
-            button.label = f"{mode_name.upper()} {'ON' if active else 'OFF'}"
+            button.label = _pill_label(mode_name.upper(), active)
             button.remove_class("is-on")
             button.remove_class("is-off")
             button.add_class("is-on" if active else "is-off")

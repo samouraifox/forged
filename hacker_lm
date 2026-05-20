@@ -35,12 +35,12 @@ fi
 
 "$RAG_PYTHON" -m rag.runtime --ensure-ollama
 
-if python3 -c 'import textual' >/dev/null 2>&1; then
+if python3 -c 'import textual, psutil' >/dev/null 2>&1; then
     exec python3 -m localchat_tui
 fi
 
 if command -v uv >/dev/null 2>&1; then
-    exec uv run --with textual python -m localchat_tui
+    exec uv run --with textual --with psutil python -m localchat_tui
 fi
 
 echo "[hacker_lm] Textual is not available." >&2

@@ -19,7 +19,7 @@ from .state import (
     apply_slash_command,
 )
 from .theme import APP_NAME, APP_SUBTITLE, COMPOSER_HINT
-from .widgets import AppHeader, ChatComposer, MessageBlock, ModeBar, TranscriptView
+from .widgets import AppHeader, ChatComposer, MessageBlock, ModeBar, StatusBar, TranscriptView
 
 
 _CITATION_TAG_RE = re.compile(
@@ -108,6 +108,7 @@ class LocalChatApp(App[None]):
                 yield TranscriptView(id="conversation")
                 yield Static("", id="composer-divider")
                 yield ChatComposer(id="composer")
+                yield StatusBar(self.adapter.descriptor, self.modes, id="status-bar")
                 yield Static(COMPOSER_HINT, id="footer-hints")
 
     async def on_mount(self) -> None:
@@ -169,6 +170,7 @@ class LocalChatApp(App[None]):
             )
             return
         self.query_one(ModeBar).sync(self.modes)
+        self.query_one(StatusBar).set_modes(self.modes)
         self.query_one(ChatComposer).focus_editor()
 
     @work(exclusive=True, group="backend", exit_on_error=False)
@@ -210,9 +212,11 @@ class LocalChatApp(App[None]):
         except ValueError as error:
             await self._add_message(ChatMessage(kind=MessageKind.SYSTEM, text=str(error)))
             self.query_one(ModeBar).sync(self.modes)
+            self.query_one(StatusBar).set_modes(self.modes)
             return
 
         self.query_one(ModeBar).sync(self.modes)
+        self.query_one(StatusBar).set_modes(self.modes)
         await self._emit_command_feedback(result)
         if result.exit_requested:
             self.exit()
@@ -281,6 +285,7 @@ class LocalChatApp(App[None]):
     def _flip_mode(self, field_name: str) -> None:
         self.modes.toggle(field_name)
         self.query_one(ModeBar).sync(self.modes)
+        self.query_one(StatusBar).set_modes(self.modes)
 
     def _set_landing_status(self, text: str) -> None:
         self.query_one("#landing-status", Static).update(text)
@@ -303,6 +308,7 @@ class LocalChatApp(App[None]):
         transcript.display = self.session_active
         divider.display = self.session_active
         landing_status.display = not self.session_active
+        self.query_one(AppHeader).set_session_active(self.session_active)
 
     def _sync_backend_descriptor(self) -> None:
         self.modes.provider = self.adapter.descriptor.provider
@@ -311,3 +317,6 @@ class LocalChatApp(App[None]):
         self.modes.think_control = self.adapter.descriptor.think_control
         self.query_one(AppHeader).set_descriptor(self.adapter.descriptor)
         self.query_one(ModeBar).sync(self.modes)
+        status_bar = self.query_one(StatusBar)
+        status_bar.set_descriptor(self.adapter.descriptor)
+        status_bar.set_modes(self.modes)
