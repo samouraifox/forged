@@ -58,14 +58,16 @@ class ChatBackendAdapter(ABC):
 
 class HackerLMBackendAdapter(ChatBackendAdapter):
     def __init__(self, project_root: Path | None = None) -> None:
+        from rag.config import V2_DB_PATH, V2_LLM_DISPLAY_NAME
+
         root = project_root or Path(__file__).resolve().parents[1]
         self.project_root = root
         self.worker_python = root / "rag" / "venv" / "bin" / "python"
-        self.worker_db = root / "rag" / "chroma_db"
+        self.worker_db = Path(V2_DB_PATH)
         self.descriptor = BackendDescriptor(
             provider="local",
             name="hacker_lm",
-            model="DeepSeek-R1 abliterated (starting…)",
+            model=f"{V2_LLM_DISPLAY_NAME} (starting…)",
             think_control="detecting",
         )
         self._proc: asyncio.subprocess.Process | None = None

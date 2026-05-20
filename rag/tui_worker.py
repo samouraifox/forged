@@ -3,8 +3,8 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-from pathlib import Path
 
+from .config import V2_COLLECTION, V2_DB_PATH
 from .runtime import ensure_ollama_running
 from .service import QueryConfig, QueryEventType, RetrieveService
 
@@ -22,6 +22,7 @@ def emit(event_type: str, text: str = "", *, request_id: str | None = None, **ex
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Structured TUI worker for hacker_lm.")
     parser.add_argument("--db", default=None)
+    parser.add_argument("--collection", default=None)
     return parser
 
 
@@ -61,8 +62,9 @@ def handle_request(service: RetrieveService, payload: dict[str, object]) -> None
 
 def main() -> int:
     args = build_parser().parse_args()
-    db_path = args.db or str(Path(__file__).resolve().parent / "chroma_db")
-    service = RetrieveService(db_path=db_path)
+    db_path = args.db or V2_DB_PATH
+    collection = args.collection or V2_COLLECTION
+    service = RetrieveService(db_path=db_path, collection=collection)
 
     try:
         startup(service)

@@ -16,15 +16,22 @@ from openai import OpenAI
 
 from rag import embedder
 from rag import reranker as reranker_mod
+from rag.config import (
+    V2_COLLECTION,
+    V2_DB_PATH,
+    V2_LLM_BASE_URL,
+    V2_LLM_DISPLAY_NAME,
+    V2_LLM_MODEL,
+)
 
-LLM_MODEL = "hermes-4-14b"
-LLM_DISPLAY_NAME = "Hermes-4-14B (Q6_K, llama-server)"
-LLM_BASE_URL = "http://127.0.0.1:8080/v1"
+LLM_MODEL = V2_LLM_MODEL
+LLM_DISPLAY_NAME = V2_LLM_DISPLAY_NAME
+LLM_BASE_URL = V2_LLM_BASE_URL
 LLM_TEMPERATURE = 0.4
 LLM_MAX_TOKENS = 4096
 LEGACY_RERANKER = "cross-encoder/ms-marco-MiniLM-L-6-v2"
-DEFAULT_DB = str(Path(__file__).resolve().parent / "chroma_db")
-COLLECTION = "security"
+DEFAULT_DB = V2_DB_PATH
+COLLECTION = V2_COLLECTION
 VALID_SOURCES = {"hacktricks", "payloads", "owasp", "mitre"}
 MAX_HISTORY_MESSAGES = 8
 MAX_HISTORY_CHARS_PER_MESSAGE = 500

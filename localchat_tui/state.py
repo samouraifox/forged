@@ -64,7 +64,7 @@ class ModeState:
     source: str | None = None
     provider: str = "local"
     backend: str = "hacker_lm"
-    model: str = "DeepSeek-R1 abliterated"
+    model: str = "Hermes-4-14B (Q6_K, llama-server)"
     think_control: str = "detecting"
 
     def toggle(self, field_name: str) -> bool:
