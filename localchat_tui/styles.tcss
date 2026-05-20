@@ -206,6 +206,21 @@ ModeBar {
     scrollbar-color-hover: #2a4a30;
 }
 
+#retrieve-indicator {
+    width: 100%;
+    height: 1;
+    padding: 0 2;
+    background: transparent;
+    color: #39c6ff;
+    text-style: bold;
+    text-align: left;
+    display: none;
+}
+
+#retrieve-indicator.is-active {
+    display: block;
+}
+
 #transcript-column {
     width: 100%;
     height: auto;
@@ -230,10 +245,7 @@ MessageBlock.kind-user {
     align-horizontal: left;
 }
 
-MessageBlock.kind-status {
-    align-horizontal: left;
-}
-
+MessageBlock.kind-status,
 MessageBlock.kind-system {
     align-horizontal: center;
 }
@@ -277,11 +289,7 @@ MessageBlock.kind-system {
     border: round #ff3939;
 }
 
-.kind-status .message-card {
-    width: 100%;
-    padding: 0 0 0 2;
-}
-
+.kind-status .message-card,
 .kind-system .message-card {
     width: auto;
     max-width: 92;
@@ -335,9 +343,9 @@ MessageBlock.kind-system {
 }
 
 .kind-status .message-body {
-    color: #39c6ff;
-    text-align: left;
-    text-style: bold;
+    color: #5a8060;
+    text-align: center;
+    text-style: italic;
 }
 
 .kind-system .message-body {

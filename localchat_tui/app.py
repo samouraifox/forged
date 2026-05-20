@@ -105,6 +105,7 @@ class LocalChatApp(App[None]):
                 yield AppHeader(self.adapter.descriptor, id="app-header")
                 yield Static("", id="landing-status")
                 yield ModeBar(self.modes, id="mode-bar")
+                yield Static("", id="retrieve-indicator")
                 yield TranscriptView(id="conversation")
                 yield Static("", id="composer-divider")
                 yield ChatComposer(id="composer")
@@ -244,21 +245,24 @@ class LocalChatApp(App[None]):
             if not self.session_active:
                 self._set_landing_status(event.text)
                 return render_state
-            await self._add_message(ChatMessage(kind=MessageKind.STATUS, text=event.text))
+            self._set_retrieve_indicator(event.text)
             return render_state
         if event.channel == StreamChannel.RETRIEVED_CONTEXT and event.text:
             await self._add_message(ChatMessage(kind=MessageKind.TOOL, label="CONTEXT", text=event.text))
             return render_state
         if event.channel == StreamChannel.ERROR and event.text:
+            self._clear_retrieve_indicator()
             await self._add_message(ChatMessage(kind=MessageKind.ERROR, text=event.text))
             return render_state
         if event.channel == StreamChannel.DONE:
+            self._clear_retrieve_indicator()
             if render_state.answer_block is not None:
                 leftover = render_state.answer_stripper.finish()
                 if leftover:
                     render_state.answer_block.append_text(leftover)
             return render_state
         if event.channel == StreamChannel.THINKING:
+            self._clear_retrieve_indicator()
             if render_state.thinking_block is None:
                 thinking_message = self.conversation.add(ChatMessage(kind=MessageKind.THINKING, streaming=True))
                 render_state.thinking_block = await transcript.add_message(thinking_message)
@@ -269,6 +273,7 @@ class LocalChatApp(App[None]):
                 transcript.follow_tail()
             return render_state
         if event.channel == StreamChannel.ANSWER_CHUNK:
+            self._clear_retrieve_indicator()
             if render_state.answer_block is None:
                 answer_message = self.conversation.add(ChatMessage(kind=MessageKind.ASSISTANT, streaming=True))
                 render_state.answer_block = await transcript.add_message(answer_message)
@@ -281,6 +286,16 @@ class LocalChatApp(App[None]):
                 transcript.follow_tail()
             return render_state
         return render_state
+
+    def _set_retrieve_indicator(self, text: str) -> None:
+        widget = self.query_one("#retrieve-indicator", Static)
+        widget.update(text)
+        widget.set_class(True, "is-active")
+
+    def _clear_retrieve_indicator(self) -> None:
+        widget = self.query_one("#retrieve-indicator", Static)
+        widget.update("")
+        widget.set_class(False, "is-active")
 
     def _flip_mode(self, field_name: str) -> None:
         self.modes.toggle(field_name)

@@ -236,4 +236,23 @@ The service-layer behavior is confirmed (curl + python harness). The TUI visual 
 
 1. **Part A**: F2 ON + reasoning question → TRACE block streams for tens of seconds before REPLY block streams.
 2. **Part A**: F2 OFF + same question → no TRACE block, near-instant REPLY.
-3. **Part B**: F3 ON + CVE question → see 6 status lines (`▸ retrieve · …`, `▸ timing · …`, `▸ llm · …`) appear in transcript before REPLY streams.
+3. **Part B**: F3 ON + CVE question → the inline `#retrieve-indicator` line below the ModeBar updates in place through each phase, then clears when REPLY (or TRACE) starts streaming.
+
+---
+
+## Addendum (2026-05-20, post-pick swap)
+
+User reconsidered the B3 pick — option (a)'s persistent in-transcript status lines visually overlapped with the F4/CTX feature (which already inlines retrieved chunks into the transcript). Swapped to **option (b): single inline progress line below the ModeBar**.
+
+### Changes (commit follows the original commit 208bcb1):
+
+- `localchat_tui/app.py` — added `Static("", id="retrieve-indicator")` between `ModeBar` and `TranscriptView`. Two new helpers `_set_retrieve_indicator(text)` and `_clear_retrieve_indicator()`. `_consume_backend_event` routes STATUS-during-session to the indicator instead of the transcript, and clears it on the first THINKING / ANSWER_CHUNK / ERROR / DONE event.
+- `localchat_tui/styles.tcss` — `#retrieve-indicator` styled as a thin (height 1) bright cyan `#39c6ff` bold left-aligned line. `display: none` by default; `display: block` when `.is-active` class is set. Reverted the kind-status MessageBlock CSS to the original muted-green centered italic (kept around for any non-session STATUS events, currently only landing-page paths use that route).
+- The `▸ tag · text` status text format is **kept** — it's independent of indicator style. The format reads cleanly in the inline widget.
+
+Service-layer behavior unchanged: 6 STATUS events still fire across retrieval; only their TUI sink changed.
+
+### Verification
+
+CSS still parses cleanly (73 rules, 0 errors). App instantiates. `#retrieve-indicator` rule present, `is-active` toggle rule present. Manual TUI smoke still pending (orchestrator).
+
