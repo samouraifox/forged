@@ -1,7 +1,11 @@
-"""Headless screenshot capture for the cyberpunk TUI refresh.
+"""Headless screenshot capture for the TUI palette repaint.
 
 Runs the TUI under Textual's test pilot with a stub backend, exporting SVG
 screenshots into LOGS/tui-refresh-screenshots/.
+
+Filename convention:
+  01–03    cyberpunk-era screenshots (archived for comparison)
+  04–06    warm-neutral palette (current)
 """
 from __future__ import annotations
 
@@ -58,11 +62,12 @@ async def _settle(pilot, ticks: int = 6) -> None:
 
 async def capture_landing(app: LocalChatApp, pilot) -> None:
     await _settle(pilot, ticks=10)
-    app.save_screenshot(filename="01-landing.svg", path=str(OUT_DIR))
-    print(f"saved {OUT_DIR / '01-landing.svg'}")
+    app.save_screenshot(filename="04-landing-warmneutral.svg", path=str(OUT_DIR))
+    print(f"saved {OUT_DIR / '04-landing-warmneutral.svg'}")
 
 
-async def capture_active(app: LocalChatApp, pilot) -> None:
+async def capture_trace_reply(app: LocalChatApp, pilot) -> None:
+    # F2 should already be on by default — ModeState.think defaults to True
     await app._add_message(
         ChatMessage(
             kind=MessageKind.USER,
@@ -97,26 +102,49 @@ async def capture_active(app: LocalChatApp, pilot) -> None:
         )
     )
     await _settle(pilot, ticks=15)
-    app.save_screenshot(filename="02-active-session.svg", path=str(OUT_DIR))
-    print(f"saved {OUT_DIR / '02-active-session.svg'}")
+    app.save_screenshot(filename="05-active-trace-reply.svg", path=str(OUT_DIR))
+    print(f"saved {OUT_DIR / '05-active-trace-reply.svg'}")
 
 
-async def capture_mode_pills(app: LocalChatApp, pilot) -> None:
-    await pilot.press("f3")
-    await _settle(pilot, ticks=3)
-    await pilot.press("f4")
-    await _settle(pilot, ticks=5)
-    app.save_screenshot(filename="03-mode-pills-mixed.svg", path=str(OUT_DIR))
-    print(f"saved {OUT_DIR / '03-mode-pills-mixed.svg'}")
+async def capture_retrieve_indicator(app: LocalChatApp, pilot) -> None:
+    """Show the retrieve indicator mid-retrieval — F3 on, indicator visible
+    above the transcript."""
+    # Add a user message to activate the session
+    await app._add_message(
+        ChatMessage(
+            kind=MessageKind.USER,
+            text="What's the latest on the xz-utils backdoor — any IOCs published?",
+        )
+    )
+    # Surface the inline retrieve indicator the way the real backend would.
+    # ▸ tag · text format kept (matches service.py service-layer events).
+    app._set_retrieve_indicator(
+        "▸ retrieve · embedding query (3/6)"
+    )
+    await _settle(pilot, ticks=10)
+    app.save_screenshot(filename="06-active-retrieve.svg", path=str(OUT_DIR))
+    print(f"saved {OUT_DIR / '06-active-retrieve.svg'}")
 
 
 async def main() -> None:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
+
+    # 04 — landing
     app = LocalChatApp(adapter=StubAdapter())
     async with app.run_test(size=(120, 42)) as pilot:
         await capture_landing(app, pilot)
-        await capture_active(app, pilot)
-        await capture_mode_pills(app, pilot)
+
+    # 05 — TRACE + REPLY
+    app = LocalChatApp(adapter=StubAdapter())
+    async with app.run_test(size=(120, 42)) as pilot:
+        await _settle(pilot, ticks=6)
+        await capture_trace_reply(app, pilot)
+
+    # 06 — retrieve indicator
+    app = LocalChatApp(adapter=StubAdapter())
+    async with app.run_test(size=(120, 42)) as pilot:
+        await _settle(pilot, ticks=6)
+        await capture_retrieve_indicator(app, pilot)
 
 
 if __name__ == "__main__":

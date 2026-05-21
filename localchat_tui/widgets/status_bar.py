@@ -128,10 +128,10 @@ class StatusBar(Widget):
         backend = self.descriptor.name
         think_ctrl = self.descriptor.think_control
         return (
-            f"[#39ff14]●[/] [b]{model}[/b]   "
-            f"[#5a8060]·[/]   [#ff39c6]{provider}[/]   "
-            f"[#5a8060]·[/]   [#39c6ff]{backend}[/]   "
-            f"[#5a8060]·[/]   think:{think_ctrl}"
+            f"[#d97706]●[/] [#fbbf24 b]{model}[/]   "
+            f"[#57534e]·[/]   [#94a3b8]{provider}[/]   "
+            f"[#57534e]·[/]   [#94a3b8]{backend}[/]   "
+            f"[#57534e]·[/]   [#a8a29e]think:[/][#fafaf9]{think_ctrl}[/]"
         )
 
     def _render_line_2(self) -> str:
@@ -139,8 +139,8 @@ class StatusBar(Widget):
 
         def chip(label: str, on: bool) -> str:
             if on:
-                return f"[#39ff14 b]{label} on[/]"
-            return f"[#3a5a40]{label} off[/]"
+                return f"[#d97706 b]{label} on[/]"
+            return f"[#57534e]{label} off[/]"
 
         ram = self._format_ram()
         uptime = self._format_uptime()
@@ -150,11 +150,11 @@ class StatusBar(Widget):
             f"{chip('THINK', modes.think)}  "
             f"{chip('RAG', modes.rag)}  "
             f"{chip('CTX', modes.ctx)}  "
-            f"[#5a8060]·[/] [#39c6ff]TOPK[/] [#c8f5d4]{modes.topk}[/]  "
-            f"[#5a8060]·[/] [#39c6ff]SRC[/] [#c8f5d4]{source}[/]  "
-            f"[#5a8060]│[/]  "
-            f"[#39c6ff]RAM[/] [#c8f5d4]{ram}[/]  "
-            f"[#5a8060]·[/] [#39c6ff]UP[/] [#c8f5d4]{uptime}[/]"
+            f"[#57534e]·[/] [#94a3b8]TOPK[/] [#fafaf9]{modes.topk}[/]  "
+            f"[#57534e]·[/] [#94a3b8]SRC[/] [#fafaf9]{source}[/]  "
+            f"[#3f3f46]│[/]  "
+            f"[#94a3b8]RAM[/] [#fafaf9]{ram}[/]  "
+            f"[#57534e]·[/] [#94a3b8]UP[/] [#fafaf9]{uptime}[/]"
         )
 
     def _format_ram(self) -> str:
