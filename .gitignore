@@ -38,3 +38,7 @@ _removed_from_product/
 *.pem
 *.key
 credentials.json
+
+# Runtime files (llama-server background process)
+LOGS/llama-server.log
+LOGS/llama-server.pid

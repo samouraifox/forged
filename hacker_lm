@@ -1,24 +1,42 @@
 #!/usr/bin/env bash
-# hacker_lm — launch the Textual TUI frontend plus the real backend runtime.
+# hacker_lm — launch llama-server (Hermes-4-14B) + the Textual TUI frontend.
 #   ./hacker_lm
-# The launcher prestarts the backend runtime under rag/venv, then opens the TUI.
+# If llama-server is already up on $LLAMA_HOST:$LLAMA_PORT, reuses it.
+# Otherwise starts it in the background, waits for ready, then launches the TUI.
 
 set -e
 
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-RAG_PYTHON="$PROJECT_DIR/rag/venv/bin/python"
 cd "$PROJECT_DIR"
+
+LLAMA_HOST="${LLAMA_HOST:-127.0.0.1}"
+LLAMA_PORT="${LLAMA_PORT:-8080}"
+LLAMA_LOG_DIR="$PROJECT_DIR/LOGS"
+LLAMA_LOG="$LLAMA_LOG_DIR/llama-server.log"
+LLAMA_PIDFILE="$LLAMA_LOG_DIR/llama-server.pid"
+LLAMA_READY_TIMEOUT="${LLAMA_READY_TIMEOUT:-180}"
 
 if [[ "${1:-}" == "--help" || "${1:-}" == "-h" ]]; then
     cat <<'EOF'
 Usage: ./hacker_lm
 
-Launches the Textual chat frontend.
+Launches llama-server (Hermes-4-14B) if not already running, then opens the
+Textual TUI frontend.
+
+Environment:
+  LLAMA_HOST           host llama-server binds to (default 127.0.0.1)
+  LLAMA_PORT           port llama-server listens on (default 8080)
+  LLAMA_READY_TIMEOUT  seconds to wait for llama-server ready (default 180)
+
+Files written:
+  LOGS/llama-server.log     server stdout/stderr when started by this script
+  LOGS/llama-server.pid     pid file for the background server process
 
 Notes:
-  - The launcher first starts/checks the real backend runtime under rag/venv.
-  - The TUI then connects to the real backend worker under rag/venv.
-  - If Textual is missing, install requirements-tui.txt or run through uv.
+  - If llama-server is already up at $LLAMA_HOST:$LLAMA_PORT, the launcher
+    reuses it and does NOT start another instance.
+  - Stop the background server with: kill $(cat LOGS/llama-server.pid)
+  - If Textual is missing, install requirements-tui.txt or use uv.
 EOF
     exit 0
 fi
@@ -28,12 +46,58 @@ if ! command -v python3 >/dev/null 2>&1; then
     exit 1
 fi
 
-if [[ ! -x "$RAG_PYTHON" ]]; then
-    echo "[hacker_lm] backend runtime not found at $RAG_PYTHON" >&2
-    exit 1
+# --- llama-server bring-up ---------------------------------------------------
+
+llama_ready() {
+    curl -sf -m 2 "http://${LLAMA_HOST}:${LLAMA_PORT}/health" >/dev/null 2>&1
+}
+
+if llama_ready; then
+    echo "[hacker_lm] llama-server already up at ${LLAMA_HOST}:${LLAMA_PORT}"
+else
+    if [[ ! -x "$PROJECT_DIR/scripts/llama-server.sh" ]]; then
+        echo "[hacker_lm] scripts/llama-server.sh missing or not executable" >&2
+        exit 1
+    fi
+    if ! command -v curl >/dev/null 2>&1; then
+        echo "[hacker_lm] curl is required to health-check llama-server" >&2
+        exit 1
+    fi
+    mkdir -p "$LLAMA_LOG_DIR"
+    echo "[hacker_lm] starting llama-server in background (log: $LLAMA_LOG)..."
+    HOST="$LLAMA_HOST" PORT="$LLAMA_PORT" \
+        nohup "$PROJECT_DIR/scripts/llama-server.sh" >"$LLAMA_LOG" 2>&1 &
+    echo $! >"$LLAMA_PIDFILE"
+    echo "[hacker_lm] llama-server pid=$(cat "$LLAMA_PIDFILE")"
+
+    echo -n "[hacker_lm] waiting for llama-server to be ready"
+    deadline=$((SECONDS + LLAMA_READY_TIMEOUT))
+    while (( SECONDS < deadline )); do
+        if llama_ready; then
+            echo
+            echo "[hacker_lm] llama-server ready after $(( LLAMA_READY_TIMEOUT - (deadline - SECONDS) ))s"
+            break
+        fi
+        # Bail early if the background process died.
+        if ! kill -0 "$(cat "$LLAMA_PIDFILE")" 2>/dev/null; then
+            echo
+            echo "[hacker_lm] llama-server process exited — see $LLAMA_LOG" >&2
+            tail -n 30 "$LLAMA_LOG" >&2 || true
+            exit 1
+        fi
+        echo -n "."
+        sleep 2
+    done
+
+    if ! llama_ready; then
+        echo
+        echo "[hacker_lm] llama-server did not become ready within ${LLAMA_READY_TIMEOUT}s — see $LLAMA_LOG" >&2
+        tail -n 30 "$LLAMA_LOG" >&2 || true
+        exit 1
+    fi
 fi
 
-"$RAG_PYTHON" -m rag.runtime --ensure-ollama
+# --- TUI launch --------------------------------------------------------------
 
 if python3 -c 'import textual, psutil' >/dev/null 2>&1; then
     exec python3 -m localchat_tui
