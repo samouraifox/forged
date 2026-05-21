@@ -1,5 +1,7 @@
 # forged
 
+![HACKER_LM — forged TUI on the landing screen](docs/hacker_lm-landing.png)
+
 Local, uncensored cybersecurity copilot for authorized red-team work. Runs entirely offline on a thin-and-light Intel laptop. v2 — currently rebuilding.
 
 ## Status
